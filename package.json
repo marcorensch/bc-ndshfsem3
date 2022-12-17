@@ -1,0 +1,26 @@
+{
+  "name": "bc-ndshfsem3",
+  "version": "1.0.0",
+  "description": "Offizielles Repository zur Semesterarbeit NDS HF Applikationsentwickler im dritten Semester von Claudia Martinez &amp; Marco Rensch",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "node setup.mjs",
+    "postinstall": "(cd server && npm install) && (node setup.mjs)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcorensch/bc-ndshfsem3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcorensch/bc-ndshfsem3/issues"
+  },
+  "homepage": "https://github.com/marcorensch/bc-ndshfsem3#readme",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "mariadb": "^3.0.2"
+  }
+}
