@@ -56,50 +56,51 @@ npm run setup
 :warning: = in Arbeit<br>
 :x: = noch nicht implementiert.
 #### User (/users/...)
-| Status             | Route              | Beschreibung            | Produktiv |
-|--------------------|--------------------|-------------------------|-----------|
-| :warning:          | `GET&nbsp;/`       | Gibt alle User zurück   | Ja        |
-| :white_check_mark: | `GET&nbsp;/:id`    | Gibt einen User zurück  | Ja        |
-| :x:                | `POST&nbsp;/`      | Erstellt einen User     | Ja        |
-| :x:                | `PUT&nbsp;/:id`    | Aktualisiert einen User | Ja        |
-| :x:                | `DELETE&nbsp;/:id` | Entfernt einen User     | Ja        |
+| Status    | Route              | Beschreibung            | Produktiv |
+|-----------|--------------------|-------------------------|-----------|
+| :warning: | `GET /`       | Gibt alle User zurück   | Ja        |
+| :warning: | `GET /:id`    | Gibt einen User zurück  | Ja        |
+| :x:       | `PUT /:id`    | Aktualisiert einen User | Ja        |
+| :x:       | `DELETE /:id` | Entfernt einen User     | Ja        |
+
+Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizierung erfolgt.
 
 #### Fragen (/questions/...)
 | Status                          | Route                | Beschreibung                                | Produktiv |
 |---------------------------------|----------------------|---------------------------------------------|-----------|
-| :x:                            | `GET&nbsp;/`   | Gibt eine Liste aller Fragen zurück         | nein      |
-| :x:                           | `GET&nbsp;/:id` | Gibt eine Frage zurück                      | ja        |
-| :x:                             | `POST&nbsp;/` | Erstellt eine neue Frage                    | ja        |
-| :x:                             | `PUT&nbsp;/:id` | Aktualisiert eine Frage                     | ja        |
-| :x:                             | `DELETE&nbsp;/:id` | Löscht eine Frage                           | ja        |
-|:x:  | `GET&nbsp;/user/:user_id` |Gibt alle Fragen eines Users zurück| ja        |
+| :x:                            | `GET /`   | Gibt eine Liste aller Fragen zurück         | nein      |
+| :x:                           | `GET /:id` | Gibt eine Frage zurück                      | ja        |
+| :x:                             | `POST /` | Erstellt eine neue Frage                    | ja        |
+| :x:                             | `PUT /:id` | Aktualisiert eine Frage                     | ja        |
+| :x:                             | `DELETE /:id` | Löscht eine Frage                           | ja        |
+|:x:  | `GET /user/:user_id` |Gibt alle Fragen eines Users zurück| ja        |
 
 #### Antworten (/answers/...)
-| Status | Route                     | Beschreibung                                | Produktiv |
-|--|---------------------------|---------------------------------------------|-----------|
-| :x:   | `GET&nbsp;/`      | Gibt eine Liste aller Antworten zurück      | Nein      |
-| :x:   | `GET&nbsp;/:question_id` | Gibt eine alle Antworten einer Frage zurück | Ja        |
-| :x:   | `POST&nbsp;/`           | Erstellt eine neue Antwort                  | Ja        |
-| :x:   | `PUT&nbsp;/:id`         | Aktualisiert eine Antwort                   | Ja        |
-| :x:   | `DELETE&nbsp;/:id`      | Löscht eine Antwort                         | Ja        |
+| Status    | Route                     | Beschreibung                                | Produktiv |
+|-----------|--------------------------|---------------------------------------------|-----------|
+| :x:       | `GET /`             | Gibt eine Liste aller Antworten zurück      | Nein      |
+| :x:       | `GET /:question_id` | Gibt eine alle Antworten einer Frage zurück | Ja        |
+| :x:       | `POST /`            | Erstellt eine neue Antwort                  | Ja        |
+| :x:       | `PUT /:id`          | Aktualisiert eine Antwort                   | Ja        |
+| :x:       | `DELETE /:id`       | Löscht eine Antwort                         | Ja        |
 
 
 #### Kategorien (/categories/...)
 | Status | Route                                              | Beschreibung     | Produktiv |
 |--------|----------------------------------------------------|------------------|-----------|
-| :x:    | `GET&nbsp;/`                                       | Gibt eine Liste aller Kategorien zurück |nein|
-| :x:    | `GET&nbsp;/:id`                                    | Gibt eine Kategorie zurück | |
-| :x:    | `POST&nbsp;/`                                      | Erstellt eine neue Kategorie | |
-| :x:    | `PUT&nbsp;/:id`                                    | Aktualisiert eine Kategorie | |
-| :x:    | `DELETE&nbsp;/:id`                                 |Löscht eine Kategorie||
-| :x:    | `GET&nbsp;/questions/`                             | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück | nein |
-| :x:    | `GET&nbsp;/questions/:question_id`                 | Gibt alle Kategorien einer Frage zurück ||
-| :x:    | `POST&nbsp;/questions/`                            | Erstellt eine neue Fragen-Kategorien Verknüpfung||
-| :x:  | `DELETE&nbsp;/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung     ||
+| :x:    | `GET /`                                       | Gibt eine Liste aller Kategorien zurück | nein      |
+| :x:    | `GET /:id`                                    | Gibt eine Kategorie zurück | ja        |
+| :x:    | `POST /`                                      | Erstellt eine neue Kategorie | ja        |
+| :x:    | `PUT /:id`                                    | Aktualisiert eine Kategorie | ja        |
+| :x:    | `DELETE /:id`                                 |Löscht eine Kategorie| ja        |
+| :x:    | `GET /questions/`                             | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück | nein      |
+| :x:    | `GET /questions/:question_id`                 | Gibt alle Kategorien einer Frage zurück | ja        |
+| :x:    | `POST /questions/`                            | Erstellt eine neue Fragen-Kategorien Verknüpfung| ja        |
+| :x:  | `DELETE /questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung     | ja        |
 
 #### Authentifizierung (/auth/...)
 | Status | Route                                              | Beschreibung     | Produktiv |
 |--------|----------------------------------------------------|------------------|-----------|
-| :x:    | `POST&nbsp;/login`                                 | Loggt einen User ein | ja |
-| :x:    | `POST&nbsp;/logout`                                | Loggt einen User aus | ja |
-| :x:    | `POST&nbsp;/register`                              | Registriert einen neuen User | ja |
+| :x:    | `POST /login`                                 | Loggt einen User ein | ja |
+| :x:    | `POST /logout`                                | Loggt einen User aus | ja |
+| :x:    | `POST /register`                              | Registriert einen neuen User | ja |
