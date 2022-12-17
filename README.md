@@ -34,7 +34,7 @@ brew services stop mariadb
 ## Installation
 - Datenbanksystem starten
 - `npm install` im Projektverzeichnis ausführen
-    - Installiert alle benötigten Abhängigkeiten in Server & Client
+    - Installiert alle benötigten Abhängigkeiten in Server <i>( Client folgt nach implementierung CLODOS )</i>
     - Startet Konfigurationsskript (überschreibt existierende Konfiguration!)
     - Startet Optional Konfigurationsskript für Datenbank
 
