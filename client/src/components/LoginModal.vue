@@ -5,12 +5,13 @@
         <div class="modal-container">
           <div class="header">
             <h2>Login Form</h2>
+            <router-link to="/">
             <button
                 class="modal-default-button close-button"
-                @click="$emit('close')"
-            >
+                @click="$emit('close')">
               <font-awesome-icon icon="xmark"></font-awesome-icon>
             </button>
+            </router-link>
           </div>
 
 
@@ -23,7 +24,8 @@
               <label for="password">Password</label>
               <input type="password" placeholder="Enter Password" name="password" required>
               <label>
-                <input type="checkbox" checked="checked" name="remember" v-model="checked" @change="rememberUsername"> Remember me
+                <input type="checkbox" checked="checked" name="remember" v-model="checked" @change="rememberUsername">
+                Remember me
               </label>
             </div>
 
@@ -56,16 +58,16 @@ export default {
     }
   },
   created() {
-  this.username = localStorage.getItem("username") || "";
-  this.checked = localStorage.getItem("checked")
+    this.username = localStorage.getItem("username") || "";
+    this.checked = localStorage.getItem("checked")
   },
 
-  methods:{
-    rememberUsername(){
+  methods: {
+    rememberUsername() {
       localStorage.setItem("checked", this.checked)
-      if (!this.checked){
+      if (!this.checked) {
         localStorage.removeItem("username")
-      }else{
+      } else {
         localStorage.setItem("username", this.username);
       }
 

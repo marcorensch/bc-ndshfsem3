@@ -43,7 +43,6 @@
           </router-link>
         </li>
       </ul>
-      <!--<span style="color:red"> <font-awesome-icon icon="upload" /> </span> -->
     </div>
     <div class="flex"></div>
     <div class="menu">
@@ -56,11 +55,6 @@
   </aside>
   <Teleport to="body">
     <LoginModal :show="showLoginModal" @close="showLoginModal = false">
-      <h3 slot="header">Custom header</h3>
-      <div slot="body">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium, adipisci.
-      </div>
-      <h3 slot="footer">Custom footer</h3>
     </LoginModal>
   </Teleport>
 </template>
@@ -82,9 +76,7 @@ export default {
       showLoginModal: false,
     }
   },
-  mounted() {
 
-  },
   methods: {
     toggleMenu() {
       this.is_expanded = !this.is_expanded
