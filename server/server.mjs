@@ -5,6 +5,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import usersRoute from './routes/users.mjs';
 import questionsRoute from './routes/questions.mjs';
+import authRoute from './routes/auth.mjs';
 import mariadb from 'mariadb';
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', usersRoute);
 app.use('/questions', questionsRoute);
+app.use('/auth', authRoute);
 
 app.use((req, res, next) => {
     const err = new Error('Not Found');
