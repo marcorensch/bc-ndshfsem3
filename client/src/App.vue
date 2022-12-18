@@ -1,30 +1,78 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
+  <div class="app">
+    <Sidebar/>
+
+    <router-view/>
+
+
+
+
+  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import Sidebar from "@/components/Sidebar";
 
-nav {
-  padding: 30px;
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+export default {
+  name: 'App',
+  components: {
+    Sidebar,
 
-    &.router-link-exact-active {
-      color: #42b983;
+  },
+  data() {
+    return {
+
     }
-  }
+  },
 }
+</script>
+
+<style lang="scss">
+:root {
+  --primary: #0CAFFF;
+  --primary-alt: #22c55e;
+  --grey: #64748b;
+  --dark: #292e40;
+  --dark-alt: #334155;
+  --light: #f1f5f9;
+  --sidebar-width: 300px;
+
+  /*#3f71b8;*/
+
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+body {
+  background-color: var(--light);
+}
+
+button {
+  appearance: none;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  main {
+    flex: 1 1 0;
+    padding: 2rem;
+
+    @media (max-width: 768px) {
+      padding-left: 6rem;
+    }
+
+  }
+
+}
+
 </style>
