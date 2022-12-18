@@ -59,6 +59,7 @@
 <script>
 import {useVuelidate} from "@vuelidate/core";
 import {required, minLength, sameAs, email} from "@vuelidate/validators";
+import axios from "axios";
 
 export default {
 
@@ -77,7 +78,6 @@ export default {
       password: {
         newPassword: '',
         confirmPassword: '',
-        equalPassword: false,
       },
 
     }
@@ -118,13 +118,28 @@ export default {
       if (valid) {
        console.log("Form is valid => Submitted")
         // Submit form
+      const response = await this.submitForm()
+        console.log(response)
+
       } else {
        console.log('Form is invalid')
       }
       console.log(this.firstname, this.lastname, this.email, this.password.newPassword, this.password.confirmPassword)
 
     },
-
+async submitForm(){
+      try{
+        return await axios.post('http://localhost:3000/auth/register', {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          email: this.email,
+          username: this.username,
+          password: this.password.newPassword,
+        })
+      }catch (e) {
+        console.log(e)
+      }
+}
   },
 
 }
