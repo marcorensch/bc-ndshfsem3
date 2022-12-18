@@ -1,7 +1,7 @@
 <template>
 
 
-  <form @submit.prevent="handleSubmit" class="form-horizontal container-fluid">
+  <form ref="form" @submit.prevent="handleSubmit" class="form-horizontal container-fluid">
     <h3>Signup form</h3>
     <div class="form-wrapper">
       <div class="form-group w-75 p-3">
@@ -71,6 +71,7 @@ export default {
   name: "SignupForm",
   data() {
     return {
+      form: "",
       firstname: '',
       lastname: '',
       email: '',
@@ -79,6 +80,7 @@ export default {
         newPassword: '',
         confirmPassword: '',
       },
+        submitConfirmText:"Thank you for signing up!",
 
     }
   },
@@ -113,18 +115,25 @@ export default {
   },
   methods: {
     async handleSubmit() {
-     const valid =  await this.v$.$validate();
-      console.log("result=" + valid)
-      if (valid) {
-       console.log("Form is valid => Submitted")
-        // Submit form
-      const response = await this.submitForm()
-        console.log(response)
+      try{
+        const valid =  await this.v$.$validate();
+        console.log("result=" + valid);
+        if (valid) {
+          console.log("Form is valid => Submitted");
+          // Submit form
+          const response = await this.submitForm();
+          console.log(response);
+          this.$refs.form.reset();
+          //todo show message if success
 
-      } else {
-       console.log('Form is invalid')
+        } else {
+          console.log('Form is invalid')
+        }
+        console.log(this.firstname, this.lastname, this.email, this.password.newPassword, this.password.confirmPassword)
+
+      }catch (e) {
+        console.log(e)
       }
-      console.log(this.firstname, this.lastname, this.email, this.password.newPassword, this.password.confirmPassword)
 
     },
 async submitForm(){
