@@ -1,13 +1,16 @@
 <template>
   <main class="home-page">
-    <h1>Home</h1>
-    <p>This is the home page</p>
+ <QuestionCard/>
   </main>
 </template>
 
 <script>
+import QuestionCard from "@/components/QuestionCard";
 export default {
-  name: "Home"
+  name: "Home",
+  components: {
+    QuestionCard,
+  },
 }
 </script>
 
