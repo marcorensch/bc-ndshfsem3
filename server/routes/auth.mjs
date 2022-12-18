@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
 
 router.post('/register', (req, res) => {
     console.log("User data received: ", req.body);
+    
     res.json({
         message: "User registered successfully"
     });

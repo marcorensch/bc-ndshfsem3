@@ -3,6 +3,9 @@ import mariadb from "mariadb";
 let pool = null;
 
 class DatabaseConnector {
+    constructor() {
+        this.getPool();
+    }
     getPool() {
         if (pool == null) {
             this.createPool();
@@ -22,7 +25,6 @@ class DatabaseConnector {
     }
 
     async fetchConnection() {
-        this.getPool();
         console.log("Fetching Connection");
         let conn = await pool.getConnection();
         console.log("Total connections: ", pool.totalConnections());
