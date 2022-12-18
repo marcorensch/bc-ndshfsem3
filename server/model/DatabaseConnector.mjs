@@ -39,3 +39,5 @@ class DatabaseConnector {
         return result;
     }
 }
+
+export default DatabaseConnector;
