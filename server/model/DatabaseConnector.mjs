@@ -1,44 +1,112 @@
 import mariadb from "mariadb";
 
-let pool = null;
 
 class DatabaseConnector {
-    constructor() {
-        this.getPool();
-    }
-    getPool() {
-        if (pool == null) {
-            this.createPool();
+    host;
+    port;
+    user;
+    password;
+    database;
+    pool;
+
+    constructor(connectionData = false) {
+        if (!connectionData) {
+            this.host = process.env.DB_HOST;
+            this.port = process.env.DB_PORT;
+            this.user = process.env.DB_USER;
+            this.password = process.env.DB_PASSWORD;
+            this.database = process.env.DB_NAME;
+        } else {
+            console.log("Setting connection data from constructor");
+            this.setConfiguration(connectionData);
         }
-        return pool;
+
+        this.getPool()
+    }
+
+    getPool() {
+        if (this.pool == null) {
+            this.createPool()
+        }
     }
 
     createPool() {
-        pool = mariadb.createPool({
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            connectionLimit: 5
-        });
+        try {
+            this.pool = mariadb.createPool({
+                host: this.host,
+                port: this.port,
+                user: this.user,
+                password: this.password,
+                database: this.database,
+                connectionLimit: 5
+            });
+        } catch (err) {
+            console.log("Could not create pool", err);
+        }
+    }
+
+    createNoDbPool() {
+        try {
+            this.pool = mariadb.createPool({
+                host: this.host,
+                port: this.port,
+                user: this.user,
+                password: this.password,
+                connectionLimit: 5
+            });
+        } catch (err) {
+            console.log("Could not create pool", err);
+        }
     }
 
     async fetchConnection() {
-        console.log("Fetching Connection");
-        let conn = await pool.getConnection();
-        console.log("Total connections: ", pool.totalConnections());
-        console.log("Active connections: ", pool.activeConnections());
-        console.log("Idle connections: ", pool.idleConnections());
-        return conn;
+        this.getPool();
+        if (this.pool) {
+            try {
+                let conn = await this.pool.getConnection();
+                return conn;
+            }catch (err) {
+                console.log("Could not fetch connection", err);
+                return false;
+            }
+        } else {
+            console.log("Error: No pool available");
+            return false;
+        }
     }
 
     async query(sql, values) {
-        let conn = await this.fetchConnection();
-        const result = await conn.query(sql, values);
-        console.log(result)
-        conn.release();
-        return result;
+        try {
+            let conn = await this.fetchConnection();
+            const result = await conn.query(sql, values);
+            conn.release();
+            return result;
+        } catch (err) {
+            console.log("Could not query", err);
+            return false;
+        }
+
+    }
+
+    async createDatabase(dbName) {
+        console.log("Creating database ", dbName);
+        this.createNoDbPool();
+        const sql = `CREATE DATABASE IF NOT EXISTS ${dbName}`;
+        return await this.query(sql, null);
+    }
+
+    async dropDatabase(dbName) {
+        this.createNoDbPool();
+        const sql = `DROP DATABASE IF EXISTS ${dbName}`;
+        return await this.query(sql, null);
+    }
+
+    setConfiguration(connectionData) {
+        this.host = connectionData.host;
+        this.port = connectionData.port;
+        this.user = connectionData.user;
+        this.password = connectionData.password;
+        this.database = connectionData.database;
     }
 }
 

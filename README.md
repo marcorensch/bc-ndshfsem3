@@ -30,24 +30,23 @@ brew services stop mariadb
 ```
 
 
-
 ## Installation
 - Datenbanksystem starten
 - `npm install` im Projektverzeichnis ausführen
-    - Installiert alle benötigten Abhängigkeiten in Server <i>( Client folgt nach implementierung CLODOS )</i>
-    - Startet Konfigurationsskript (überschreibt existierende Konfiguration!)
+    - Installiert alle benötigten Abhängigkeiten in Server & Client Verzeichnis
+    - Startet Konfigurationsskript (überschreibt ggf. existierende Konfiguration!)
     - Startet Optional Konfigurationsskript für Datenbank
 
 ## Konfiguration
-Der Konfigurationsprozess wird beim Ausführen von `npm install` gestartet.
-Alternativ kann das Konfigurationsskript auch manuell gestartet werden.
+Der Konfigurationsprozess wird nach dem Ausführen von `npm install` im Projektverzeichnis automatisch gestartet.
+Alternativ kann das Konfigurationsskript auch manuell vom Projektverzeichnis aus gestartet werden.
 ```
 npm run setup
 ```
 
-## Start
+## Start (devStart)
 - Datenbanksystem starten
-- `npm start` im Projektverzeichnis ausführen
+- `npm run devStart` im Projektverzeichnis ausführen
     - Startet den Server
     - Startet den Client
 
