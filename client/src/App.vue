@@ -31,7 +31,6 @@ export default {
 <style lang="scss">
 :root {
   --primary: #0CAFFF;
-  --primary-alt: #22c55e;
   --grey: #64748b;
   --dark: #292e40;
   --dark-alt: #334155;
@@ -46,7 +45,6 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Fira Sans', sans-serif;
 }
 
 body {

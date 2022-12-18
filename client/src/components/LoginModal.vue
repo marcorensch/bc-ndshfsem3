@@ -8,7 +8,9 @@
             <button
                 class="modal-default-button close-button"
                 @click="$emit('close')"
-            ><font-awesome-icon icon="xmark"></font-awesome-icon></button>
+            >
+              <font-awesome-icon icon="xmark"></font-awesome-icon>
+            </button>
           </div>
 
 
@@ -16,27 +18,23 @@
 
             <div class="form-container">
               <label for="username">Username</label>
-              <input type="text" placeholder="Enter Username" name="username" required>
+              <input type="text" placeholder="Enter Username" name="username" v-model="username" required>
 
               <label for="password">Password</label>
               <input type="password" placeholder="Enter Password" name="password" required>
-
+              <label>
+                <input type="checkbox" checked="checked" name="remember" v-model="checked" @change="rememberUsername"> Remember me
+              </label>
             </div>
 
             <div class="footer">
               <router-link to="/register">
-                <button type="button" class="form-button" @click="$emit('close')" >Register</button>
+                <button type="button" class="form-button" @click="$emit('close')">Register</button>
               </router-link>
 
               <button type="submit" class="form-button">Login</button>
             </div>
 
-            <div class="footer-link">
-              <span class="forgot"><b>Forgot</b> <a href="#">password?</a></span>
-              <label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-              </label>
-            </div>
 
           </form>
 
@@ -51,7 +49,29 @@ export default {
   name: "LoginModal",
   props: {
     show: Boolean
-  }
+  }, data() {
+    return {
+      username: "",
+      checked: false,
+    }
+  },
+  created() {
+  this.username = localStorage.getItem("username") || "";
+  this.checked = localStorage.getItem("checked")
+  },
+
+  methods:{
+    rememberUsername(){
+      localStorage.setItem("checked", this.checked)
+      if (!this.checked){
+        localStorage.removeItem("username")
+      }else{
+        localStorage.setItem("username", this.username);
+      }
+
+    }
+
+  },
 }
 </script>
 
@@ -93,23 +113,25 @@ export default {
   margin-bottom: 1rem;
 }
 
-.close-button{
-  font-size:1.5rem;
+.close-button {
+  font-size: 1.5rem;
 
-  &:hover{
+  &:hover {
     color: var(--primary);
   }
 }
 
-.form-container{
+.form-container {
   padding: 16px
 }
+
 form {
   border: 3px solid #f1f1f1;
 }
 
-label{
+label {
   font-weight: bold;
+  margin-top: 10px;
 }
 
 input[type=text], input[type=password] {
@@ -121,42 +143,41 @@ input[type=text], input[type=password] {
   box-sizing: border-box;
   border-radius: 2px;
 
-  &:focus{
+  &:focus {
     border: 1px solid var(--primary);
     box-shadow: none;
 
   }
 }
 
-.footer{
+.footer {
   display: flex;
-  background-color:#f1f1f1;
   margin-top: 2rem;
 }
 
-.form-button{
+.form-button {
   font-size: 1.5rem;
   background-color: var(--dark);
   border-radius: 2px;
   color: (var(--light));
   padding: 14px 20px;
-  margin: 8px 10px;
+  margin: 10px 10px;
   border: none;
   cursor: pointer;
   width: 200px;
 
   &:hover {
-   background-color: var(--primary);
+    background-color: var(--primary);
   }
 }
 
-.footer-link{
+.footer-link {
   display: flex;
   justify-content: space-between;
   margin-top: 3rem;
 }
 
-.forgot{
+.forgot {
   font-size: 1rem;
 
   a {
@@ -165,10 +186,10 @@ input[type=text], input[type=password] {
 
 
 }
+
 .modal-body {
   margin: 20px 0;
 }
-
 
 
 /*
@@ -200,8 +221,8 @@ input[type=text], input[type=password] {
     height: 80%;
   }
 
-  .form-button{
-    width:50%;
+  .form-button {
+    width: 50%;
     font-size: 1rem
   }
 
