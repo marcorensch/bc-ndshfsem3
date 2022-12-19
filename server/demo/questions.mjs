@@ -1,7 +1,7 @@
 let questions = [
     {
         "id": 1,
-        "content": "Was ist der Sinn des lebens?",
+        "question": "Was ist der Sinn des lebens?",
         "created_by": 1,
         "category_id": 1,
         "anonymous": 1,

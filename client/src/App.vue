@@ -1,6 +1,11 @@
 <template>
+  <Header/>
   <div class="app">
+
     <Sidebar/>
+
+
+
 
     <router-view/>
 
@@ -12,12 +17,14 @@
 
 <script>
 import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 
 export default {
   name: 'App',
   components: {
     Sidebar,
+    Header,
 
   },
   data() {
