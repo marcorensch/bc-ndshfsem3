@@ -5,17 +5,16 @@ class User {
     username;
     email;
     password;
-    firstName;
-    lastName;
+    firstname;
+    status;
+    lastname;
     userGroup;
 
-    constructor(id, username, email, firstName, lastName, userGroup) {
-        this.id = id;
+    constructor(firstname, lastname, username, email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.username = username;
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userGroup = userGroup;
     }
 
     setPassword(password, isHashed = false) {

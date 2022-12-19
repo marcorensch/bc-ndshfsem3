@@ -13,6 +13,5 @@ CREATE TABLE IF NOT EXISTS users
     UNIQUE KEY `username` (`username`),
     UNIQUE KEY `email` (`email`),
     FOREIGN KEY (`usergroup`) REFERENCES usergroups (`id`)
-
 )
     ENGINE = InnoDB;

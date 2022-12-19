@@ -28,14 +28,12 @@ async function create (connectionData) {
         return true;
     } catch (err) {
         throw err;
-        return false;
     }
 }
 
 async function createDatabase(dbName) {
     try {
-        const result = await databaseConnector.createDatabase(dbName);
-        return result;
+        return await databaseConnector.createDatabase(dbName);
     } catch (err) {
         throw err;
     }
@@ -44,6 +42,7 @@ async function createDatabase(dbName) {
 async function createTables (pathToScripts) {
 
     const scripts = await getSqlFiles(pathToScripts);
+    console.log(scripts);
     databaseConnector.createPool();
     const results = [];
 

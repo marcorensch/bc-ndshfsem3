@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS `usergroups`
     `title`      varchar(255) NOT NULL DEFAULT '',
     `alias`      varchar(255) NOT NULL DEFAULT '',
     `created_at` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-)
-    ENGINE = InnoDB;
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `alias` (`alias`),
+    UNIQUE KEY `title` (`title`)
+) ENGINE=InnoDB;
