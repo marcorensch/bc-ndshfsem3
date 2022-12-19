@@ -30,24 +30,23 @@ brew services stop mariadb
 ```
 
 
-
 ## Installation
 - Datenbanksystem starten
 - `npm install` im Projektverzeichnis ausführen
-    - Installiert alle benötigten Abhängigkeiten in Server <i>( Client folgt nach implementierung CLODOS )</i>
-    - Startet Konfigurationsskript (überschreibt existierende Konfiguration!)
+    - Installiert alle benötigten Abhängigkeiten in Server & Client Verzeichnis
+    - Startet Konfigurationsskript (überschreibt ggf. existierende Konfiguration!)
     - Startet Optional Konfigurationsskript für Datenbank
 
 ## Konfiguration
-Der Konfigurationsprozess wird beim Ausführen von `npm install` gestartet.
-Alternativ kann das Konfigurationsskript auch manuell gestartet werden.
+Der Konfigurationsprozess wird nach dem Ausführen von `npm install` im Projektverzeichnis automatisch gestartet.
+Alternativ kann das Konfigurationsskript auch manuell vom Projektverzeichnis aus gestartet werden.
 ```
 npm run setup
 ```
 
-## Start
+## Start (devStart)
 - Datenbanksystem starten
-- `npm start` im Projektverzeichnis ausführen
+- `npm run devStart` im Projektverzeichnis ausführen
     - Startet den Server
     - Startet den Client
 
@@ -99,8 +98,23 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 | :x:  | `DELETE /questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung     | ja        |
 
 #### Authentifizierung (/auth/...)
-| Status | Route                                              | Beschreibung     | Produktiv |
-|--------|----------------------------------------------------|------------------|-----------|
-| :x:    | `POST /login`                                 | Loggt einen User ein | ja |
-| :x:    | `POST /logout`                                | Loggt einen User aus | ja |
-| :x:    | `POST /register`                              | Registriert einen neuen User | ja |
+| Status | Route                                              | Beschreibung                 | Produktiv |
+|-------|----------------------------------------------------|------------------------------|-----------|
+| :x:   | `POST /login`                                 | Loggt einen User ein         | ja |
+| :x:   | `POST /logout`                                | Loggt einen User aus         | ja |
+| :white_check_mark:    | `POST /register`                              | Registriert einen neuen User | ja |
+
+
+# API Dokumentation
+## Fehler
+Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (ApiError Objekt).
+```
+{
+    "status": Fehlercode
+    "message": "Fehlermeldung"
+}
+```
+## Übersicht der Fehlercodes
+- Error Code 321: Datenbankfehler - E-Mail existiert bereits
+- Error Code 322: Datenbankfehler - Username existiert bereits
+

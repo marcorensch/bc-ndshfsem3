@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "setup": "node setup.mjs",
-    "postinstall": "(cd server && npm install) && (cd .. node setup.mjs)",
-    "start": "cd server && npm start"
+    "postinstall": "concurrently -m=1 -n=Server,Client,Setup -c=magenta,cyan,yellow -i=true --default-input-target=2 \"cd server && npm install\" \"cd client && npm install\" \"npm:setup\"",
+    "devStart": "concurrently -n=Server,Client -c=magenta,cyan \"cd server && npm run start\" \"cd client && npm run serve\""
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,8 @@
   "homepage": "https://github.com/marcorensch/bc-ndshfsem3#readme",
   "dependencies": {
     "chalk": "^5.2.0",
+    "concurrently": "^7.6.0",
+    "dotenv": "^16.0.3",
     "mariadb": "^3.0.2"
   }
 }
