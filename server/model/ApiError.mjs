@@ -1,10 +1,13 @@
 
 class ApiError {
-    constructor(status, message, column=null) {
-        this.status = status;
-        this.relatedColumn = column;
+    errorCode;
+    message;
+    relatedColumn
+    data;
+    constructor(errorCode, message, column=null) {
+        this.errorCode = errorCode;
         this.message = message;
-        this.data = null;
+        this.relatedColumn = column;
         return this;
     }
 
