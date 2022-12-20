@@ -4,7 +4,10 @@ import contains from "validator/lib/contains.js";
 import User from "../model/User.mjs";
 
 const registrationValidator = (req, res, next) => {
+
     let {firstname, lastname, username, password, email} = req.body;
+
+    console.log("Registration validator: ", req.body);
 
     firstname = firstname.trim();
     lastname = lastname.trim();

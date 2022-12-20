@@ -3,6 +3,7 @@ import ApiError from "../model/ApiError.mjs";
 import {registrationValidator} from "../middleware/formValidator.mjs";
 
 import UserController from "../controller/UserController.mjs";
+import formSanitizer from "../middleware/formSanitizer.mjs";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
     res.json(users);
 });
 
-router.post('/register', registrationValidator, async (req, res) => {
+router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
     console.log("User data received: ", req.user);
 
     const userController = new UserController();
