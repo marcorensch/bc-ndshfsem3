@@ -28,11 +28,10 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
         let errData = {};
         if(result.data.code === "ER_DUP_ENTRY"){
             const column = result.data.message.split("for key")[1].split("'")[1];
-            if(column === "username"){
-                errData = new ApiError(322, "Username already exists");
-            }else if(column === "email"){
-                errData = new ApiError(321, "Email already exists");
-            }
+            errData = new ApiError('u-321', "Username already exists", column);
+        }else{
+            errData = new ApiError('e-999', "Unknown error");
+            console.error("Unknown error while registering User:", result.data);
         }
         res.status(409).json(errData);
     }

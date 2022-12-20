@@ -2,6 +2,7 @@ import isLength from "validator/lib/isLength.js";
 import isEmail from "validator/lib/isEmail.js";
 import contains from "validator/lib/contains.js";
 import User from "../model/User.mjs";
+import ApiError from "../model/ApiError.mjs";
 
 const registrationValidator = (req, res, next) => {
 
@@ -16,17 +17,17 @@ const registrationValidator = (req, res, next) => {
 
     const forbiddenChars = ["!", "#", "$", "%", "^", "&", "*", "(", ")", "+", "=", "{", "}", "[", "]", "|", "\\", ":", ";", "'", "\"", "<", ">", ",", "?", "/", "`", "~"];
 
-    if(contains(username, forbiddenChars)) return res.status(400).json({message: "Username contains forbidden characters"});
-    if(contains(firstname, forbiddenChars)) return res.status(400).json({message: "Firstname contains forbidden characters"});
-    if(contains(lastname, forbiddenChars)) return res.status(400).json({message: "Lastname contains forbidden characters"});
-    if(contains(email, forbiddenChars)) return res.status(400).json({message: "E-Mail contains forbidden characters"});
+    if(contains(username, forbiddenChars)) return res.status(400).json(new ApiError('u-320', "Forbidden characters", "username"));
+    if(contains(firstname, forbiddenChars)) return res.status(400).json(new ApiError('u-320', "Forbidden characters", "firstname"));
+    if(contains(lastname, forbiddenChars)) return res.status(400).json(new ApiError('u-320', "Forbidden characters", "lastname"));
+    if(contains(email, forbiddenChars)) return res.status(400).json(new ApiError('u-320', "Forbidden characters", "email"));
 
-    if(!isEmail(email)) return res.status(400).json({message: "Invalid email address"});
+    if(!isEmail(email)) return res.status(400).json(new ApiError('u-318', "Invalid email", "email"));
 
-    if(!isLength(firstname, {min: 3, max: 20})) return res.status(400).json({message: "Firstname must be between 3 and 20 characters"});
-    if(!isLength(lastname, {min: 3, max: 20})) return res.status(400).json({message: "Lastname must be between 3 and 20 characters"});
-    if(!isLength(username, {min: 3, max: 20})) return res.status(400).json({message: "Username must be between 3 and 20 characters"});
-    if(!isLength(password, {min: 8, max: 20})) return res.status(400).json({message: "Password must be between 8 and 20 characters"});
+    if(!isLength(username, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "username"));
+    if(!isLength(firstname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "firstname"));
+    if(!isLength(lastname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "lastname"));
+    if(!isLength(password, {min: 8, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "password"));
 
     const user = new User(firstname, lastname, username, email);
     user.setPassword(password, false);

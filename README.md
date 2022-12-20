@@ -110,11 +110,14 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (ApiError Objekt).
 ```
 {
-    "status": Fehlercode
-    "message": "Fehlermeldung"
+    "code": "Fehlercode",                    // z.B. "u-318" oder "u-321"
+    "message":"Fehlermeldung",               // z.B. "User already exists" oder "User not found"
+    "relatedColumn":"Betroffene Spalte (DB)" // z.B. "email" oder "username"
 }
 ```
 ## Übersicht der Fehlercodes
-- Error Code 321: Datenbankfehler - E-Mail existiert bereits
-- Error Code 322: Datenbankfehler - Username existiert bereits
-
+### User related
+- Error Code u-318: Form Validierungsfehler - Ungültige E-Mail Adresse
+- Error Code u-319: Form Validierungsfehler - Ungültige Zeichenanzahl
+- Error Code u-320: Form Validierungsfehler - Ungültige Zeichen
+- Error Code u-321: Datenbankfehler - existiert bereits
