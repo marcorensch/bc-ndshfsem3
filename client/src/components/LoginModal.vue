@@ -15,14 +15,14 @@
           </div>
 
 
-          <form action="/action_page.php" method="post">
+          <form action="/" method="post">
 
             <div class="form-container">
               <label for="username">Username</label>
-              <input type="text" placeholder="Enter Username" name="username" v-model="username" required>
+              <input id="username" type="text" placeholder="Enter Username" name="username" v-model="username" required>
 
               <label for="password">Password</label>
-              <input type="password" placeholder="Enter Password" name="password" required>
+              <input id="password" type="password" placeholder="Enter Password" name="password" required>
               <label>
                 <input type="checkbox" checked="checked" name="remember" v-model="checked" @change="rememberUsername">
                 Remember me
@@ -117,6 +117,7 @@ export default {
 
 .close-button {
   font-size: 1.5rem;
+  transition: 0.2s ease-out;
 
   &:hover {
     color: var(--primary);
@@ -167,6 +168,7 @@ input[type=text], input[type=password] {
   border: none;
   cursor: pointer;
   width: 200px;
+  transition: 0.2s ease-out;
 
   &:hover {
     background-color: var(--primary);
@@ -179,29 +181,12 @@ input[type=text], input[type=password] {
   margin-top: 3rem;
 }
 
-.forgot {
-  font-size: 1rem;
 
-  a {
-    margin-left: 5px;
-  }
-
-
-}
 
 .modal-body {
   margin: 20px 0;
 }
 
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter-from {
   opacity: 0;
@@ -213,8 +198,8 @@ input[type=text], input[type=password] {
 
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
-  -webkit-transform: scale(1.1);
   transform: scale(1.1);
+
 }
 
 @media (max-width: 768px) {
@@ -225,7 +210,8 @@ input[type=text], input[type=password] {
 
   .form-button {
     width: 50%;
-    font-size: 1rem
+    font-size: 1rem;
+    transition: 0.2s ease-out;
   }
 
 }

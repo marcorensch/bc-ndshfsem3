@@ -44,7 +44,6 @@ export default {
 .home-page {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 
 }
