@@ -14,11 +14,15 @@ const registrationValidator = (req, res, next) => {
     username = username.trim();
     email = email.trim();
 
-    const regex = /^([a-z.\-_])*$/i;
+    const regexUsr = /^([a-z\d.\-_])*$/i;
+    const regexName = /^([a-z]+([\-\t ]*[a-z])+)$/i;
+    const regexPwd = /^([a-z.\-_!?\d])*$/i;
 
-    if(!regex.test(username)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "username").setData({value: username}));
-    if(!regex.test(firstname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "firstname").setData({value: firstname}));
-    if(!regex.test(lastname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "lastname").setData({value: lastname}));
+    if(!regexUsr.test(username)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "username").setData({value: username}));
+    if(!regexName.test(firstname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "firstname").setData({value: firstname}));
+    if(!regexName.test(lastname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "lastname").setData({value: lastname}));
+
+    if(!regexPwd.test(password)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "password").setData({value: password}));
 
     if(!isEmail(email)) return res.status(400).json(new ApiError('u-318', "Invalid Email", "email"));
 

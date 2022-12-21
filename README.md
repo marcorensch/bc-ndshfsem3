@@ -106,6 +106,25 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 
 # API Dokumentation
+## Richtlinien für Benutzerdaten
+### Benutzername
+- Benutzername muss mindestens 3 Zeichen lang sein
+- Benutzername darf maximal 20 Zeichen lang sein
+- Benutzername darf nur aus Buchstaben, Zahlen, Punkte, Bindestriche und Unterstrichen bestehen (a-zA-Z0-9_-.)
+- Benutzername darf nicht mit einem Bindestrich oder Unterstrich beginnen oder enden
+- Benutzername darf nicht bereits vergeben sein
+- Benutzername darf nicht leer sein
+### Passwort
+- Passwort muss mindestens 8 Zeichen lang sein
+- Passwort darf maximal 20 Zeichen lang sein
+- Passwort darf nur aus Buchstaben, Zahlen, Punkte, Bindestriche, Ausrufezeichen, Fragezeichen und Unterstrichen bestehen (a-zA-Z0-9_-.?!)
+
+### Vorname / Nachname
+- Vorname / Nachname darf maximal 20 Zeichen lang sein
+- Vorname / Nachname darf nur aus Buchstaben, Bindestriche oder Spaces bestehen (a-zA-Z- )
+- Vorname / Nachname darf nicht mit einem Bindestrich beginnen oder enden
+- Vorname / Nachname darf nicht leer sein
+
 ## Fehler
 Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (ApiError Objekt).
 ```
