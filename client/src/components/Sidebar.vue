@@ -1,8 +1,6 @@
 <template>
   <aside :class="`${is_expanded ? 'is-expand' : ''}`">
-    <div class="logo">
-      <img src="../assets/logo.png" alt="logo">
-    </div>
+
     <div class="menu-toggle-wrap">
       <button class="menu-toggle" @click="toggleMenu">
         <span class="icon-angles"><font-awesome-icon icon="angles-right"/></span>
@@ -42,6 +40,8 @@
             <span class="title">Category 2</span>
           </router-link>
         </li>
+<!-- Test Views -->
+        <router-link to="user/cockpit/overview"></router-link>
       </ul>
     </div>
     <div class="flex"></div>
@@ -196,7 +196,7 @@ aside {
     width: var(--sidebar-width);
 
     .menu-toggle-wrap {
-      top: -3rem;
+      top: 0;
 
       .menu-toggle {
         transform: rotate(-180deg);
