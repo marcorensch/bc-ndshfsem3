@@ -1,5 +1,5 @@
 <template>
-<div class="user-overview-page container" >
+<main class="user-overview-page container" >
   <div class="header row">
     <h1 class="col-6">My Account</h1>
     <button class="btn edit-button col-6">Edit My Data</button>
@@ -43,7 +43,7 @@
       </ul>
   </div>
   </div>
-</div>
+</main>
 </template>
 
 <script>
