@@ -16,7 +16,7 @@ class UserController {
     }
 
     async registerUser(user) {
-        const groupId = await this._getUserGroupIdByAlias("registered");;
+        const groupId = await this._getUserGroupIdByAlias("registered");
         if(groupId) {
             const sql = "INSERT INTO users (firstname, lastname, username, email, password, status, usergroup) VALUES (?,?,?,?,?,?,?)";
             const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, groupId]);
