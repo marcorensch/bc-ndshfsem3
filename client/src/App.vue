@@ -1,23 +1,23 @@
 <template>
   <div class="app">
+  <Header/>
+  <div class="app-content">
     <Sidebar/>
-
     <router-view/>
-
-
-
-
+  </div>
   </div>
 </template>
 
 <script>
 import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 
 export default {
   name: 'App',
   components: {
     Sidebar,
+    Header,
 
   },
   data() {
@@ -31,7 +31,6 @@ export default {
 <style lang="scss">
 :root {
   --primary: #0CAFFF;
-  --primary-alt: #22c55e;
   --grey: #64748b;
   --dark: #292e40;
   --dark-alt: #334155;
@@ -46,7 +45,6 @@ export default {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Fira Sans', sans-serif;
 }
 
 body {
@@ -61,7 +59,7 @@ button {
   cursor: pointer;
 }
 
-.app {
+.app-content {
   display: flex;
   main {
     flex: 1 1 0;
