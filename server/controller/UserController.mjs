@@ -16,11 +16,10 @@ class UserController {
     }
 
     async registerUser(user) {
-        const userGroup = await this._getUserGroupIdByAlias("registered");
-        if(userGroup) {
-            console.log("Usergroup: ", userGroup);
+        const groupId = await this._getUserGroupIdByAlias("registered");;
+        if(groupId) {
             const sql = "INSERT INTO users (firstname, lastname, username, email, password, status, usergroup) VALUES (?,?,?,?,?,?,?)";
-            const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, 3]);
+            const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, groupId]);
             return response;
         }else{
             console.log("Usergroup not found");
@@ -30,7 +29,8 @@ class UserController {
 
     async _getUserGroupIdByAlias(groupAlias) {
         const sql = "SELECT id FROM usergroups WHERE alias=?";
-        return await this.databaseConnector.query(sql, [groupAlias]);
+        const result = await this.databaseConnector.query(sql, [groupAlias]);
+        return result.data[0].id;
     }
 }
 
