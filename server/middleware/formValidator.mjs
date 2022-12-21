@@ -1,29 +1,35 @@
 import isLength from "validator/lib/isLength.js";
 import isEmail from "validator/lib/isEmail.js";
-import contains from "validator/lib/contains.js";
 import User from "../model/User.mjs";
+import ApiError from "../model/ApiError.mjs";
 
 const registrationValidator = (req, res, next) => {
+
     let {firstname, lastname, username, password, email} = req.body;
+
+    console.log("Registration validator: ", req.body);
 
     firstname = firstname.trim();
     lastname = lastname.trim();
     username = username.trim();
     email = email.trim();
 
-    const forbiddenChars = ["!", "#", "$", "%", "^", "&", "*", "(", ")", "+", "=", "{", "}", "[", "]", "|", "\\", ":", ";", "'", "\"", "<", ">", ",", "?", "/", "`", "~"];
+    const regexUsr = /^([a-z\d.\-_])*$/i;
+    const regexName = /^([a-z]+([\-\t ]*[a-z])+)$/i;
+    const regexPwd = /^([a-z.\-_!?\d])*$/i;
 
-    if(contains(username, forbiddenChars)) return res.status(400).json({message: "Username contains forbidden characters"});
-    if(contains(firstname, forbiddenChars)) return res.status(400).json({message: "Firstname contains forbidden characters"});
-    if(contains(lastname, forbiddenChars)) return res.status(400).json({message: "Lastname contains forbidden characters"});
-    if(contains(email, forbiddenChars)) return res.status(400).json({message: "E-Mail contains forbidden characters"});
+    if(!regexUsr.test(username)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "username").setData({value: username}));
+    if(!regexName.test(firstname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "firstname").setData({value: firstname}));
+    if(!regexName.test(lastname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "lastname").setData({value: lastname}));
 
-    if(!isEmail(email)) return res.status(400).json({message: "Invalid email address"});
+    if(!regexPwd.test(password)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "password"));
 
-    if(!isLength(firstname, {min: 3, max: 20})) return res.status(400).json({message: "Firstname must be between 3 and 20 characters"});
-    if(!isLength(lastname, {min: 3, max: 20})) return res.status(400).json({message: "Lastname must be between 3 and 20 characters"});
-    if(!isLength(username, {min: 3, max: 20})) return res.status(400).json({message: "Username must be between 3 and 20 characters"});
-    if(!isLength(password, {min: 8, max: 20})) return res.status(400).json({message: "Password must be between 8 and 20 characters"});
+    if(!isEmail(email)) return res.status(400).json(new ApiError('u-318', "Invalid Email", "email").setData({value: email}));
+
+    if(!isLength(username, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "username").setData({value: username}));
+    if(!isLength(firstname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "firstname").setData({value: firstname}));
+    if(!isLength(lastname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "lastname").setData({value: lastname}));
+    if(!isLength(password, {min: 8, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "password"));
 
     const user = new User(firstname, lastname, username, email);
     user.setPassword(password, false);

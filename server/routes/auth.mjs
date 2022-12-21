@@ -3,6 +3,7 @@ import ApiError from "../model/ApiError.mjs";
 import {registrationValidator} from "../middleware/formValidator.mjs";
 
 import UserController from "../controller/UserController.mjs";
+import formSanitizer from "../middleware/formSanitizer.mjs";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get('/', (req, res) => {
     res.json(users);
 });
 
-router.post('/register', registrationValidator, async (req, res) => {
+router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
     console.log("User data received: ", req.user);
 
     const userController = new UserController();
@@ -27,11 +28,10 @@ router.post('/register', registrationValidator, async (req, res) => {
         let errData = {};
         if(result.data.code === "ER_DUP_ENTRY"){
             const column = result.data.message.split("for key")[1].split("'")[1];
-            if(column === "username"){
-                errData = new ApiError(322, "Username already exists");
-            }else if(column === "email"){
-                errData = new ApiError(321, "Email already exists");
-            }
+            errData = new ApiError('u-321', "Username already exists", column);
+        }else{
+            errData = new ApiError('e-999', "Unknown Error");
+            console.error("Unknown error while registering User:", result.data);
         }
         res.status(409).json(errData);
     }
