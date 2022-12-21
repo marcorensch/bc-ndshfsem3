@@ -1,17 +1,10 @@
 <template>
-  <Header/>
   <div class="app">
-
+  <Header/>
+  <div class="app-content">
     <Sidebar/>
-
-
-
-
     <router-view/>
-
-
-
-
+  </div>
   </div>
 </template>
 
@@ -66,7 +59,7 @@ button {
   cursor: pointer;
 }
 
-.app {
+.app-content {
   display: flex;
   main {
     flex: 1 1 0;
