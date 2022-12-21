@@ -188,6 +188,7 @@ async submitForm(){
   border: none;
   cursor: pointer;
   width: 100%;
+  transition: 0.2s ease-out;
 
   &:hover {
     background-color: var(--primary);
