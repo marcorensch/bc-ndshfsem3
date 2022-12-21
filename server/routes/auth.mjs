@@ -30,7 +30,7 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
             const column = result.data.message.split("for key")[1].split("'")[1];
             errData = new ApiError('u-321', "Username already exists", column);
         }else{
-            errData = new ApiError('e-999', "Unknown error");
+            errData = new ApiError('e-999', "Unknown Error");
             console.error("Unknown error while registering User:", result.data);
         }
         res.status(409).json(errData);

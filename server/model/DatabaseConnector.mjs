@@ -32,36 +32,28 @@ class DatabaseConnector {
         }
     }
 
-    createPool() {
+    createPool(config = this.configPool(true)) {
         console.log("Creating pool");
         try {
-            this.pool = mariadb.createPool({
-                host: this.host,
-                port: this.port,
-                user: this.user,
-                password: this.password,
-                database: this.database,
-                connectionLimit: 5
-            });
+            this.pool = mariadb.createPool(config);
         } catch (err) {
             console.log("Could not create pool", err);
         }
     }
 
-    createNoDbPool() {
-        try {
-            this.pool = mariadb.createPool({
-                host: this.host,
-                port: this.port,
-                user: this.user,
-                password: this.password,
-                connectionLimit: 5
-            });
-        } catch (err) {
-            console.log("Could not create pool", err);
+    configPool(withDb = false){
+        let config = {
+            host: this.host,
+            port: this.port,
+            user: this.user,
+            password: this.password,
+            connectionLimit: 5
+        };
+        if(withDb){
+            config.database = this.database;
         }
+        return config;
     }
-
     async fetchConnection() {
         this.getPool();
         if (this.pool) {
@@ -92,13 +84,13 @@ class DatabaseConnector {
 
     async createDatabase(dbName) {
         console.log("Creating database ", dbName);
-        this.createNoDbPool();
+        this.createPool(this.configPool(false));
         const sql = `CREATE DATABASE IF NOT EXISTS ${dbName}`;
         return await this.query(sql, null);
     }
 
     async dropDatabase(dbName) {
-        this.createNoDbPool();
+        this.createPool(this.configPool(false));
         const sql = `DROP DATABASE IF EXISTS ${dbName}`;
         return await this.query(sql, null);
     }

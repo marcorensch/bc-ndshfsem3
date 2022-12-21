@@ -22,13 +22,13 @@ const registrationValidator = (req, res, next) => {
     if(!regexName.test(firstname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "firstname").setData({value: firstname}));
     if(!regexName.test(lastname)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "lastname").setData({value: lastname}));
 
-    if(!regexPwd.test(password)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "password").setData({value: password}));
+    if(!regexPwd.test(password)) return res.status(400).json(new ApiError('u-320', "Forbidden characters found", "password"));
 
-    if(!isEmail(email)) return res.status(400).json(new ApiError('u-318', "Invalid Email", "email"));
+    if(!isEmail(email)) return res.status(400).json(new ApiError('u-318', "Invalid Email", "email").setData({value: email}));
 
-    if(!isLength(username, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "username"));
-    if(!isLength(firstname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "firstname"));
-    if(!isLength(lastname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "lastname"));
+    if(!isLength(username, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "username").setData({value: username}));
+    if(!isLength(firstname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "firstname").setData({value: firstname}));
+    if(!isLength(lastname, {min: 3, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "lastname").setData({value: lastname}));
     if(!isLength(password, {min: 8, max: 20})) return res.status(400).json(new ApiError('u-319', "Invalid length", "password"));
 
     const user = new User(firstname, lastname, username, email);
