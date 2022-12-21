@@ -24,6 +24,9 @@ class User {
             this.password = this.hashPassword(password);
         }
     }
+    setUserGroup(userGroup) {
+        this.userGroup = userGroup;
+    }
 
     hashPassword(password) {
         return bcrypt.hashSync(password, 10);

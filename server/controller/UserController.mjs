@@ -2,8 +2,9 @@ import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
 
 class UserController {
-    constructor() {
-        this.databaseConnector = new DatabaseConnector();
+    databaseConnector = null;
+    constructor(connectionData = false) {
+        this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
     async getAllUsers() {
@@ -16,10 +17,12 @@ class UserController {
     }
 
     async registerUser(user) {
-        const groupId = await this._getUserGroupIdByAlias("registered");
-        if(groupId) {
+        if(user.userGroup === null || user.userGroup === undefined) {
+            user.userGroup = await this._getUserGroupIdByAlias("registered")
+        }
+        if(user.userGroup) {
             const sql = "INSERT INTO users (firstname, lastname, username, email, password, status, usergroup) VALUES (?,?,?,?,?,?,?)";
-            const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, groupId]);
+            const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, user.userGroup]);
             return response;
         }else{
             console.log("Usergroup not found");

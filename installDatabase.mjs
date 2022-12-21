@@ -1,8 +1,19 @@
 import DatabaseConnector from "./server/model/DatabaseConnector.mjs";
 import fs from "fs";
 import path from "path";
+import UserController from "./server/controller/UserController.mjs";
 
 let databaseConnector;
+
+async function addAdminUser(connectionData, adminUser) {
+
+    const userController = new UserController(connectionData);
+    adminUser.userGroup = await userController._getUserGroupIdByAlias("administrator");
+    console.log(userController)
+
+    return await userController.registerUser(adminUser);
+
+}
 
 async function dropDatabase(connectionData) {
 
@@ -70,4 +81,4 @@ async function getSqlFiles(pathToScripts) {
     }
 }
 
-export {create, dropDatabase};
+export {create, dropDatabase, addAdminUser};

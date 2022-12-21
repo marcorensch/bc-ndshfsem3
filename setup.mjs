@@ -2,10 +2,10 @@ import * as dotenv from 'dotenv';
 import * as crypto from "crypto";
 import * as fs from 'fs';
 import chalk from 'chalk';
-import mariadb from 'mariadb';
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
-import {create, dropDatabase}  from './installDatabase.mjs';
+import {create, dropDatabase, addAdminUser}  from './installDatabase.mjs';
+import User from "./server/model/User.mjs";
 
 const configuration = {
     "access_token_secret":{
@@ -157,6 +157,29 @@ if(installDb === 'y'){
         console.log(chalk.bold.red('Error creating Database'));
         console.log(err);
     }
+}
+
+const addAdmin = await rl.question('Do you want to create an admin user? ('+chalk.italic.cyan('press "y" to create or any key to skip')+') ');
+
+if(addAdmin === 'y'){
+
+    let connectionData = {
+        host: configuration.db_host.value,
+        port: configuration.db_port.value,
+        user: configuration.db_user.value,
+        password: configuration.db_password.value,
+        database: configuration.db_name.value,
+    }
+
+    let username = await rl.question('Please enter a username for the admin user:');
+    let password = await rl.question('Please enter a password for the admin user:');
+    let email = await rl.question('Please enter a email for the admin user:');
+
+    const admin = new User("","",username,email);
+    admin.setPassword(password, false);
+
+    const result = await addAdminUser(connectionData, admin);
+    console.log(result);
 }
 
 rl.close();
