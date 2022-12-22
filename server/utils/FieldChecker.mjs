@@ -14,7 +14,7 @@ export default class FieldChecker {
     constructor(connectionData = false) {
         this.connectionData = connectionData;
         this.username = {
-            regex : /^([a-z]+[.\-_]*[a-z]+)$/,
+            regex : /^([a-z]+[.\-_]*[a-z]+)$/i,
             min: 3,
             max: 20,
             forbidden: forbiddenList(),
@@ -35,14 +35,14 @@ export default class FieldChecker {
         };
     }
 
-    isValid(string, context){
+    async isValid(string, context){
         if(!string) return new ApiError('u-317', "Missing field", context);
-        return context === "email" ? this.isValidEmail(string) : this.isValidString(string, context);
+        return context === "email" ? await this.isValidEmail(string) : this.isValidString(string, context);
     }
 
     async isValidEmail(email){
 
-        if(!isEmail(email)) return new ApiError('u-318', "Invalid email", "email").setData({value: email});;
+        if(!isEmail(email)) return new ApiError('u-318', "Invalid email", "email").setData({value: email});
         if(!await this.emailIsNew(email)) return new ApiError('u-322', "Email already taken", "email").setData({value: email});
 
         return true;
@@ -51,7 +51,7 @@ export default class FieldChecker {
     isValidString(string, context) {
         const lengthTest = this.hasValidLength(string, this[context].min, this[context].max);
         const regexTest = this[context].regex.test(string);
-        const forbiddenWordTest = context !== "password" ? this.stringContainsForbiddenWord(string) : true;
+        const forbiddenWordTest = context !== "password" ? this.stringContainsForbiddenWord(string) : {status: true};
 
         if(!lengthTest) return new ApiError('u-319', "Invalid length", context).setData({value: this[context].returnValue ? string : false});
         if(!regexTest) return new ApiError('u-320', "Forbidden characters found", context).setData({value: this[context].returnValue ? string : false})
@@ -69,10 +69,9 @@ export default class FieldChecker {
     }
 
     async usernameIsAvailable(username){
-        return true;
         const userController = new UserController(this.connectionData);
-        const userId = await userController.getUserIdByUsername(username);
-        return !userId;
+        const result = await userController.getUserIdByUsername(username);
+        return result.data.length === 0;
     }
 
     stringContainsForbiddenWord(string){

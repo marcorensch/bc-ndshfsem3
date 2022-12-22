@@ -1,16 +1,14 @@
-import isLength from "validator/lib/isLength.js";
-import isEmail from "validator/lib/isEmail.js";
 import User from "../model/User.mjs";
-import ApiError from "../model/ApiError.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
 
-const registrationValidator = (req, res, next) => {
+const registrationValidator = async (req, res, next) => {
 
     let {firstname, lastname, username, password, email} = req.body;
     const fieldChecker = new FieldChecker();
 
     for(let [context, value] of Object.entries({firstname, lastname, username, password, email})){
-        const result = fieldChecker.isValid(value.trim(), context)
+        const result = await fieldChecker.isValid(value.trim(), context)
+        console.log(context, result);
         if(result !== true){
             return res.status(400).json(result);
         }

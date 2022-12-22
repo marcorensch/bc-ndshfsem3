@@ -134,7 +134,7 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 - Benutzername muss mindestens 3 Zeichen lang sein
 - Benutzername darf maximal 20 Zeichen lang sein
-- Benutzername darf nur aus kleinen Buchstaben, Zahlen, Punkten, Bindestriche und Unterstrichen bestehen (a-z0-9_-.)
+- Benutzername darf nur aus Buchstaben, Zahlen, Punkten, Bindestriche und Unterstrichen bestehen (a-zA-Z0-9_-.)
 - Benutzername darf nicht mit einem Punkt, Bindestrich oder Unterstrich beginnen oder enden
 - Benutzername darf nicht bereits vergeben sein
 - Benutzername darf nicht leer sein
