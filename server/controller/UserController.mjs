@@ -45,6 +45,11 @@ class UserController {
         const sql = "SELECT id FROM users WHERE email=?";
         return await this.databaseConnector.query(sql, [email]);
     }
+
+    async deleteUserByUsername(username) {
+        const sql = "DELETE FROM users WHERE username=?";
+        return await this.databaseConnector.query(sql, [username]);
+    }
 }
 
 export default UserController;
