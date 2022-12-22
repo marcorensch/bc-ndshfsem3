@@ -38,16 +38,12 @@ class UserController {
 
     async getUserIdByUsername(username) {
         const sql = "SELECT id FROM users WHERE username=?";
-        const result = await this.databaseConnector.query(sql, [username]);
-        console.log(result);
-        return result.data[0].id;
+        return await this.databaseConnector.query(sql, [username]);
     }
 
     async getUserIdByEmail(email) {
         const sql = "SELECT id FROM users WHERE email=?";
-        const result = await this.databaseConnector.query(sql, [email]);
-        console.log(result);
-        return result.data[0].id;
+        return await this.databaseConnector.query(sql, [email]);
     }
 }
 

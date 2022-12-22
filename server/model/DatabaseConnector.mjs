@@ -17,7 +17,6 @@ class DatabaseConnector {
             this.user = process.env.DB_USER;
             this.password = process.env.DB_PASSWORD;
             this.database = process.env.DB_NAME;
-            console.log(this)
         } else {
             console.log("Setting connection data from constructor");
             this.setConfiguration(connectionData);
@@ -74,6 +73,7 @@ class DatabaseConnector {
             let conn = await this.fetchConnection();
             const result = await conn.query(sql, values);
             conn.release();
+            delete result.meta;
             return {success: true, data: result};
         } catch (err) {
             console.log("Could not query", err);

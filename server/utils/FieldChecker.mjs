@@ -41,11 +41,9 @@ export default class FieldChecker {
     }
 
     async isValidEmail(email){
-        const validEmailTest = isEmail(email) ? true : new ApiError('u-323', "Invalid email", "email").setData({value: email});
-        const isNewEmailTest = await this.emailIsNew(email) ? true : new ApiError('u-321', "Email already taken", "email").setData({value: email});
 
-        if(!validEmailTest) return validEmailTest;
-        if(!isNewEmailTest) return isNewEmailTest;
+        if(!isEmail(email)) return new ApiError('u-318', "Invalid email", "email").setData({value: email});;
+        if(!await this.emailIsNew(email)) return new ApiError('u-322', "Email already taken", "email").setData({value: email});
 
         return true;
     }
@@ -90,8 +88,8 @@ export default class FieldChecker {
 
     async emailIsNew(email){
         const userController = new UserController(this.connectionData);
-        const userId = await userController.getUserIdByEmail(email);
-        return !userId;
+        const result = await userController.getUserIdByEmail(email);
+        return result.data.length === 0;
     }
 
     hasValidLength(string, min, max){

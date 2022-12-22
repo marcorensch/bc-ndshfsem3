@@ -1,5 +1,15 @@
 import * as assert from "assert";
 import FieldChecker from "../utils/FieldChecker.mjs";
+import * as dotenv  from 'dotenv';
+dotenv.config();
+
+const testDbConnectionData = {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME+'_test',
+}
 
 describe('String Checker', function () {
     const fieldChecker = new FieldChecker();
@@ -114,7 +124,9 @@ describe('String Checker', function () {
     });
 });
 describe('E-Mail Checker', function (){
-    const fieldChecker = new FieldChecker();
+
+    const fieldChecker = new FieldChecker(testDbConnectionData);
+
     it('should return ApiError Code u-318 for invalid email "invalidemail"', async function () {
         const check = await fieldChecker.isValidEmail("invalidemail");
         assert.equal(check.errorCode, "u-318");
