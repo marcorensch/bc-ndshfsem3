@@ -134,8 +134,8 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 - Benutzername muss mindestens 3 Zeichen lang sein
 - Benutzername darf maximal 20 Zeichen lang sein
-- Benutzername darf nur aus Buchstaben, Zahlen, Punkte, Bindestriche und Unterstrichen bestehen (a-zA-Z0-9_-.)
-- Benutzername darf nicht mit einem Bindestrich oder Unterstrich beginnen oder enden
+- Benutzername darf nur aus kleinen Buchstaben, Zahlen, Punkten, Bindestriche und Unterstrichen bestehen (a-z0-9_-.)
+- Benutzername darf nicht mit einem Punkt, Bindestrich oder Unterstrich beginnen oder enden
 - Benutzername darf nicht bereits vergeben sein
 - Benutzername darf nicht leer sein
 
@@ -170,7 +170,9 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 
 ### User related
 
+- Error Code u-317: Form Validierungsfehler - Feld wurde nicht übermittelt (null / undefined)
 - Error Code u-318: Form Validierungsfehler - Ungültige E-Mail Adresse
 - Error Code u-319: Form Validierungsfehler - Ungültige Zeichenanzahl
 - Error Code u-320: Form Validierungsfehler - Ungültige Zeichen
-- Error Code u-321: Datenbankfehler - existiert bereits
+- Error Code u-321: Form Validierungsfehler - Verbotene Zeichenfolge
+- Error Code u-322: Datenbankfehler - existiert bereits

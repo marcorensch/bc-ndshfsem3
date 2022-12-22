@@ -1,33 +1,37 @@
 import * as assert from "assert";
-import StringChecker from "../utils/StringChecker.mjs";
-import ApiError from "../model/ApiError.mjs";
+import FieldChecker from "../utils/FieldChecker.mjs";
 
-describe('StringChecker', function () {
-    const stringChecker = new StringChecker();
-    describe('Username Check', function () {
-        it('should return ApiError Code u-319 if two characters long', function () {
-            const check = stringChecker.isValid("ab", "username");
+describe('String Checker', function () {
+    const fieldChecker = new FieldChecker();
+    describe('Username Check', async function () {
+        it('should return ApiError Code u-319 if two characters long', async function () {
+            const check = await fieldChecker.isValidUsername("ab");
             assert.equal(check.errorCode, "u-319");
         });
 
-        it('should return true for Username "myusername"', function () {
-            assert.equal(stringChecker.isValid("myusername", "username"), true);
+        it('should return true for Username "vorname.nachname"', async function () {
+            assert.equal(await fieldChecker.isValidUsername("vorname.nachname"), true);
         });
 
-        it('should return ApiError u-320 for Username "-myusername"', function () {
-            const check = stringChecker.isValid("-myusername", "username");
+        it('should return ApiError u-321 for Username "myusername"', async function () {
+            const check = await fieldChecker.isValidUsername("myusername")
+            assert.equal(check.errorCode, "u-321");
+        });
+
+        it('should return ApiError u-320 for Username "-myusername"', async function () {
+            const check = await fieldChecker.isValidUsername("-myusername");
             console.log(check);
             assert.equal(check.errorCode, "u-320");
         });
 
-        it('should return ApiError u-320 for Username "myusername-"', function () {
-            const check = stringChecker.isValid("myusername-", "username");
+        it('should return ApiError u-320 for Username "myusername-"', async function () {
+            const check = await fieldChecker.isValidUsername("myusername-");
             console.log(check);
             assert.equal(check.errorCode, "u-320");
         });
 
-        it('should return value "user<>name" in ApiError u-320 for Username "user<>name"', function () {
-            const check = stringChecker.isValid("user<>name", "username");
+        it('should return value "user<>name" in ApiError u-320 for Username "user<>name"', async function () {
+            const check = await fieldChecker.isValidUsername("user<>name");
             console.log(check);
             assert.equal(check.errorCode, "u-320");
             assert.equal(check.data.value, "user<>name");
@@ -35,81 +39,112 @@ describe('StringChecker', function () {
     });
     describe('Password Check', function () {
         it('should return value false in ApiError u-320 for Password "ab123><grapefruit"', function () {
-            const check = stringChecker.isValid("ab123><grapefruit", "password");
+            const check = fieldChecker.isValidString("ab123><grapefruit", "password");
             console.log(check);
             assert.equal(check.data.value, false);
         });
 
         it('should return ApiError u-319 for Password "ab123"', function () {
-            const check = stringChecker.isValid("ab123", "password");
+            const check = fieldChecker.isValidString("ab123", "password");
             console.log(check);
             assert.equal(check.errorCode, "u-319");
         });
 
         it('should return ApiError u-320 for Password "ab123><grapefruit"', function () {
-            const check = stringChecker.isValid("ab123><grapefruit", "password");
+            const check = fieldChecker.isValidString("ab123><grapefruit", "password");
             console.log(check);
             assert.equal(check.errorCode, "u-320");
         });
     });
     describe('Firstname Check', function () {
         it('should return ApiError Code u-319 if two characters long', function () {
-            const check = stringChecker.isValid("ab", "firstname");
+            const check = fieldChecker.isValidString("ab", "firstname");
             assert.equal(check.errorCode, "u-319");
         });
         it('should return ApiError Code u-319 if twenty-one characters long', function () {
-            const check = stringChecker.isValid("abcdefghijklmnopqrstu", "firstname");
+            const check = fieldChecker.isValidString("abcdefghijklmnopqrstu", "firstname");
             assert.equal(check.errorCode, "u-319");
         });
         it('should return ApiError Code u-320 for "-Firstname"', function () {
-            const check = stringChecker.isValid("-Firstname", "firstname");
+            const check = fieldChecker.isValidString("-Firstname", "firstname");
             assert.equal(check.errorCode, "u-320");
         });
         it('should return ApiError Code u-320 for "Firstname-"', function () {
-            const check = stringChecker.isValid("Firstname-", "firstname");
+            const check = fieldChecker.isValidString("Firstname-", "firstname");
             assert.equal(check.errorCode, "u-320");
         });
         it('should return ApiError Code u-320 for "-Firstname-"', function () {
-            const check = stringChecker.isValid("-Firstname-", "firstname");
+            const check = fieldChecker.isValidString("-Firstname-", "firstname");
             assert.equal(check.errorCode, "u-320");
         });
         it('should return true for "Hans Joachim"', function () {
-            const check = stringChecker.isValid("Hans Joachim", "firstname");
+            const check = fieldChecker.isValidString("Hans Joachim", "firstname");
             assert.equal(check, true);
         });
         it('should return true for "Hans-Joachim"', function () {
-            const check = stringChecker.isValid("Hans-Joachim", "firstname");
+            const check = fieldChecker.isValidString("Hans-Joachim", "firstname");
             assert.equal(check, true);
         });
         it('should return true for "Hans - Joachim"', function () {
-            const check = stringChecker.isValid("Hans - Joachim", "firstname");
+            const check = fieldChecker.isValidString("Hans - Joachim", "firstname");
             assert.equal(check, true);
         });
     });
     describe('Lastname Check', function () {
         it('should return ApiError Code u-319 if two characters long', function () {
-            const check = stringChecker.isValid("ab", "lastname");
+            const check = fieldChecker.isValidString("ab", "lastname");
             assert.equal(check.errorCode, "u-319");
         });
         it('should return ApiError Code u-319 if twenty-one characters long', function () {
-            const check = stringChecker.isValid("abcdefghijklmnopqrstu", "lastname");
+            const check = fieldChecker.isValidString("abcdefghijklmnopqrstu", "lastname");
             assert.equal(check.errorCode, "u-319");
         });
         it('should return ApiError Code u-320 for "-Lastname"', function () {
-            const check = stringChecker.isValid("-Lastname", "lastname");
+            const check = fieldChecker.isValidString("-Lastname", "lastname");
             assert.equal(check.errorCode, "u-320");
         });
         it('should return ApiError Code u-320 for "Lastname-"', function () {
-            const check = stringChecker.isValid("Lastname-", "lastname");
+            const check = fieldChecker.isValidString("Lastname-", "lastname");
             assert.equal(check.errorCode, "u-320");
         });
         it('should return ApiError Code u-320 for "-Lastname-"', function () {
-            const check = stringChecker.isValid("-Lastname-", "lastname");
+            const check = fieldChecker.isValidString("-Lastname-", "lastname");
             assert.equal(check.errorCode, "u-320");
         });
     });
 });
-
-/*
-
- */
+describe('E-Mail Checker', function (){
+    const fieldChecker = new FieldChecker();
+    it('should return ApiError Code u-318 for invalid email "invalidemail"', async function () {
+        const check = await fieldChecker.isValidEmail("invalidemail");
+        assert.equal(check.errorCode, "u-318");
+    });
+    it('should return ApiError Code u-318 for invalid email invalidemail@', async function () {
+        const check = await fieldChecker.isValidEmail("invalidemail@");
+        assert.equal(check.errorCode, "u-318");
+    });
+    it('should return ApiError Code u-318 for invalid email invalidemail@tld', async function () {
+        const check = await fieldChecker.isValidEmail("invalidemail@tld");
+        assert.equal(check.errorCode, "u-318");
+    });
+    it('should return true for valid email "user@tld.com"', async function () {
+        const check = await fieldChecker.isValidEmail("user@tld.com");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user@tld.ch"', async function () {
+        const check = await fieldChecker.isValidEmail("user@tld.ch");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user@tld.co.uk"', async function () {
+        const check = await fieldChecker.isValidEmail("user@tld.co.uk");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user-name@tld.co.uk"', async function () {
+        const check = await fieldChecker.isValidEmail("user-name@tld.co.uk");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user.name@tld.co.uk"', async function () {
+        const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
+        assert.equal(check, true);
+    });
+});

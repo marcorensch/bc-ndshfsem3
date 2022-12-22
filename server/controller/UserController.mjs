@@ -35,6 +35,20 @@ class UserController {
         const result = await this.databaseConnector.query(sql, [groupAlias]);
         return result.data[0].id;
     }
+
+    async getUserIdByUsername(username) {
+        const sql = "SELECT id FROM users WHERE username=?";
+        const result = await this.databaseConnector.query(sql, [username]);
+        console.log(result);
+        return result.data[0].id;
+    }
+
+    async getUserIdByEmail(email) {
+        const sql = "SELECT id FROM users WHERE email=?";
+        const result = await this.databaseConnector.query(sql, [email]);
+        console.log(result);
+        return result.data[0].id;
+    }
 }
 
 export default UserController;

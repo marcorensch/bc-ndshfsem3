@@ -79,7 +79,6 @@ class DatabaseConnector {
             console.log("Could not query", err);
             return {success: false, data: err};
         }
-
     }
 
     async createDatabase(dbName) {
