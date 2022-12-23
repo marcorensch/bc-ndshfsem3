@@ -35,6 +35,26 @@ class UserController {
         const result = await this.databaseConnector.query(sql, [groupAlias]);
         return result.data[0].id;
     }
+
+    async getUserIdByUsername(username) {
+        const sql = "SELECT id FROM users WHERE username=?";
+        return await this.databaseConnector.query(sql, [username]);
+    }
+
+    async getUserByUsername(username) {
+        const sql = "SELECT id,username,firstname,lastname,email,password FROM users WHERE username=?";
+        return await this.databaseConnector.query(sql, [username]);
+    }
+
+    async getUserIdByEmail(email) {
+        const sql = "SELECT id FROM users WHERE email=?";
+        return await this.databaseConnector.query(sql, [email]);
+    }
+
+    async deleteUserByUsername(username) {
+        const sql = "DELETE FROM users WHERE username=?";
+        return await this.databaseConnector.query(sql, [username]);
+    }
 }
 
 export default UserController;

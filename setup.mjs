@@ -159,6 +159,27 @@ if(installDb === 'y'){
     }
 }
 
+const installTestDb = await rl.question('Do you want to install the test database? ('+chalk.italic.cyan('press "y" to install or any key to skip')+') ');
+if(installTestDb === 'y'){
+    let connectionData = {
+        host: configuration.db_host.value,
+        port: configuration.db_port.value,
+        user: configuration.db_user.value,
+        password: configuration.db_password.value,
+        database: configuration.db_name.value+'_test',
+    }
+
+    try {
+        const status = await create(connectionData);
+    } catch (err) {
+        console.log(chalk.bold.red('Error creating Database'));
+        console.log(err);
+    }
+
+    console.log(chalk.bold.green('Test Database created successfully'));
+
+}
+
 const addAdmin = await rl.question('Do you want to create an admin user? ('+chalk.italic.cyan('press "y" to create or any key to skip')+') ');
 
 if(addAdmin === 'y'){

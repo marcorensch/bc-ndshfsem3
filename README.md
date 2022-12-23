@@ -134,8 +134,8 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 - Benutzername muss mindestens 3 Zeichen lang sein
 - Benutzername darf maximal 20 Zeichen lang sein
-- Benutzername darf nur aus Buchstaben, Zahlen, Punkte, Bindestriche und Unterstrichen bestehen (a-zA-Z0-9_-.)
-- Benutzername darf nicht mit einem Bindestrich oder Unterstrich beginnen oder enden
+- Benutzername darf nur aus Buchstaben, Zahlen, Punkten, Bindestriche und Unterstrichen bestehen (a-zA-Z0-9_-.)
+- Benutzername darf nicht mit einem Punkt, Bindestrich oder Unterstrich beginnen oder enden
 - Benutzername darf nicht bereits vergeben sein
 - Benutzername darf nicht leer sein
 
@@ -160,9 +160,9 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 ```
 {
     "errorCode": "Fehlercode",                    // z.B. "u-318" oder "u-321"
-    "message":"Fehlermeldung",               // z.B. "User already exists" oder "User not found"
-    "relatedColumn":"Betroffene Spalte (DB)" // z.B. "email" oder "username"
-    "data":"Weiterführende Informationen" // z.B. Fehlermeldung der Datenbank"
+    "message":"Fehlermeldung",                    // z.B. "User already exists" oder "User not found"
+    "relatedColumn":"Betroffene Spalte (DB)"      // z.B. "email" oder "username"
+    "data":"Weiterführende Informationen"         // z.B. "Fehlermeldung der Datenbank"
 }
 ```
 
@@ -170,7 +170,11 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 
 ### User related
 
+- Error Code u-317: Form Validierungsfehler - Feld wurde nicht übermittelt (null / undefined)
 - Error Code u-318: Form Validierungsfehler - Ungültige E-Mail Adresse
 - Error Code u-319: Form Validierungsfehler - Ungültige Zeichenanzahl
 - Error Code u-320: Form Validierungsfehler - Ungültige Zeichen
-- Error Code u-321: Datenbankfehler - existiert bereits
+- Error Code u-321: Form Validierungsfehler - Verbotene Zeichenfolge
+- Error Code u-322: Datenbankfehler - existiert bereits
+- Error Code u-331: Loginfehler - User nicht gefunden
+- Error Code u-332: Loginfehler - Passwort falsch

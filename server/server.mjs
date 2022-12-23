@@ -1,4 +1,5 @@
-import('dotenv').then(dotenv => dotenv.config());
+import * as dotenv  from 'dotenv';
+dotenv.config();
 import express from 'express';
 import 'babel-polyfill';
 import cors from 'cors';
