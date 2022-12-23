@@ -120,11 +120,12 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Authentifizierung (/auth/...)
 
-| Status             | type | Route       | Beschreibung                 | Produktiv |
-|--------------------|------|-------------|------------------------------|-----------|
-| :x:                | POST | `/login`    | Loggt einen User ein         | ja        |
-| :x:                | POST | `/logout`   | Loggt einen User aus         | ja        |
-| :white_check_mark: | POST | `/register` | Registriert einen neuen User | ja        |
+| Status             | type | Route       | Beschreibung                                                 | Produktiv |
+|--------------------|------|-------------|--------------------------------------------------------------|-----------|
+| :warning:          | POST | `/login`    | Loggt einen User ein                                         | ja        |
+| :x:                | POST | `/logout`   | Loggt einen User aus                                         | ja        |
+| :white_check_mark: | POST | `/register` | Registriert einen neuen User                                 | ja        |
+| :warning:          | POST | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | ja        |
 
 # API Dokumentation
 
