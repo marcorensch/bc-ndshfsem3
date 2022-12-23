@@ -5,8 +5,18 @@
     </span>
     <div class="card-body">
       <p class="card-title question-content">{{question.question}}</p>
-      <a href="#" class="btn btn-primary float-end">Show X Answers</a>
-    </div>
+      <div class="btn-section">
+        <router-link to="/answer/new">
+          <button class="btn btn-primary float-start col">Create Answer</button>
+        </router-link>
+        <router-link to="/">
+          <button class="btn btn-primary float-end col">Show X Answers</button>
+        </router-link>
+      </div>
+
+
+      </div>
+
     <div class="card-body">
       <span>created:{{question.created}}</span>
       <span class="float-end">by <a href="#">{{question.created_by}}</a></span>
@@ -84,10 +94,16 @@ export default {
   }
 }
 @media (max-width: 768px) {
+ .btn-section{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
 
   .btn {
-    width: 50%;
-    font-size: 1rem
+    width: 200px;
+    font-size: 1rem;
+    float: none !important;
   }
 }
 
