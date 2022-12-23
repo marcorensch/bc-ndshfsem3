@@ -17,6 +17,10 @@ class User {
         this.email = email;
     }
 
+    setId(id) {
+        this.id = id;
+    }
+
     setPassword(password, isHashed = false) {
         if (isHashed) {
             this.password = password;
@@ -30,6 +34,10 @@ class User {
 
     hashPassword(password) {
         return bcrypt.hashSync(password, 10);
+    }
+
+    checkPassword(password) {
+        return bcrypt.compareSync(password, this.password);
     }
 }
 
