@@ -6,7 +6,7 @@ import {loginValidator, registrationValidator} from "../middleware/formValidator
 
 import UserController from "../controller/UserController.mjs";
 import formSanitizer from "../middleware/formSanitizer.mjs";
-import jwt from "jsonwebtoken";
+import TokenController from "../controller/TokenController.mjs";
 
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
             message: "User registered successfully"
         });
     }else{
-        let errData = {};
+        let errData;
         if(result.data.code === "ER_DUP_ENTRY"){
             const column = result.data.message.split("for key")[1].split("'")[1];
             errData = new ApiError('u-321', "Username already exists", column);
@@ -42,13 +42,16 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
 router.post('/login', formSanitizer, loginValidator, async (req, res) => {
     console.log("User data received & access granted: ", req.user);
 
-    jwt.sign({user: req.user}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"}, (err, token) => {
-        if(err) return res.status(500).json(new ApiError('e-999', "Unknown Error"));
-        res.json({accessToken:token});
-    });
+    const tokenController = new TokenController();
+    const token = await tokenController.createToken(req.user.id);
+    const refreshToken = await tokenController.createRefreshToken(req.user.id);
 
-    // res.status(200).json({msg: "Thanks for logging in", user: req.user});
+    if(!token || !refreshToken){
+        res.status(500).json(new ApiError('e-999', "Unknown Error"));
+        return;
+    }
 
+    res.status(200).json({ message: "User logged in successfully", token, refreshToken });
 });
 
 export default router;
