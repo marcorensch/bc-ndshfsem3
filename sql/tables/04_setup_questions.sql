@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `questions`
 (
     `id`          int(11)      NOT NULL AUTO_INCREMENT,
-    `question`    text         NOT NULL,
+    `content`     text         NOT NULL,
     `category_id` varchar(255) NOT NULL,
     `created_by`  int(11)      NOT NULL,
     `anonymous`   tinyint(1)   NOT NULL DEFAULT 0,
