@@ -160,9 +160,9 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 ```
 {
     "errorCode": "Fehlercode",                    // z.B. "u-318" oder "u-321"
-    "message":"Fehlermeldung",               // z.B. "User already exists" oder "User not found"
-    "relatedColumn":"Betroffene Spalte (DB)" // z.B. "email" oder "username"
-    "data":"Weiterführende Informationen" // z.B. Fehlermeldung der Datenbank"
+    "message":"Fehlermeldung",                    // z.B. "User already exists" oder "User not found"
+    "relatedColumn":"Betroffene Spalte (DB)"      // z.B. "email" oder "username"
+    "data":"Weiterführende Informationen"         // z.B. "Fehlermeldung der Datenbank"
 }
 ```
 
@@ -176,3 +176,5 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 - Error Code u-320: Form Validierungsfehler - Ungültige Zeichen
 - Error Code u-321: Form Validierungsfehler - Verbotene Zeichenfolge
 - Error Code u-322: Datenbankfehler - existiert bereits
+- Error Code u-331: Loginfehler - User nicht gefunden
+- Error Code u-332: Loginfehler - Passwort falsch
