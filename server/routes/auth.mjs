@@ -1,6 +1,6 @@
 import express from "express";
 import ApiError from "../model/ApiError.mjs";
-import {registrationValidator} from "../middleware/formValidator.mjs";
+import {loginValidator, registrationValidator} from "../middleware/formValidator.mjs";
 
 import UserController from "../controller/UserController.mjs";
 import formSanitizer from "../middleware/formSanitizer.mjs";
@@ -35,6 +35,12 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
         }
         res.status(409).json(errData);
     }
+});
+router.post('/login', formSanitizer, loginValidator, async (req, res) => {
+    console.log("User data received & access granted: ", req.user);
+
+    res.status(200).json({msg: "Thanks for logging in", user: req.user});
+
 });
 
 export default router;
