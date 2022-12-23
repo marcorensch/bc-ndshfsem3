@@ -1,9 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import express from "express";
 import ApiError from "../model/ApiError.mjs";
 import {loginValidator, registrationValidator} from "../middleware/formValidator.mjs";
 
 import UserController from "../controller/UserController.mjs";
 import formSanitizer from "../middleware/formSanitizer.mjs";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -39,7 +42,12 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
 router.post('/login', formSanitizer, loginValidator, async (req, res) => {
     console.log("User data received & access granted: ", req.user);
 
-    res.status(200).json({msg: "Thanks for logging in", user: req.user});
+    jwt.sign({user: req.user}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"}, (err, token) => {
+        if(err) return res.status(500).json(new ApiError('e-999', "Unknown Error"));
+        res.json({accessToken:token});
+    });
+
+    // res.status(200).json({msg: "Thanks for logging in", user: req.user});
 
 });
 
