@@ -17,6 +17,17 @@ router.get('/', (req, res) => {
     res.json(users);
 });
 
+router.post('/token', async (req, res) => {
+    const refreshToken = req.body.token;
+    if(refreshToken == null) return res.status(401).json(new ApiError('u-341', "Refresh token is missing"));
+    const tokenController = new TokenController();
+    const userId = await tokenController.checkRefreshToken(refreshToken);
+
+    if(!userId) return res.status(403).json(new ApiError('u-342', "Refresh token is invalid"));
+
+    res.status(200).json(userId);
+
+});
 router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
     console.log("User data received: ", req.user);
 
@@ -45,6 +56,7 @@ router.post('/login', formSanitizer, loginValidator, async (req, res) => {
     const tokenController = new TokenController();
     const token = await tokenController.createToken(req.user.id);
     const refreshToken = await tokenController.createRefreshToken(req.user.id);
+    await tokenController.storeToken(refreshToken);
 
     if(!token || !refreshToken){
         res.status(500).json(new ApiError('e-999', "Unknown Error"));

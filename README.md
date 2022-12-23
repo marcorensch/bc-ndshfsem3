@@ -178,3 +178,5 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 - Error Code u-322: Datenbankfehler - existiert bereits
 - Error Code u-331: Loginfehler - User nicht gefunden
 - Error Code u-332: Loginfehler - Passwort falsch
+- Error Code u-341: Tokenfehler - Refresh Token nicht gefunden
+- Error Code u-342: Tokenfehler - Refresh Token ist nicht valide

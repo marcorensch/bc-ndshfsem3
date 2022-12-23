@@ -15,16 +15,34 @@ class TokenController {
         return await jwt.sign({id: userId}, process.env.REFRESH_TOKEN_SECRET);
     }
 
-    async storeToken(token, userId) {
-        const sql = "INSERT INTO tokens (token, user_id) VALUES (?,?)";
-        return await this.databaseConnector.query(sql, [token, userId]);
+    async storeToken(refreshToken) {
+        const sql = "INSERT INTO access_tokens (token) VALUES (?)";
+        return await this.databaseConnector.query(sql, [refreshToken]);
     }
 
     async verifyToken(req, res) {}
 
     async deleteToken(token) {
-        const sql = "DELETE FROM tokens WHERE token=?";
+        const sql = "DELETE FROM access_tokens WHERE token=?";
         return await this.databaseConnector.query(sql, [token]);
+    }
+
+    async checkRefreshToken(refreshToken) {
+        let verify;
+        try {
+            verify = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+                if(err) return false;
+                return user;
+            });
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+        console.log("RefreshToken Verify: " , verify);
+        const sql = "SELECT COUNT(token) AS count FROM access_tokens WHERE token=?";
+        const res = await this.databaseConnector.query(sql, [refreshToken]);
+        if(res.data[0].count > 0) return verify.id;
+        return false;
     }
 }
 
