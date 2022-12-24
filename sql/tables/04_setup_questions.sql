@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `questions`
     `category_id` varchar(255) NOT NULL,
     `created_by`  int(11)      NOT NULL,
     `anonymous`   tinyint(1)   NOT NULL DEFAULT 0,
-    `accepted_id` int(11)      NOT NULL DEFAULT 0,
+    `accepted_id` int(11)      DEFAULT NULL,
     `created_at`  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modified_at` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
