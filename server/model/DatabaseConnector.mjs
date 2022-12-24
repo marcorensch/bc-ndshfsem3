@@ -20,12 +20,20 @@ class DatabaseConnector {
             this.setConfiguration(connectionData);
         }
 
-        this.getPool()
+        try{
+            this.getPool()
+        }catch (err) {
+            throw err;
+        }
     }
 
     getPool() {
         if (this.pool == null) {
-            this.createPool()
+            try{
+                this.createPool()
+            } catch (err) {
+                throw err;
+            }
         }
     }
 
@@ -33,7 +41,7 @@ class DatabaseConnector {
         try {
             this.pool = mariadb.createPool(config);
         } catch (err) {
-            console.log("Could not create pool", err);
+            throw err;
         }
     }
 
@@ -56,8 +64,7 @@ class DatabaseConnector {
             try {
                 return await this.pool.getConnection();
             }catch (err) {
-                console.log("Could not fetch connection", err);
-                return false;
+               throw err;
             }
         } else {
             console.log("Error: No pool available");
@@ -73,20 +80,26 @@ class DatabaseConnector {
             delete result.meta;
             return {success: true, data: result};
         } catch (err) {
-            console.log("Could not query", err);
-            return {success: false, data: err};
+            throw err;
         }
     }
 
     async createDatabase(dbName) {
-        console.log("Creating database ", dbName);
-        this.createPool(this.configPool(false));
+        try {
+            this.createPool(this.configPool(false));
+        } catch (err) {
+            throw err;
+        }
         const sql = `CREATE DATABASE IF NOT EXISTS ${dbName}`;
         return await this.query(sql, null);
     }
 
     async dropDatabase(dbName) {
-        this.createPool(this.configPool(false));
+        try {
+            this.createPool(this.configPool(false));
+        } catch (err) {
+            throw err;
+        }
         const sql = `DROP DATABASE IF EXISTS ${dbName}`;
         return await this.query(sql, null);
     }

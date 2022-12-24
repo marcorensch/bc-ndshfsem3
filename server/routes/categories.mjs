@@ -1,32 +1,30 @@
 import express from "express";
 const router = express.Router();
-// Import Demo Questions @ToDo: Remove this after db implementation
-import questions from "../demo/questions.mjs";
+
+
 import {authenticateToken} from "../middleware/authenticate.mjs";
-import Question from "../model/Question.mjs";
-import question from "../model/Question.mjs";
-import questionSanitizer from "../middleware/questionSanitizer.mjs";
-import QuestionController from "../controller/QuestionController.mjs";
+
+import Category from "../model/Category.mjs";
+import CategoryController from "../controller/CategoryController.mjs";
 
 router.get('/', (req, res) => {
-    res.json(questions);
+    res.json({});
 });
 
-router.post('/create', authenticateToken, questionSanitizer,  async (req, res) => {
-    let {content, category_id, anonymous} = req.body;
+router.post('/create', authenticateToken,  async (req, res) => {
+    let {title, alias} = req.body;
     const userId = req.user.id;
     // Add a new Question to db
-    console.log("Create Question");
+    console.log("Create Category");
     console.log(req.body);
-    const question = new Question(content, userId).setAnonymous(anonymous).setCategoryId(category_id);
+    const category = new Category(title, alias);
 
     try{
-        const questionController = new QuestionController();
-        await questionController.storeQuestion(question);
-        const insertedQuestionId = await questionController.getLastQuestionIdFromUser(userId)
+        const categoryController = new CategoryController();
+        await categoryController.storeCategory(category);
         res.status(201).json({
-            message: "Question created successfully",
-            question_id: insertedQuestionId
+            message: "Category created successfully",
+            category: category
         });
     }catch (error) {
         console.error(error);

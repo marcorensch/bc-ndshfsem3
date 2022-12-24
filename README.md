@@ -74,25 +74,25 @@ npm run setup
 
 #### User (/users/...)
 
-| Status    | Type   | Route   | Beschreibung            | Produktiv |
-|-----------|--------|---------|-------------------------|-----------|
-| :warning: | GET    | ` /`    | Gibt alle User zurück   | Ja        |
-| :warning: | GET    | `/:id`  | Gibt einen User zurück  | Ja        |
-| :x:       | PUT    | `/:id`  | Aktualisiert einen User | Ja        |
-| :x:       | DELETE | ` /:id` | Entfernt einen User     | Ja        |
+| Status    | Type   | Route  | Beschreibung            | Produktiv |
+|-----------|--------|--------|-------------------------|-----------|
+| :warning: | GET    | `/`    | Gibt alle User zurück   | Ja        |
+| :warning: | GET    | `/:id` | Gibt einen User zurück  | Ja        |
+| :x:       | PUT    | `/:id` | Aktualisiert einen User | Ja        |
+| :x:       | DELETE | `/:id` | Entfernt einen User     | Ja        |
 
 Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizierung erfolgt.
 
 #### Fragen (/questions/...)
 
-| Status | Type   | Route            | Beschreibung                        | Produktiv |
-|--------|--------|------------------|-------------------------------------|-----------|
-| :x:    | GET    | ` /`             | Gibt eine Liste aller Fragen zurück | nein      |
-| :x:    | GET    | ` /:id`          | Gibt eine Frage zurück              | ja        |
-| :x:    | POST   | ` /`             | Erstellt eine neue Frage            | ja        |
-| :x:    | PUT    | `/:id`           | Aktualisiert eine Frage             | ja        |
-| :x:    | DELETE | `/:id`           | Löscht eine Frage                   | ja        |
-| :x:    | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja        |
+| Status             | Type   | Route            | Beschreibung                        | Produktiv |
+|--------------------|--------|------------------|-------------------------------------|-----------|
+| :x:                | GET    | `/`              | Gibt eine Liste aller Fragen zurück | nein      |
+| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja        |
+| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | ja        |
+| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja        |
+| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja        |
+| :x:                | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja        |
 
 #### Antworten (/answers/...)
 
@@ -120,11 +120,12 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Authentifizierung (/auth/...)
 
-| Status             | type | Route       | Beschreibung                 | Produktiv |
-|--------------------|------|-------------|------------------------------|-----------|
-| :x:                | POST | `/login`    | Loggt einen User ein         | ja        |
-| :x:                | POST | `/logout`   | Loggt einen User aus         | ja        |
-| :white_check_mark: | POST | `/register` | Registriert einen neuen User | ja        |
+| Status             | type | Route       | Beschreibung                                                 | Produktiv |
+|--------------------|------|-------------|--------------------------------------------------------------|-----------|
+| :warning:          | POST | `/login`    | Loggt einen User ein                                         | ja        |
+| :x:                | POST | `/logout`   | Loggt einen User aus                                         | ja        |
+| :white_check_mark: | POST | `/register` | Registriert einen neuen User                                 | ja        |
+| :warning:          | POST | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | ja        |
 
 # API Dokumentation
 
@@ -178,3 +179,5 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 - Error Code u-322: Datenbankfehler - existiert bereits
 - Error Code u-331: Loginfehler - User nicht gefunden
 - Error Code u-332: Loginfehler - Passwort falsch
+- Error Code u-341: Tokenfehler - Refresh Token nicht gefunden
+- Error Code u-342: Tokenfehler - Refresh Token ist nicht valide

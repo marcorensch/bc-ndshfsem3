@@ -22,8 +22,13 @@ class UserController {
         }
         if(user.userGroup) {
             const sql = "INSERT INTO users (firstname, lastname, username, email, password, status, usergroup) VALUES (?,?,?,?,?,?,?)";
-            const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, user.userGroup]);
-            return response;
+            try{
+                const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, user.userGroup]);
+                return response;
+            }catch (error) {
+                throw error;
+            }
+
         }else{
             console.log("Usergroup not found");
             return false;
