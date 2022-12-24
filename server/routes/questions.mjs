@@ -2,18 +2,24 @@ import express from "express";
 const router = express.Router();
 // Import Demo Questions @ToDo: Remove this after db implementation
 import questions from "../demo/questions.mjs";
+import {authenticateToken} from "../middleware/authenticate.mjs";
+import Question from "../model/Question.mjs";
 
 router.get('/', (req, res) => {
     res.json(questions);
 });
 
-router.post('/create', (req, res) => {
+router.post('/create', authenticateToken, (req, res) => {
     // Add a new Question to db
     console.log("Create Question");
     console.log(req.body);
-    const newQuestion = { id: new Date().toString(), question: req.body.question, user_id: req.body.user_id };
-    questions.push(newQuestion);
-    res.json({ message: 'Question created!' });
+    const question = new Question("foo", req.user.id);
+    question.setCategoryId = 5;
+    return res.status(201).json(question);
+
+    // const newQuestion = { id: new Date().toString(), question: req.body.questionText, user_id: req.body.user_id };
+    // questions.push(newQuestion);
+    // res.json({ message: 'Question created!' });
 });
 
 router.post('/update', (req, res) => {
