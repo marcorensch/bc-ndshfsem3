@@ -2,6 +2,7 @@ import DatabaseConnector from "./server/model/DatabaseConnector.mjs";
 import fs from "fs";
 import path from "path";
 import UserController from "./server/controller/UserController.mjs";
+import chalk from "chalk";
 
 let databaseConnector;
 
@@ -9,36 +10,38 @@ async function addAdminUser(connectionData, adminUser) {
 
     const userController = new UserController(connectionData);
     adminUser.userGroup = await userController._getUserGroupIdByAlias("administrator");
-    console.log(userController)
 
-    return await userController.registerUser(adminUser);
+    try {
+        await userController.registerUser(adminUser);
+        return true;
+    } catch (err) {
+        console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
+        return false;
+    }
 
 }
 
 async function dropDatabase(connectionData) {
 
-    databaseConnector = new DatabaseConnector(connectionData);
-
     try {
+        databaseConnector = new DatabaseConnector(connectionData);
         const result = await databaseConnector.dropDatabase(connectionData.database);
-        return true; // Note: The current connector does not return anything usable on drop database
+        return true; // Note: The current connector does not return anything usable on drop database if no error occurs.
     } catch (err) {
-        console.log(err);
+        console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
         return false;
     }
 }
 
 async function create (connectionData) {
-
-    databaseConnector = new DatabaseConnector(connectionData);
-
     try {
+        databaseConnector = new DatabaseConnector(connectionData);
         await createDatabase(connectionData.database);
         const results = await createTables('./sql/tables');
-        console.log(results);
         return true;
     } catch (err) {
-        throw err;
+        console.log(chalk.bold.redBright("SQL Error: " + err.errno + " " + err.code + " " + err.text));
+        return false;
     }
 }
 
