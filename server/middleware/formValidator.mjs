@@ -2,6 +2,7 @@ import User from "../model/User.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
 import UserController from "../controller/UserController.mjs";
 import ApiError from "../model/ApiError.mjs";
+import bcrypt from "bcrypt";
 
 const registrationValidator = async (req, res, next) => {
 
@@ -43,6 +44,13 @@ const loginValidator = async (req, res, next) => {
     const user = new User(dbResult.data[0].firstname, dbResult.data[0].lastname, dbResult.data[0].username, dbResult.data[0].email);
     user.setId(dbResult.data[0].id);
     user.setPassword(dbResult.data[0].password, true);
+
+    console.log("user", user);
+
+    console.log("password",password)
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    console.log("passwordMatch", passwordMatch);
 
     if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332', "Password is incorrect"));
 
