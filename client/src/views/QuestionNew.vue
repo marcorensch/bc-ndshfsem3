@@ -13,7 +13,7 @@
           <div class="row">
             <div class="col">
               <label for="category">Category:</label>
-              <select id="category" v-model="selected" class="form-select mb-3" aria-label="Default select example">
+              <select id="category" v-model="category_id" class="form-select mb-3" aria-label="Default select example">
                 <option selected value="">Please select one</option>
                 <option v-for="cat in categories" v-bind:value="cat.id">
                   {{ cat.title }}
@@ -78,7 +78,7 @@ export default {
       init: {
         skin: false,
         branding: false,
-        height: "380",
+        height: "300",
         formats: {
           // Changes the default format for h1 to have a class of heading
           p: { block: 'p' }
