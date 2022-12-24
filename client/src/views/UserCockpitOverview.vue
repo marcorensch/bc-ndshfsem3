@@ -2,7 +2,10 @@
 <main class="user-overview-page container" >
   <div class="header row text-center">
     <h1 class="col-6">My Account</h1>
-    <button class="btn edit-button col-6">Edit My Data</button>
+    <router-link to="/user/cockpit/edit" class="col-6">
+      <button class="btn edit-button">Edit My Data</button>
+    </router-link>
+
   </div>
 
   <div class="title row text-center">
@@ -57,7 +60,6 @@ export default {
 
 .user-overview-page{
   display: flex;
-  justify-content: center;
   flex-direction:column;
   padding: 2rem 2rem;
 

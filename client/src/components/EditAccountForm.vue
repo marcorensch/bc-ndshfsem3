@@ -1,7 +1,14 @@
 <template>
   <form ref="form" @submit.prevent="handleSubmit" class="form-horizontal container-fluid">
-    <h3>Signup form</h3>
+    <h3>Edit Account</h3>
     <div class="form-wrapper">
+      <div class="form-group w-75 p-3">
+        <label for="username" class="col-form-label col-md-10">Username:</label>
+        <div class="col-md-12">
+          <input type="text" class="form-control" id="username" v-model="username"/>
+          <span  v-if="v$.username.$error" :class="`${v$.username.$error ? 'error-message' : ''}`" >{{v$.username.required.$message}}</span>
+        </div>
+      </div>
       <div class="form-group w-75 p-3">
         <label for="firstname" class="col-form-label col-md-10">Firstname:</label>
         <div class="col-md-12">
@@ -24,13 +31,6 @@
         </div>
       </div>
       <div class="form-group w-75 p-3">
-        <label for="username" class="col-form-label col-md-10">Username:</label>
-        <div class="col-md-12">
-          <input type="text" class="form-control" id="username" v-model="username"/>
-          <span  v-if="v$.username.$error" :class="`${v$.username.$error ? 'error-message' : ''}`" >{{v$.username.required.$message}}</span>
-        </div>
-      </div>
-      <div class="form-group w-75 p-3">
         <label for="new-password" class="col-form-label col-md-10">New password:</label>
         <div class="col-md-12">
           <input type="password" class="form-control" id="new-password" v-model="password.newPassword"/>
@@ -47,7 +47,7 @@
       </div>
       <div class="form-group w-75 p-3">
         <div class="col-md-12">
-          <button type="submit" class="btn ">Sign Up</button>
+          <button type="submit" class="btn ">Save</button>
         </div>
       </div>
     </div>
@@ -60,13 +60,12 @@ import {required, minLength, sameAs, email} from "@vuelidate/validators";
 import axios from "axios";
 
 export default {
-
   setup() {
     return {v$: useVuelidate()}
 
   },
 
-  name: "SignupForm",
+  name: "EditAccountForm",
   data() {
     return {
       form: "",
@@ -78,7 +77,7 @@ export default {
         newPassword: '',
         confirmPassword: '',
       },
-        submitConfirmText:"Thank you for signing up!",
+      submitConfirmText:"Thank you for signing up!",
 
     }
   },
@@ -134,7 +133,7 @@ export default {
       }
 
     },
-async submitForm(){
+    async submitForm(){
       try{
         return await axios.post('http://localhost:3000/auth/register', {
           firstname: this.firstname,
@@ -146,14 +145,14 @@ async submitForm(){
       }catch (e) {
         console.log(e)
       }
-}
+    }
   },
+
 
 }
 </script>
 
 <style lang="scss" scoped>
-
 .form-horizontal {
   max-width: 500px;
   margin: 0 auto;
@@ -188,9 +187,9 @@ async submitForm(){
   width: 100%;
   transition: 0.2s ease-out;
 
-  &:hover {
-    background-color: var(--primary);
-  }
+&:hover {
+   background-color: var(--primary);
+ }
 }
 
 label {
@@ -206,11 +205,11 @@ input[type=text], input[type=password], input[type=email] {
   box-sizing: border-box;
   border-radius: 2px;
 
-  &:focus {
-    border: 1px solid var(--primary);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+&:focus {
+   border: 1px solid var(--primary);
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
-  }
+ }
 }
 
 .error-message {

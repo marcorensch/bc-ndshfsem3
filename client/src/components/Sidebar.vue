@@ -29,7 +29,7 @@
             <span class="title">Login</span>
           </router-link>
         </li>
-        <li>
+        <li v-if="!user">
           <router-link class="button" to="/register">
             <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
             <span class="title">Signup</span>
@@ -52,10 +52,10 @@
       </ul>
     </div>
     <div class="flex"></div>
-    <div class="menu">
-      <router-link class="button" to="/admin">
+    <div class="menu" v-if="user">
+      <router-link class="button" to="/user/cockpit/overview">
         <span class="menu-icons"><font-awesome-icon icon="key"/></span>
-        <span class="title">Admin</span>
+        <span class="title">User Settings</span>
       </router-link>
     </div>
 
