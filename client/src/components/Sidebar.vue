@@ -29,7 +29,7 @@
             <span class="title">Login</span>
           </router-link>
         </li>
-        <li>
+        <li v-if="!user">
           <router-link class="button" to="/register">
             <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
             <span class="title">Signup</span>
