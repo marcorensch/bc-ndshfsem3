@@ -1,7 +1,7 @@
 import sanitizeHtml from 'sanitize-html';
 
 function questionSanitizer(req, res, next) {
-    const { questionText } = req.body;
+    const { content } = req.body;
 
     const allowedTags = [ 'b', 'i', 'em', 'strong', 'a', 'img' ];
     const allowedAttributes = {
@@ -9,7 +9,7 @@ function questionSanitizer(req, res, next) {
         img: [ 'src', 'alt', 'title' ]
     };
 
-    req.body.questionText = sanitizeHtml(questionText , { allowedTags, allowedAttributes });
+    req.body.content = sanitizeHtml(content , { allowedTags, allowedAttributes });
 
     next();
 }

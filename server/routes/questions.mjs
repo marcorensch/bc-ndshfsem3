@@ -4,22 +4,34 @@ const router = express.Router();
 import questions from "../demo/questions.mjs";
 import {authenticateToken} from "../middleware/authenticate.mjs";
 import Question from "../model/Question.mjs";
+import question from "../model/Question.mjs";
+import questionSanitizer from "../middleware/questionSanitizer.mjs";
+import QuestionController from "../controller/QuestionController.mjs";
 
 router.get('/', (req, res) => {
     res.json(questions);
 });
 
-router.post('/create', authenticateToken, (req, res) => {
+router.post('/create', authenticateToken, questionSanitizer,  async (req, res) => {
+    let {content, category_id, anonymous} = req.body;
+    const userId = req.user.id;
     // Add a new Question to db
     console.log("Create Question");
     console.log(req.body);
-    const question = new Question("foo", req.user.id);
-    question.setCategoryId = 5;
-    return res.status(201).json(question);
+    const question = new Question(content, userId).setAnonymous(anonymous).setCategoryId(category_id);
 
-    // const newQuestion = { id: new Date().toString(), question: req.body.questionText, user_id: req.body.user_id };
-    // questions.push(newQuestion);
-    // res.json({ message: 'Question created!' });
+    try{
+        const questionController = new QuestionController();
+        await questionController.storeQuestion(question);
+        const insertedQuestionId = await questionController.getLastQuestionIdFromUser(userId)
+        res.status(201).json({
+            message: "Question created successfully",
+            question_id: insertedQuestionId
+        });
+    }catch (error) {
+        console.error(error);
+        res.status(500).json(error);
+    }
 });
 
 router.post('/update', (req, res) => {
