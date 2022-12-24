@@ -3,7 +3,7 @@
     <div class="container">
       <h1>Your Question</h1>
       <div class="editor">
-
+<TextEditor @getContent="saveContent"></TextEditor>
       </div>
       <div class="select-section">
         <ul>
@@ -20,11 +20,11 @@
             <label for="checkbox">Tags: {{ checked }}</label>
           </li>
           <li>
-            <label for="checkbox">   Anonymous: {{ checked }} <input type="checkbox" id="checkbox" v-model="checked"></label>
+            <label for="checkbox">  Anonymous: {{ checked }} <input type="checkbox" id="checkbox" v-model="checked"></label>
           </li>
         </ul>
 
-        <button class="btn btn-primary">confirm</button>
+        <button class="btn btn-primary" @click="getContent">confirm</button>
 
       </div>
     </div>
@@ -33,8 +33,25 @@
 </template>
 
 <script>
+import TextEditor from "@/components/TextEditor";
 export default {
-  name: "QuestionNew"
+  name: "QuestionNew",
+  components:{
+    TextEditor
+  },
+  data(){
+    return {
+      content:""
+    }
+  },
+  methods:{
+    getContent(){
+      console.log(this.content)
+    },
+    saveContent(){
+
+    }
+  }
 }
 </script>
 
