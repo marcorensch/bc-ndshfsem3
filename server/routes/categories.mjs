@@ -7,8 +7,15 @@ import {authenticateToken} from "../middleware/authenticate.mjs";
 import Category from "../model/Category.mjs";
 import CategoryController from "../controller/CategoryController.mjs";
 
-router.get('/', (req, res) => {
-    res.json({});
+router.get('/', async (req, res) => {
+    const categoryController = new CategoryController();
+    const result = await categoryController.getAllCategories();
+
+    if(result.success){
+        res.status(200).json(result.data);
+    }else{
+        res.status(500).json(result.data);
+    }
 });
 
 router.post('/create', authenticateToken,  async (req, res) => {

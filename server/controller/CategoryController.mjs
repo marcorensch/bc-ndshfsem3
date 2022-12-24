@@ -6,8 +6,8 @@ class CategoryController{
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
-    async getCategories(){
-        const sql = "SELECT id, name FROM categories";
+    async getAllCategories(){
+        const sql = "SELECT id, title FROM categories";
         try{
             const response = await this.databaseConnector.query(sql, null);
             return response;

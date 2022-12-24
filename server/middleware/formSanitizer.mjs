@@ -15,4 +15,22 @@ function formSanitizer(req, res, next) {
     next();
 }
 
-export default formSanitizer;
+function loginSanitizer(req, res, next) {
+
+    console.log(req.body)
+    const { username, password } = req.body;
+
+    const allowedTags = [];
+    const allowedAttributes = {};
+
+
+    req.body.username = sanitizeHtml(username, { allowedTags, allowedAttributes });
+    req.body.password = sanitizeHtml(password, { allowedTags, allowedAttributes });
+
+    console.log(req.body.password)
+
+
+    next();
+}
+
+export { formSanitizer, loginSanitizer };

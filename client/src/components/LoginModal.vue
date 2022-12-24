@@ -15,7 +15,7 @@
           </div>
 
 
-          <form action="/" method="post">
+          <form>
 
             <div class="form-container">
               <label for="username">Username</label>
@@ -34,7 +34,7 @@
                 <button type="button" class="form-button" @click="$emit('close')">Register</button>
               </router-link>
 
-              <button type="submit" class="form-button">Login</button>
+              <button @click="doLogin" class="form-button">Login</button>
             </div>
 
 
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "LoginModal",
   props: {
@@ -70,7 +72,17 @@ export default {
       } else {
         localStorage.setItem("username", this.username);
       }
-
+    },
+    doLogin() {
+      console.log("doLogin");
+      axios.post("localhost:3000/auth/login", {
+        username: this.username,
+        password: this.password
+      }).then((response) => {
+        console.log(response);
+      }).catch((error) => {
+        console.log(error);
+      })
     }
 
   },

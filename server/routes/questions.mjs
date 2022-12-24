@@ -14,6 +14,7 @@ router.get('/', (req, res) => {
 
 router.post('/create', authenticateToken, questionSanitizer,  async (req, res) => {
     let {content, category_id, anonymous} = req.body;
+    console.log("Question data received: ", req.body);
     const userId = req.user.id;
     // Add a new Question to db
     console.log("Create Question");

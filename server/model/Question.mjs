@@ -19,7 +19,7 @@ class Question {
     }
 
     setAnonymous(anonymous){
-        this.anonymous = parseInt(anonymous);
+        this.anonymous = anonymous ? 1 : 0;
         return this;
     }
 }

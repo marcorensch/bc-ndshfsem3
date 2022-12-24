@@ -13,7 +13,17 @@ import mariadb from 'mariadb';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+let corsOptions = {
+    origin: '*',
+
+    optionsSuccessStatus: 200 ,// some legacy browsers (IE11, various SmartTVs) choke on 204
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+
+
+}
+
+app.use(cors( corsOptions ));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

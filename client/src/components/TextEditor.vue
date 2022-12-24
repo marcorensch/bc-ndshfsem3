@@ -1,5 +1,6 @@
 <template>
-<QuillEditor theme="snow" toolbar="essential" @change="getContent"  ></QuillEditor>
+<QuillEditor theme="snow" toolbar="essential" v-model="text" />
+  <button @click="getFieldContent">Get</button>
 </template>
 
 <script>
@@ -14,15 +15,13 @@ export default {
   },
   data(){
     return {
-      content: {
-
-      },
+      text:""
     }
   },
   methods:{
-  getContent(){
-  this.$emit('getContent', this.getContent() )
-  }
+    getFieldContent(){
+      console.log(this.text)
+    }
   }
 }
 </script>

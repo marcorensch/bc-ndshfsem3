@@ -5,7 +5,7 @@ import ApiError from "../model/ApiError.mjs";
 import {loginValidator, registrationValidator} from "../middleware/formValidator.mjs";
 
 import UserController from "../controller/UserController.mjs";
-import formSanitizer from "../middleware/formSanitizer.mjs";
+import { formSanitizer, loginSanitizer } from "../middleware/formSanitizer.mjs";
 import TokenController from "../controller/TokenController.mjs";
 
 const router = express.Router();
@@ -50,7 +50,7 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
         res.status(409).json(errData);
     }
 });
-router.post('/login', formSanitizer, loginValidator, async (req, res) => {
+router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
     console.log("User data received & access granted: ", req.user);
 
     const tokenController = new TokenController();
