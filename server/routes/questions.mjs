@@ -7,12 +7,14 @@ import Question from "../model/Question.mjs";
 import question from "../model/Question.mjs";
 import questionSanitizer from "../middleware/questionSanitizer.mjs";
 import QuestionController from "../controller/QuestionController.mjs";
+import ApiError from "../model/ApiError.mjs";
+import questionChecker from "../middleware/questionChecker.mjs";
 
 router.get('/', (req, res) => {
     res.json(questions);
 });
 
-router.post('/create', authenticateToken, questionSanitizer,  async (req, res) => {
+router.post('/create', authenticateToken, questionSanitizer, questionChecker,  async (req, res) => {
     let {content, category_id, anonymous} = req.body;
     console.log("Question data received: ", req.body);
     const userId = req.user.id;
@@ -27,10 +29,13 @@ router.post('/create', authenticateToken, questionSanitizer,  async (req, res) =
         const insertedQuestionId = await questionController.getLastQuestionIdFromUser(userId)
         res.status(201).json({
             message: "Question created successfully",
-            question_id: insertedQuestionId
+            question_id: insertedQuestionId,
+            user_id: userId,
+            token: req.token
         });
     }catch (error) {
         console.error(error);
+        if(error.errno === 1452) res.status(422).json(new ApiError('c-331', "Category does not exist"));
         res.status(500).json(error);
     }
 });

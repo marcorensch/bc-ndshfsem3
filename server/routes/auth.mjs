@@ -18,15 +18,14 @@ router.get('/', (req, res) => {
 });
 
 router.post('/token', async (req, res) => {
-    const refreshToken = req.body.token;
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    const refreshToken = authHeader && authHeader.split(' ')[1];
     if(refreshToken == null) return res.status(401).json(new ApiError('u-341', "Refresh token is missing"));
     const tokenController = new TokenController();
-    const userId = await tokenController.checkRefreshToken(refreshToken);
-
-    if(!userId) return res.status(403).json(new ApiError('u-342', "Refresh token is invalid"));
-
-    res.status(200).json(userId);
-
+    const user = await tokenController.checkRefreshToken(refreshToken);
+    if(!user) return res.status(403).json(new ApiError('u-342', "Refresh token is invalid"));
+    const token = await tokenController.createToken(user.id);
+    res.status(201).json({token});
 });
 router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
     console.log("User data received: ", req.user);
@@ -69,6 +68,20 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
     }
 
     res.status(200).json({ message: "User logged in successfully", token, refreshToken });
+});
+
+router.delete('/logout', async (req, res) => {
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    const refreshToken = authHeader && authHeader.split(' ')[1];
+    if(refreshToken == null) return res.status(401).json(new ApiError('u-341', "Refresh token is missing"));
+    const tokenController = new TokenController();
+    const result = await tokenController.deleteToken(refreshToken);
+    if(result.success && result.data.affectedRows === 1) {
+        res.status(200).json({ message: "User logged out successfully" });
+    }else{
+        console.log("Error while logging out user:", result.data);
+        res.status(500).json(new ApiError('e-999', "Unknown Error"));
+    }
 });
 
 export default router;

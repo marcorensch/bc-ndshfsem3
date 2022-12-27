@@ -7,20 +7,22 @@ class TokenController {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
+    async checkToken(token) {
+        return await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    }
+
     async createToken(userId) {
-        return await jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15m"});
+        return await jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
 
     async createRefreshToken(userId) {
-        return await jwt.sign({id: userId}, process.env.REFRESH_TOKEN_SECRET);
+        return await jwt.sign({id: userId}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.JWT_REFRESH_TOKEN_VALIDITY});
     }
 
     async storeToken(refreshToken) {
         const sql = "INSERT INTO access_tokens (token) VALUES (?)";
         return await this.databaseConnector.query(sql, [refreshToken]);
     }
-
-    async verifyToken(req, res) {}
 
     async deleteToken(token) {
         const sql = "DELETE FROM access_tokens WHERE token=?";
@@ -41,7 +43,7 @@ class TokenController {
         console.log("RefreshToken Verify: " , verify);
         const sql = "SELECT COUNT(token) AS count FROM access_tokens WHERE token=?";
         const res = await this.databaseConnector.query(sql, [refreshToken]);
-        if(res.data[0].count > 0) return verify.id;
+        if(res.data[0].count > 0) return verify;
         return false;
     }
 }

@@ -24,7 +24,7 @@ class QuestionController{
         const sql = "SELECT id FROM questions WHERE created_by=? ORDER BY id DESC LIMIT 1";
         try{
             const response = await this.databaseConnector.query(sql, [userId]);
-            return response;
+            return response.data[0].id;
         }catch (error) {
             throw error;
         }

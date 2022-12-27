@@ -13,6 +13,10 @@ export default class FieldChecker {
 
     constructor(connectionData = false) {
         this.connectionData = connectionData;
+        this.question = {
+            min: 20,
+            max: 1000
+        },
         this.username = {
             regex : /^([a-z]+[.\-_]*[a-z]+)$/i,
             min: 3,
@@ -93,5 +97,11 @@ export default class FieldChecker {
 
     hasValidLength(string, min, max){
         return isLength(string, {min, max});
+    }
+
+    setBoolean(value) {
+        if(typeof value == "string") return value === "1" || value === "true";
+        if(typeof value == "boolean") return value;
+        return value === 1;
     }
 }

@@ -85,14 +85,14 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Fragen (/questions/...)
 
-| Status             | Type   | Route            | Beschreibung                        | Produktiv |
-|--------------------|--------|------------------|-------------------------------------|-----------|
-| :x:                | GET    | `/`              | Gibt eine Liste aller Fragen zurück | nein      |
-| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja        |
-| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | ja        |
-| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja        |
-| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja        |
-| :x:                | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja        |
+| Status             | Type   | Route            | Beschreibung                        | Request                                        | Response |
+|--------------------|--------|------------------|-------------------------------------|------------------------------------------------|----------|
+| :x:                | GET    | `/`              | Gibt eine Liste aller Fragen zurück | body.count, body.index                         |          |
+| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja                                             |          |
+| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | body.content, body.category_id, body.anonymous |          |
+| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja                                             |          |
+| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja                                             |          |
+| :x:                | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja                                             |          |
 
 #### Antworten (/answers/...)
 
@@ -120,12 +120,12 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Authentifizierung (/auth/...)
 
-| Status             | type | Route       | Beschreibung                                                 | Produktiv |
-|--------------------|------|-------------|--------------------------------------------------------------|-----------|
-| :warning:          | POST | `/login`    | Loggt einen User ein                                         | ja        |
-| :x:                | POST | `/logout`   | Loggt einen User aus                                         | ja        |
-| :white_check_mark: | POST | `/register` | Registriert einen neuen User                                 | ja        |
-| :warning:          | POST | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | ja        |
+| Status             | type   | Route       | Beschreibung                                                 | Request                                                                 | Return                            |
+|--------------------|--------|-------------|--------------------------------------------------------------|-------------------------------------------------------------------------|-----------------------------------|
+| :white_check_mark: | POST   | `/login`    | Loggt einen User ein                                         | body.username, body.password                                            | {token:"...", refreshToken:"..."} |
+| :white_check_mark: | DELETE | `/logout`   | Loggt einen User aus                                         | auth.token (>> Refreshtoken)                                            | {}                                |
+| :white_check_mark: | POST   | `/register` | Registriert einen neuen User                                 | body.firstname, body.lastname, body.username, body.password, body.email | {message} oder ApiError           |
+| :white_check_mark: | POST   | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | auth.token (>> RefreshToken)                                            | {token:"..."}                     |
 
 # API Dokumentation
 
@@ -181,3 +181,11 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 - Error Code u-332: Loginfehler - Passwort falsch
 - Error Code u-341: Tokenfehler - Refresh Token nicht gefunden
 - Error Code u-342: Tokenfehler - Refresh Token ist nicht valide
+
+### Category related
+
+- Error Code c-331: Kategoriefehler - Kategorie mit dieser ID existiert nicht
+
+### Question related
+
+- Error Code q-317: Fragenfehler - Fragetext darf nicht leer / zu kurz sein
