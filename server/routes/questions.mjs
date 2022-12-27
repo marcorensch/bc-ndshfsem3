@@ -10,8 +10,11 @@ import QuestionController from "../controller/QuestionController.mjs";
 import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
 
-router.get('/', (req, res) => {
-    res.json(questions);
+router.get('/', async (req, res) => {
+    const {count, offset, user_id, category_id, direction} = req.query;
+    const questionController = new QuestionController();
+    const result = await questionController.getQuestions(count, offset, user_id, category_id, direction);
+    res.status(200).json(result);
 });
 
 router.post('/create', authenticateToken, questionSanitizer, questionChecker,  async (req, res) => {

@@ -6,8 +6,21 @@ class QuestionController{
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
-    async getQuestions(count, userId, categoryId){
+    async getQuestions(count, index, userId, categoryId, direction){
 
+        let sql = `SELECT * FROM questions`;
+        if (userId) sql += ` WHERE created_by=${userId}`;
+        if (categoryId) sql += ` WHERE category_id=${categoryId}`;
+        if(count) sql += ` LIMIT ${count}`;
+        if(index) sql += ` OFFSET ${index}`;
+        if(direction) sql += ` ORDER BY id ${direction}`;
+
+        try {
+            return await this.databaseConnector.query(sql);
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
     }
 
     async storeQuestion(question){

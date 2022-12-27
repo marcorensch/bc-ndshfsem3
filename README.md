@@ -85,14 +85,14 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Fragen (/questions/...)
 
-| Status             | Type   | Route            | Beschreibung                        | Request                                        | Response |
-|--------------------|--------|------------------|-------------------------------------|------------------------------------------------|----------|
-| :x:                | GET    | `/`              | Gibt eine Liste aller Fragen zurück | body.count, body.index                         |          |
-| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja                                             |          |
-| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | body.content, body.category_id, body.anonymous |          |
-| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja                                             |          |
-| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja                                             |          |
-| :x:                | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja                                             |          |
+| Status             | Type   | Route            | Beschreibung                        | Request                                                                 | Response |
+|--------------------|--------|------------------|-------------------------------------|-------------------------------------------------------------------------|----------|
+| :warning:          | GET    | `/`              | Gibt eine Liste aller Fragen zurück | body.count, body.offset, body.user_id, body.category_id, body.direction |          |
+| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja                                                                      |          |
+| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | body.content, body.category_id, body.anonymous                          |          |
+| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja                                                                      |          |
+| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja                                                                      |          |
+| :x:                | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja                                                                      |          |
 
 #### Antworten (/answers/...)
 
