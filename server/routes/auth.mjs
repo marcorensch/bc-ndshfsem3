@@ -56,7 +56,7 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
     const token = await tokenController.createToken(req.user.id);
     const refreshToken = await tokenController.createRefreshToken(req.user.id);
     try {
-        await tokenController.storeToken(refreshToken);
+        await tokenController.storeToken(refreshToken, req.user.id);
     }catch (e) {
         console.error("Error while storing refresh token:", e);
         return res.status(500).json(new ApiError('e-999'));

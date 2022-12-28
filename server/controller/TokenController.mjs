@@ -19,9 +19,9 @@ class TokenController {
         return await jwt.sign({id: userId}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.JWT_REFRESH_TOKEN_VALIDITY});
     }
 
-    async storeToken(refreshToken) {
-        const sql = "INSERT INTO access_tokens (token) VALUES (?)";
-        return await this.databaseConnector.query(sql, [refreshToken]);
+    async storeToken(refreshToken, userId) {
+        const sql = "INSERT INTO access_tokens (token, user_id) VALUES (?,?)";
+        return await this.databaseConnector.query(sql, [refreshToken, userId]);
     }
 
     async deleteToken(token) {
