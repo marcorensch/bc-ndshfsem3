@@ -53,7 +53,7 @@
       </div>
       <div class="form-group w-75 p-3">
         <div class="col-md-12">
-          <button type="submit" class="btn ">Sign Up</button>
+          <button @click="submitForm" class="btn ">Sign Up</button>
         </div>
       </div>
     </div>
@@ -119,68 +119,27 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      try {
-        const valid = await this.v$.$validate();
-        console.log("result=" + valid);
-        if (valid) {
-          console.log("Form is valid => Submitted");
-          // Submit form
-          const response = await this.submitForm();
-          console.log(response);
-          this.$refs.form.reset();
-          //todo show message if success
 
-        } else {
-          console.log('Form is invalid')
-        }
-        console.log(this.firstname, this.lastname, this.email, this.password.newPassword, this.password.confirmPassword)
-
-      } catch (e) {
-        console.log(e)
-      }
 
     },
     async checkIfUsernameExist() {
-      let response;
-      try {
-        response = await axios.post('http://localhost:3000/user/check', {
-          username: this.username
-        })
-
-      } catch (error) {
-        console.log(error)
-      }
-      //TODO Route für Username check erstellen + message entgegennehmen und darstellen
-      console.log(response);
 
     },
     async checkIfEmailExist(){
-      let response;
-      try {
-        response = await axios.post('http://localhost:3000/user/check', {
-          email: this.email
-        })
 
-      } catch (error) {
-        console.log(error)
-      }
-      //TODO Route für Email check erstellen + message entgegennehmen und darstellen
-      console.log(response);
     },
     async submitForm() {
-      let response;
-      try {
-        response = await axios.post('http://localhost:3000/auth/register', {
-          firstname: this.firstname,
-          lastname: this.lastname,
-          email: this.email,
-          username: this.username,
-          password: this.password.newPassword,
-        })
-      } catch (error) {
-        console.log(error)
-      }
-      console.log(response);
+        axios.post('https://localhost:3000/auth/register', {
+          firstname: "marco",
+          lastname: "rensch",
+          email: "marco@feg.cg",
+          username: "proximate",
+          password: "12345678",
+        }).then(response => {
+          console.log(response);
+        }).catch(error => {
+          console.log(error);
+        });
     }
   },
 

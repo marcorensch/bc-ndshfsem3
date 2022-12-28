@@ -10,7 +10,6 @@ const registrationValidator = async (req, res, next) => {
 
     for(let [context, value] of Object.entries({firstname, lastname, username, password, email})){
         const result = await fieldChecker.isValid(value.trim(), context)
-        console.log(context, result);
         if(result !== true){
             return res.status(400).json(result);
         }

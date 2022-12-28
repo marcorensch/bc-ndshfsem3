@@ -14,6 +14,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 let corsOptions = {
+    accept: ['application/json'],
     origin: "*",
     credentials: true,
     optionsSuccessStatus: 200,// some legacy browsers (IE11, various SmartTVs) choke on 204
