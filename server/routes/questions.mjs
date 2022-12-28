@@ -1,10 +1,7 @@
 import express from "express";
 const router = express.Router();
-// Import Demo Questions @ToDo: Remove this after db implementation
-import questions from "../demo/questions.mjs";
 import {authenticateToken} from "../middleware/authenticate.mjs";
 import Question from "../model/Question.mjs";
-import question from "../model/Question.mjs";
 import questionSanitizer from "../middleware/questionSanitizer.mjs";
 import QuestionController from "../controller/QuestionController.mjs";
 import ApiError from "../model/ApiError.mjs";
@@ -12,8 +9,15 @@ import questionChecker from "../middleware/questionChecker.mjs";
 
 router.get('/', async (req, res) => {
     const {count, offset, user_id, category_id, direction} = req.query;
+    const queryParams = {
+        count: count || 25,
+        offset: offset || 0,
+        user_id: user_id || false,
+        category_id: category_id || false,
+        direction: direction || "DESC"
+    }
     const questionController = new QuestionController();
-    const result = await questionController.getQuestions(count, offset, user_id, category_id, direction);
+    const result = await questionController.getQuestions(queryParams);
     res.status(200).json(result);
 });
 

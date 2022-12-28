@@ -6,14 +6,13 @@ class QuestionController{
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
-    async getQuestions(count, index, userId, categoryId, direction){
-
+    async getQuestions(queryParams){
         let sql = `SELECT * FROM questions`;
-        if (userId) sql += ` WHERE created_by=${userId}`;
-        if (categoryId) sql += ` WHERE category_id=${categoryId}`;
-        if(count) sql += ` LIMIT ${count}`;
-        if(index) sql += ` OFFSET ${index}`;
-        if(direction) sql += ` ORDER BY id ${direction}`;
+        if(queryParams.user_id) sql += ` WHERE created_by=${queryParams.user_id}`;
+        if(queryParams.category_id) sql += ` WHERE category_id=${queryParams.category_id}`;
+        if(queryParams.count) sql += ` LIMIT ${queryParams.count}`;
+        if(queryParams.index) sql += ` OFFSET ${queryParams.index}`;
+        if(queryParams.direction) sql += ` ORDER BY id ${queryParams.direction}`;
 
         try {
             return await this.databaseConnector.query(sql);
