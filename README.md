@@ -106,17 +106,17 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Kategorien (/categories/...)
 
-| Status | Type   | Route                                  | Beschreibung                                                 | Produktiv |
-|--------|--------|----------------------------------------|--------------------------------------------------------------|-----------|
-| :x:    | GET    | `/`                                    | Gibt eine Liste aller Kategorien zurück                      | nein      |
-| :x:    | GET    | `/:id`                                 | Gibt eine Kategorie zurück                                   | ja        |
-| :x:    | POST   | `/`                                    | Erstellt eine neue Kategorie                                 | ja        |
-| :x:    | PUT    | `/:id`                                 | Aktualisiert eine Kategorie                                  | ja        |
-| :x:    | DELETE | `/:id`                                 | Löscht eine Kategorie                                        | ja        |
-| :x:    | GET    | `/questions/`                          | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück | nein      |
-| :x:    | GET    | `/questions/:question_id`              | Gibt alle Kategorien einer Frage zurück                      | ja        |
-| :x:    | POST   | `/questions/`                          | Erstellt eine neue Fragen-Kategorien Verknüpfung             | ja        |
-| :x:    | DELETE | `/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung                    | ja        |
+| Status             | Type   | Route                                  | Beschreibung                                                 | Request    | Response                        |
+|--------------------|--------|----------------------------------------|--------------------------------------------------------------|------------|---------------------------------|
+| :white_check_mark: | GET    | `/`                                    | Gibt eine Liste aller Kategorien zurück                      | -          | response.data [{id,title}, ...] |
+| :white_check_mark: | GET    | `/:id`                                 | Gibt eine Kategorie zurück                                   | query.id   | response.data {id,title}        |
+| :white_check_mark: | POST   | `/create`                              | Erstellt eine neue Kategorie                                 | body.title |                                 |
+| :white_check_mark: | PUT    | `/:id`                                 | Aktualisiert eine Kategorie                                  | body.title | true oder DB Error              |
+| :x:                | DELETE | `/:id`                                 | Löscht eine Kategorie                                        |            |                                 |
+| :x:                | GET    | `/questions/`                          | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück |            |                                 |
+| :x:                | GET    | `/questions/:question_id`              | Gibt alle Kategorien einer Frage zurück                      |            |                                 |
+| :x:                | POST   | `/questions/`                          | Erstellt eine neue Fragen-Kategorien Verknüpfung             |            |                                 |
+| :x:                | DELETE | `/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung                    |            |                                 |
 
 #### Authentifizierung (/auth/...)
 

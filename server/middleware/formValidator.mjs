@@ -27,14 +27,7 @@ const registrationValidator = async (req, res, next) => {
 const loginValidator = async (req, res, next) => {
     console.log("login validator called");
     let {username, password} = req.body;
-    const fieldChecker = new FieldChecker();
     const userController = new UserController();
-    const result = await fieldChecker.isValid(username.trim(), "username");
-
-    console.log("result", result);
-    if(result !== true){
-        return res.status(400).json(result);
-    }
 
     const dbResult = await userController.getUserByUsername(username);
 

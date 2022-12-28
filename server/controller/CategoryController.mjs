@@ -26,12 +26,34 @@ class CategoryController{
         }
     }
 
-    async updateQuestion(question){
-
+    async updateCategory(category){
+        const sql = "UPDATE categories SET title=?, alias=? WHERE id = ?";
+        try{
+            const response = await this.databaseConnector.query(sql, [category.title, category.alias, category.id]);
+            return response;
+        }catch (error) {
+            throw error;
+        }
     }
 
-    async getQuestionById(id){
+    async getCategoryById(id) {
+        const sql = "SELECT id, title FROM categories WHERE id = ?";
+        try{
+            const response = await this.databaseConnector.query(sql, [id]);
+            return response;
+        }catch (error) {
+            throw error;
+        }
+    }
 
+    async deleteCategoryById(id) {
+        const sql = "DELETE FROM categories WHERE id = ?";
+        try{
+            const response = await this.databaseConnector.query(sql, [id]);
+            return response;
+        }catch (error) {
+            throw error;
+        }
     }
 }
 

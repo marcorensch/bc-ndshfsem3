@@ -60,6 +60,12 @@ class UserController {
         const sql = "DELETE FROM users WHERE username=?";
         return await this.databaseConnector.query(sql, [username]);
     }
+
+    async getUserById(id) {
+        const sql = "SELECT id,firstname,lastname,username,email,status,usergroup FROM users WHERE id=?";
+        const result = await this.databaseConnector.query(sql, [id]);
+        return result.data[0];
+    }
 }
 
 export default UserController;
