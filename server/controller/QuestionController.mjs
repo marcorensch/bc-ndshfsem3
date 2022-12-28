@@ -6,7 +6,7 @@ class QuestionController{
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
-    async getQuestions(queryParams){
+    async getItems(queryParams){
         let sql = `SELECT * FROM questions`;
         if(queryParams.user_id) sql += ` WHERE created_by=${queryParams.user_id}`;
         if(queryParams.user_id && queryParams.category_id){
@@ -26,7 +26,7 @@ class QuestionController{
         }
     }
 
-    async storeQuestion(question){
+    async storeItem(question){
         const sql = "INSERT INTO questions (content, category_id, created_by, anonymous) VALUES (?,?,?,?)";
         try{
             const response = await this.databaseConnector.query(sql, [question.content, question.category_id, question.created_by, question.anonymous]);
@@ -36,7 +36,7 @@ class QuestionController{
         }
     }
 
-    async getLastQuestionIdFromUser(userId){
+    async getLastItemIdCreatedByUserId(userId){
         const sql = "SELECT id FROM questions WHERE created_by=? ORDER BY id DESC LIMIT 1";
         try{
             const response = await this.databaseConnector.query(sql, [userId]);
@@ -46,11 +46,11 @@ class QuestionController{
         }
     }
 
-    async updateQuestion(question){
+    async updateItem(question){
 
     }
 
-    async getQuestionById(id){
+    async getItemById(id){
 
     }
 }

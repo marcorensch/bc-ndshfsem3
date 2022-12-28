@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
         direction: direction || "DESC"
     }
     const questionController = new QuestionController();
-    const result = await questionController.getQuestions(queryParams);
+    const result = await questionController.getItems(queryParams);
     res.status(200).json(result);
 });
 
@@ -32,8 +32,8 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
 
     try{
         const questionController = new QuestionController();
-        await questionController.storeQuestion(question);
-        const insertedQuestionId = await questionController.getLastQuestionIdFromUser(userId)
+        await questionController.storeItem(question);
+        const insertedQuestionId = await questionController.getLastItemIdCreatedByUserId(userId)
         res.status(201).json({
             message: "Question created successfully",
             question_id: insertedQuestionId,
