@@ -98,7 +98,7 @@ export default {
   },
   methods:{
     getCategories(){
-      axios.get('http://localhost:3000/categories')
+      axios.get('https://localhost:3000/categories')
         .then(response => {
           this.categories = response.data
           console.log(this.categories)
@@ -115,7 +115,7 @@ export default {
         alert('Please login first')
         return
       }
-      axios.post("http://localhost:3000/questions/create", {
+      axios.post("https://localhost:3000/questions/create", {
         content: this.text,
         category_id: this.selected,
         anonymous: this.anonymous

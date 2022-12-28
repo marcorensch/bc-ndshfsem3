@@ -14,14 +14,16 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 let corsOptions = {
-    origin: '*',
+    accepts: ['application/json'],
+    origin: "*",
+    credentials: true,
     optionsSuccessStatus: 200 ,// some legacy browsers (IE11, various SmartTVs) choke on 204
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
 }
 https.createServer({
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('certs/example.com+5-key.pem'),
+    cert: fs.readFileSync('certs/example.com+5.pem')
 }, app).listen(port, () => {
     console.log(`Server started on port ${port}`);
 });
