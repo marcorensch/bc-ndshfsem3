@@ -9,10 +9,14 @@ class QuestionController{
     async getQuestions(queryParams){
         let sql = `SELECT * FROM questions`;
         if(queryParams.user_id) sql += ` WHERE created_by=${queryParams.user_id}`;
-        if(queryParams.category_id) sql += ` WHERE category_id=${queryParams.category_id}`;
+        if(queryParams.user_id && queryParams.category_id){
+            sql += ` AND category_id=${queryParams.category_id}`;
+        }else if(queryParams.category_id){
+            sql += ` WHERE category_id=${queryParams.category_id}`;
+        }
+        if(queryParams.direction) sql += ` ORDER BY id ${queryParams.direction}`;
         if(queryParams.count) sql += ` LIMIT ${queryParams.count}`;
         if(queryParams.index) sql += ` OFFSET ${queryParams.index}`;
-        if(queryParams.direction) sql += ` ORDER BY id ${queryParams.direction}`;
 
         try {
             return await this.databaseConnector.query(sql);
