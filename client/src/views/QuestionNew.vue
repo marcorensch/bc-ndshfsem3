@@ -98,7 +98,7 @@ export default {
   },
   methods:{
     getCategories(){
-      axios.get('http://localhost:3000/categories')
+      axios.get('https://localhost:3000/categories')
         .then(response => {
           this.categories = response.data
           console.log(this.categories)
@@ -108,20 +108,14 @@ export default {
         })
     },
     saveQuestion(){
-      // @TODO: Check
-      const token = localStorage.getItem('token');
-      if(!token){
-        // @TODO: zur veranschaulichung für dich
-        alert('Please login first')
-        return
-      }
-      axios.post("http://localhost:3000/questions/create", {
+      axios.post("https://localhost:3000/questions/create", {
         content: this.text,
         category_id: this.selected,
-        anonymous: this.anonymous
+        anonymous: this.anonymous,
+        refresh_token: localStorage.getItem('refresh_token')
       },{
         headers : {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         }
       })
         .then(response => {

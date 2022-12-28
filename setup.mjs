@@ -8,6 +8,12 @@ import {create, dropDatabase, addAdminUser}  from './installDatabase.mjs';
 import User from "./server/model/User.mjs";
 
 const configuration = {
+    "https":{
+        "key": "HTTPS",
+        "hint": "true or false",
+        "default": true,
+        "frontend": true,
+    },
     "access_token_secret":{
         "key": "ACCESS_TOKEN_SECRET",
     },
@@ -55,10 +61,12 @@ const configuration = {
     "server_port":{
         "key": "SERVER_PORT",
         "default": "3000",
-        "hint": "The port of the server instance"
+        "hint": "The port of the server instance",
+        "frontend": true,
     }
 };
 const pathToEnv = './server/.env';
+const pathToFrontendEnv = './client/.env';
 
 async function createDotEnvFlow(){
     let doBackup = await rl.question('Do you want to create a Backup of your existing .env file? (' + chalk.italic.cyan('press "y" to create a backup or any key to skip') + ') ');
@@ -85,7 +93,6 @@ async function createDotEnvFlow(){
         process.exit(1);
     }
 
-
     console.log(chalk.bold.yellow('Please enter the following information:'));
     console.log(chalk.italic.grey('Hint: hit Enter to use the default value'));
 
@@ -104,13 +111,13 @@ async function createDotEnvFlow(){
 
 
     const configString = Object.keys(configuration).map(key => `${configuration[key].key}=${configuration[key].value}`).join('\n');
-
     console.log(configString);
-
+    const frontendConfigString = Object.keys(configuration).filter(key => configuration[key].frontend).map(key => `VUE_APP_${configuration[key].key}=${configuration[key].value}`).join('\n');
     try {
         await fs.writeFile(pathToEnv, configString, {encoding: 'utf8'});
+        await fs.writeFile(pathToFrontendEnv, frontendConfigString, {encoding: 'utf8'});
         console.log('\n-----------------------------------------------------------------------------');
-        console.log(chalk.green.bold('The configuration file has been saved!'));
+        console.log(chalk.green.bold('The configuration files have been stored!'));
         console.log("The Configuration file can be found at: " + chalk.bold.blue(pathToEnv));
         console.log(chalk.bold('Note:') + '\nYou can change the configuration at any time by editing the .env file.');
         console.log(chalk.bold.yellow('\nNEW SECRET TOKENS WHERE CREATED - SECRETS SHOULD NOT BE SHARED WITH ANYONE!'));

@@ -74,25 +74,25 @@ npm run setup
 
 #### User (/users/...)
 
-| Status    | Type   | Route  | Beschreibung            | Produktiv |
-|-----------|--------|--------|-------------------------|-----------|
-| :warning: | GET    | `/`    | Gibt alle User zurück   | Ja        |
-| :warning: | GET    | `/:id` | Gibt einen User zurück  | Ja        |
-| :x:       | PUT    | `/:id` | Aktualisiert einen User | Ja        |
-| :x:       | DELETE | `/:id` | Entfernt einen User     | Ja        |
+| Status    | Type   | Route    | Beschreibung                              | Request                       | Response        |
+|-----------|--------|----------|-------------------------------------------|-------------------------------|-----------------|
+| :warning: | GET    | `/`      | Gibt alle User zurück                     | Ja                            |                 |
+| :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                            |                 |
+| :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                            |                 |
+| :x:       | DELETE | `/:id`   | Entfernt einen User                       | Ja                            |                 |
+| :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email | true oder false |
 
 Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizierung erfolgt.
 
 #### Fragen (/questions/...)
 
-| Status             | Type   | Route            | Beschreibung                        | Produktiv |
-|--------------------|--------|------------------|-------------------------------------|-----------|
-| :x:                | GET    | `/`              | Gibt eine Liste aller Fragen zurück | nein      |
-| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja        |
-| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | ja        |
-| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja        |
-| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja        |
-| :x:                | GET    | `/user/:user_id` | Gibt alle Fragen eines Users zurück | ja        |
+| Status             | Type   | Route            | Beschreibung                        | Request                                                                 | Response |
+|--------------------|--------|------------------|-------------------------------------|-------------------------------------------------------------------------|----------|
+| :warning:          | GET    | `/`              | Gibt eine Liste aller Fragen zurück | body.count, body.offset, body.user_id, body.category_id, body.direction |          |
+| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja                                                                      |          |
+| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | body.content, body.category_id, body.anonymous                          |          |
+| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja                                                                      |          |
+| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja                                                                      |          |
 
 #### Antworten (/answers/...)
 
@@ -106,26 +106,26 @@ Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizier
 
 #### Kategorien (/categories/...)
 
-| Status | Type   | Route                                  | Beschreibung                                                 | Produktiv |
-|--------|--------|----------------------------------------|--------------------------------------------------------------|-----------|
-| :x:    | GET    | `/`                                    | Gibt eine Liste aller Kategorien zurück                      | nein      |
-| :x:    | GET    | `/:id`                                 | Gibt eine Kategorie zurück                                   | ja        |
-| :x:    | POST   | `/`                                    | Erstellt eine neue Kategorie                                 | ja        |
-| :x:    | PUT    | `/:id`                                 | Aktualisiert eine Kategorie                                  | ja        |
-| :x:    | DELETE | `/:id`                                 | Löscht eine Kategorie                                        | ja        |
-| :x:    | GET    | `/questions/`                          | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück | nein      |
-| :x:    | GET    | `/questions/:question_id`              | Gibt alle Kategorien einer Frage zurück                      | ja        |
-| :x:    | POST   | `/questions/`                          | Erstellt eine neue Fragen-Kategorien Verknüpfung             | ja        |
-| :x:    | DELETE | `/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung                    | ja        |
+| Status             | Type   | Secured | Route                                  | Beschreibung                                                 | Request    | Response                        |
+|--------------------|--------|---------|----------------------------------------|--------------------------------------------------------------|------------|---------------------------------|
+| :white_check_mark: | GET    |         | `/`                                    | Gibt eine Liste aller Kategorien zurück                      | -          | response.data [{id,title}, ...] |
+| :white_check_mark: | GET    |         | `/:id`                                 | Gibt eine Kategorie zurück                                   | query.id   | response.data {id,title}        |
+| :white_check_mark: | POST   |         | `/create`                              | Erstellt eine neue Kategorie                                 | body.title |                                 |
+| :white_check_mark: | PUT    |         | `/:id`                                 | Aktualisiert eine Kategorie                                  | body.title | true oder DB Error              |
+| :x:                | DELETE |         | `/:id`                                 | Löscht eine Kategorie                                        |            |                                 |
+| :x:                | GET    |         | `/questions/`                          | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück |            |                                 |
+| :x:                | GET    |         | `/questions/:question_id`              | Gibt alle Kategorien einer Frage zurück                      |            |                                 |
+| :x:                | POST   |         | `/questions/`                          | Erstellt eine neue Fragen-Kategorien Verknüpfung             |            |                                 |
+| :x:                | DELETE |         | `/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung                    |            |                                 |
 
 #### Authentifizierung (/auth/...)
 
-| Status             | type | Route       | Beschreibung                                                 | Produktiv |
-|--------------------|------|-------------|--------------------------------------------------------------|-----------|
-| :warning:          | POST | `/login`    | Loggt einen User ein                                         | ja        |
-| :x:                | POST | `/logout`   | Loggt einen User aus                                         | ja        |
-| :white_check_mark: | POST | `/register` | Registriert einen neuen User                                 | ja        |
-| :warning:          | POST | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | ja        |
+| Status             | type   | Route       | Beschreibung                                                 | Request                                                                 | Return                            |
+|--------------------|--------|-------------|--------------------------------------------------------------|-------------------------------------------------------------------------|-----------------------------------|
+| :white_check_mark: | POST   | `/login`    | Loggt einen User ein                                         | body.username, body.password                                            | {token:"...", refreshToken:"..."} |
+| :white_check_mark: | DELETE | `/logout`   | Loggt einen User aus                                         | auth.token (>> Refreshtoken)                                            | {}                                |
+| :white_check_mark: | POST   | `/register` | Registriert einen neuen User                                 | body.firstname, body.lastname, body.username, body.password, body.email | {message} oder ApiError           |
+| :white_check_mark: | POST   | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | auth.token (>> RefreshToken)                                            | {token:"..."}                     |
 
 # API Dokumentation
 
@@ -169,6 +169,8 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 
 ## Übersicht der Fehlercodes
 
+- Error Code e-999: Allgemeiner Fehler
+
 ### User related
 
 - Error Code u-317: Form Validierungsfehler - Feld wurde nicht übermittelt (null / undefined)
@@ -181,3 +183,11 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 - Error Code u-332: Loginfehler - Passwort falsch
 - Error Code u-341: Tokenfehler - Refresh Token nicht gefunden
 - Error Code u-342: Tokenfehler - Refresh Token ist nicht valide
+
+### Category related
+
+- Error Code c-331: Kategoriefehler - Kategorie mit dieser ID existiert nicht
+
+### Question related
+
+- Error Code q-317: Fragenfehler - Fragetext darf nicht leer / zu kurz sein

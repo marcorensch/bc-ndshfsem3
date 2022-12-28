@@ -4,7 +4,7 @@
   "description": "Offizielles Repository zur Semesterarbeit NDS HF Applikationsentwickler im dritten Semester von Claudia Martinez &amp; Marco Rensch",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "concurrently -n=Server,Client -c=magenta,cyan \"cd server && npm run test\" \"cd client && npm run test\"",
     "setup": "node setup.mjs",
     "postinstall": "concurrently -m=1 -n=Server,Client,Setup -c=magenta,cyan,yellow -i=true --default-input-target=2 \"cd server && npm install\" \"cd client && npm install\" \"npm:setup\"",
     "devStart": "concurrently -n=Server,Client -c=magenta,cyan \"cd server && npm run start\" \"cd client && npm run serve\""

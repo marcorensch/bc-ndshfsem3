@@ -13,6 +13,10 @@ export default class FieldChecker {
 
     constructor(connectionData = false) {
         this.connectionData = connectionData;
+        this.question = {
+            min: 20,
+            max: 1000
+        },
         this.username = {
             regex : /^([a-z]+[.\-_]*[a-z]+)$/i,
             min: 3,
@@ -36,14 +40,14 @@ export default class FieldChecker {
     }
 
     async isValid(string, context){
-        if(!string) return new ApiError('u-317', "Missing field", context);
+        if(!string) return new ApiError('u-317', context);
         return context === "email" ? await this.isValidEmail(string) : this.isValidString(string, context);
     }
 
     async isValidEmail(email){
 
-        if(!isEmail(email)) return new ApiError('u-318', "Invalid email", "email").setData({value: email});
-        if(!await this.emailIsNew(email)) return new ApiError('u-322', "Email already taken", "email").setData({value: email});
+        if(!isEmail(email)) return new ApiError('u-318', "email").setData({value: email});
+        if(!await this.emailIsNew(email)) return new ApiError('u-322', "email").setData({value: email});
 
         return true;
     }
@@ -53,9 +57,9 @@ export default class FieldChecker {
         const regexTest = this[context].regex.test(string);
         const forbiddenWordTest = context !== "password" ? this.stringContainsForbiddenWord(string) : {status: true};
 
-        if(!lengthTest) return new ApiError('u-319', "Invalid length", context).setData({value: this[context].returnValue ? string : false});
-        if(!regexTest) return new ApiError('u-320', "Forbidden characters found", context).setData({value: this[context].returnValue ? string : false})
-        if(!forbiddenWordTest.status) return new ApiError('u-321', "Forbidden word found", context).setData({value: this[context].returnValue ? forbiddenWordTest.word : false});
+        if(!lengthTest) return new ApiError('u-319', context).setData({value: this[context].returnValue ? string : false});
+        if(!regexTest) return new ApiError('u-320', context).setData({value: this[context].returnValue ? string : false})
+        if(!forbiddenWordTest.status) return new ApiError('u-321', context).setData({value: this[context].returnValue ? forbiddenWordTest.word : false});
 
         return true;
     }
@@ -63,7 +67,7 @@ export default class FieldChecker {
     async isValidUsername(username){
         const isValidStringTest = this.isValidString(username, "username");
         const isAvailableTest = await this.usernameIsAvailable(username);
-        if(!isAvailableTest) return new ApiError('u-322', "Username already taken", "username").setData({value: this.username.returnValue ? username : false});
+        if(!isAvailableTest) return new ApiError('u-322', "username").setData({value: this.username.returnValue ? username : false});
 
         return isValidStringTest;
     }
@@ -93,5 +97,11 @@ export default class FieldChecker {
 
     hasValidLength(string, min, max){
         return isLength(string, {min, max});
+    }
+
+    setBoolean(value) {
+        if(typeof value == "string") return value === "1" || value === "true";
+        if(typeof value == "boolean") return value;
+        return value === 1;
     }
 }

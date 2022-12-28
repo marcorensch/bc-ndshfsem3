@@ -2,7 +2,6 @@ import User from "../model/User.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
 import UserController from "../controller/UserController.mjs";
 import ApiError from "../model/ApiError.mjs";
-import bcrypt from "bcrypt";
 
 const registrationValidator = async (req, res, next) => {
 
@@ -27,19 +26,12 @@ const registrationValidator = async (req, res, next) => {
 const loginValidator = async (req, res, next) => {
     console.log("login validator called");
     let {username, password} = req.body;
-    const fieldChecker = new FieldChecker();
     const userController = new UserController();
-    const result = await fieldChecker.isValid(username.trim(), "username");
-
-    console.log("result", result);
-    if(result !== true){
-        return res.status(400).json(result);
-    }
 
     const dbResult = await userController.getUserByUsername(username);
 
     if(!dbResult.success) return res.status(500).json(dbResult.data);
-    if(dbResult.data.length !== 1) return res.status(400).json(new ApiError('u-331', "Username not found"));
+    if(dbResult.data.length !== 1) return res.status(400).json(new ApiError('u-331'));
 
     const user = new User(dbResult.data[0].firstname, dbResult.data[0].lastname, dbResult.data[0].username, dbResult.data[0].email);
     user.setId(dbResult.data[0].id);
@@ -49,10 +41,10 @@ const loginValidator = async (req, res, next) => {
 
     console.log("password",password)
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    console.log("passwordMatch", passwordMatch);
+    // const passwordMatch = await bcrypt.compare(password, user.password);
+    // console.log("passwordMatch", passwordMatch);
 
-    if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332', "Password is incorrect"));
+    if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332'));
 
     req.user = user;
 

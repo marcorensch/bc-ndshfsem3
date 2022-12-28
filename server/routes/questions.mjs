@@ -1,18 +1,27 @@
 import express from "express";
 const router = express.Router();
-// Import Demo Questions @ToDo: Remove this after db implementation
-import questions from "../demo/questions.mjs";
 import {authenticateToken} from "../middleware/authenticate.mjs";
 import Question from "../model/Question.mjs";
-import question from "../model/Question.mjs";
 import questionSanitizer from "../middleware/questionSanitizer.mjs";
 import QuestionController from "../controller/QuestionController.mjs";
+import ApiError from "../model/ApiError.mjs";
+import questionChecker from "../middleware/questionChecker.mjs";
 
-router.get('/', (req, res) => {
-    res.json(questions);
+router.get('/', async (req, res) => {
+    const {count, offset, user_id, category_id, direction} = req.query;
+    const queryParams = {
+        count: count || 25,
+        offset: offset || 0,
+        user_id: user_id || false,
+        category_id: category_id || false,
+        direction: direction || "DESC"
+    }
+    const questionController = new QuestionController();
+    const result = await questionController.getItems(queryParams);
+    res.status(200).json(result);
 });
 
-router.post('/create', authenticateToken, questionSanitizer,  async (req, res) => {
+router.post('/create', authenticateToken, questionSanitizer, questionChecker,  async (req, res) => {
     let {content, category_id, anonymous} = req.body;
     console.log("Question data received: ", req.body);
     const userId = req.user.id;
@@ -23,14 +32,17 @@ router.post('/create', authenticateToken, questionSanitizer,  async (req, res) =
 
     try{
         const questionController = new QuestionController();
-        await questionController.storeQuestion(question);
-        const insertedQuestionId = await questionController.getLastQuestionIdFromUser(userId)
+        await questionController.storeItem(question);
+        const insertedQuestionId = await questionController.getLastItemIdCreatedByUserId(userId)
         res.status(201).json({
             message: "Question created successfully",
-            question_id: insertedQuestionId
+            question_id: insertedQuestionId,
+            user_id: userId,
+            token: req.token
         });
     }catch (error) {
         console.error(error);
+        if(error.errno === 1452) res.status(422).json(new ApiError('c-331'));
         res.status(500).json(error);
     }
 });
@@ -53,7 +65,7 @@ router.post('/answer', (req, res) => {
     console.log(req.body);
 });
 
-router.get('/get', (req, res) => {
+router.get('/:id', (req, res) => {
     // Get a Question and its answers
     console.log("Get a Question and its answers from database");
     console.log(req.body);
