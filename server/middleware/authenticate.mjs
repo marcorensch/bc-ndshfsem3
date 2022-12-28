@@ -14,11 +14,11 @@ async function authenticateToken (req, res, next) {
     }catch(err) {
         if(err.TokenExpiredError === jwt.TokenExpiredError && req.body.refreshToken) {
             const user = await tokenController.checkRefreshToken(req.body.refreshToken);
-            if(!user) return res.status(403).json(new ApiError('u-342', "Refresh token is invalid"));
+            if(!user) return res.status(403).json(new ApiError('u-342'));
             req.user = user;
             req.token = await tokenController.createToken(user.id);
         }else{
-            return res.status(403).json(new ApiError('u-342', "Refresh token is invalid"));
+            return res.status(403).json(new ApiError('u-342'));
         }
     }
     next();

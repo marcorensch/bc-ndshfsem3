@@ -32,7 +32,7 @@ const loginValidator = async (req, res, next) => {
     const dbResult = await userController.getUserByUsername(username);
 
     if(!dbResult.success) return res.status(500).json(dbResult.data);
-    if(dbResult.data.length !== 1) return res.status(400).json(new ApiError('u-331', "Username not found"));
+    if(dbResult.data.length !== 1) return res.status(400).json(new ApiError('u-331'));
 
     const user = new User(dbResult.data[0].firstname, dbResult.data[0].lastname, dbResult.data[0].username, dbResult.data[0].email);
     user.setId(dbResult.data[0].id);
@@ -45,7 +45,7 @@ const loginValidator = async (req, res, next) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
     console.log("passwordMatch", passwordMatch);
 
-    if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332', "Password is incorrect"));
+    if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332'));
 
     req.user = user;
 

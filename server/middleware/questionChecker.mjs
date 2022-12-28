@@ -6,12 +6,12 @@ function questionChecker(req, res, next) {
     const fieldChecker = new FieldChecker();
 
     if (!content) {
-        return res.status(422).json(new ApiError('q-317', "Question content is required"));
+        return res.status(422).json(new ApiError('q-317'));
     }
-    if (!category_id) return res.status(422).json(new ApiError('q-318', "Category id is required"));
+    if (!category_id) return res.status(422).json(new ApiError('q-318'));
 
     const result = fieldChecker.hasValidLength(content, fieldChecker.question.min, fieldChecker.question.max);
-    if (!result) return res.status(422).json(new ApiError('q-318', "Question content has no valid length"));
+    if (!result) return res.status(422).json(new ApiError('q-317'));
 
     req.body.content = content;
     req.body.category_id = category_id;

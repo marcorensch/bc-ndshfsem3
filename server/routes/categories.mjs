@@ -8,6 +8,7 @@ import {authenticateToken} from "../middleware/authenticate.mjs";
 import Category from "../model/Category.mjs";
 import CategoryController from "../controller/CategoryController.mjs";
 import isAuthorized from "../middleware/authorizationChecker.mjs";
+import ApiError from "../model/ApiError.mjs";
 
 router.get('/', async (req, res) => {
     const categoryController = new CategoryController();
@@ -23,12 +24,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     const categoryController = new CategoryController();
-    const result = await categoryController.getCategoryById(id);
+    const result = await categoryController.getItemById(id);
 
     if (result.success) {
         res.status(200).json(result.data);
     } else {
-        res.status(500).json(result.data);
+        res.status(500).json(result);
     }
 });
 
@@ -70,16 +71,21 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticateToken, isAuthorized, async (req, res) => {
+router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, res) => {
     // Delete a Question from db
+    console.log("Delete Category");
     const id = req.params.id;
     if (!id) res.status(400).json({message: "Category Id is required"});
     const categoryController = new CategoryController();
-    const result = await categoryController.deleteCategoryById(id);
+    const result = await categoryController.deleteItemById(id);
+    console.log(result);
     if (result.success && result.data.affectedRows === 1) {
         res.status(200).json(result.success);
+    } else if(result.success && result.data.affectedRows === 0) {
+        res.status(400).json({message: "Category not found"});
     } else {
-        res.status(500).json(result);
+        console.log("Any Error")
+        res.status(500).json(new ApiError('e-999').setData(result));
     }
 
 });

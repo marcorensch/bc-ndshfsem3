@@ -169,6 +169,8 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 
 ## Übersicht der Fehlercodes
 
+- Error Code e-999: Allgemeiner Fehler
+
 ### User related
 
 - Error Code u-317: Form Validierungsfehler - Feld wurde nicht übermittelt (null / undefined)

@@ -1,6 +1,6 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
-class CategoryController{
+class CategoryController {
     databaseConnector = null;
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
@@ -36,7 +36,7 @@ class CategoryController{
         }
     }
 
-    async getCategoryById(id) {
+    async getItemById(id) {
         const sql = "SELECT id, title FROM categories WHERE id = ?";
         try{
             const response = await this.databaseConnector.query(sql, [id]);
@@ -46,7 +46,7 @@ class CategoryController{
         }
     }
 
-    async deleteCategoryById(id) {
+    async deleteItemById(id) {
         const sql = "DELETE FROM categories WHERE id = ?";
         try{
             const response = await this.databaseConnector.query(sql, [id]);

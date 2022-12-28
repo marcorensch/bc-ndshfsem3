@@ -42,7 +42,7 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
         });
     }catch (error) {
         console.error(error);
-        if(error.errno === 1452) res.status(422).json(new ApiError('c-331', "Category does not exist"));
+        if(error.errno === 1452) res.status(422).json(new ApiError('c-331'));
         res.status(500).json(error);
     }
 });
