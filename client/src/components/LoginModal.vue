@@ -24,7 +24,7 @@
               <label for="password">Password</label>
               <input id="password" type="password" placeholder="Enter Password" name="password" required>
               <label>
-                <input type="checkbox" checked="checked" name="remember" v-model="checked" @change="rememberUsername">
+                <input type="checkbox" checked="checked" name="remember" v-model="checked" >
                 Remember me
               </label>
             </div>
@@ -53,7 +53,8 @@ export default {
   name: "LoginModal",
   props: {
     show: Boolean
-  }, data() {
+  },
+  data() {
     return {
       username: "",
       checked: false,
@@ -75,6 +76,7 @@ export default {
     },
     doLogin() {
       console.log("doLogin");
+      this.rememberUsername()
       axios.post("localhost:3000/auth/login", {
         username: this.username,
         password: this.password

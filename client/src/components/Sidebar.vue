@@ -23,7 +23,7 @@
           </router-link>
         </li>
         <li v-if="!user">
-          <router-link id="show-modal" @click="showLoginModal = true" class="button" to="/login">
+          <router-link id="show-modal" @click="showLoginModal = true" class="button" to="/">
             <span class="menu-icons">
               <font-awesome-icon icon="user"/> </span>
             <span class="title">Login</span>
@@ -81,7 +81,7 @@ export default {
     return {
       is_expanded: localStorage.getItem('is_expanded') === 'true',
       showLoginModal: false,
-      user: true
+      user: false
     }
   },
 
