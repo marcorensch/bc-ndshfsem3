@@ -65,7 +65,7 @@ router.post('/answer', (req, res) => {
     console.log(req.body);
 });
 
-router.get('/get', (req, res) => {
+router.get('/:id', (req, res) => {
     // Get a Question and its answers
     console.log("Get a Question and its answers from database");
     console.log(req.body);

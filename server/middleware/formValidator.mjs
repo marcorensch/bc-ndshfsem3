@@ -2,7 +2,6 @@ import User from "../model/User.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
 import UserController from "../controller/UserController.mjs";
 import ApiError from "../model/ApiError.mjs";
-import bcrypt from "bcrypt";
 
 const registrationValidator = async (req, res, next) => {
 
@@ -42,8 +41,8 @@ const loginValidator = async (req, res, next) => {
 
     console.log("password",password)
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    console.log("passwordMatch", passwordMatch);
+    // const passwordMatch = await bcrypt.compare(password, user.password);
+    // console.log("passwordMatch", passwordMatch);
 
     if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332'));
 

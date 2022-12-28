@@ -44,7 +44,7 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
             errData = new ApiError('u-321', column);
         }else{
             errData = new ApiError('e-999');
-            console.error("Unknown error while registering User:", result.data);
+            console.error("Unknown error while registering User:", result);
         }
         res.status(409).json(errData);
     }

@@ -7,6 +7,7 @@ class QuestionController{
     }
 
     async getItems(queryParams){
+        // @ToDo : Inner Join Usernames
         let sql = `SELECT * FROM questions`;
         if(queryParams.user_id) sql += ` WHERE created_by=${queryParams.user_id}`;
         if(queryParams.user_id && queryParams.category_id){

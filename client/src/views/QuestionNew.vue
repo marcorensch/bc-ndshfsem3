@@ -108,20 +108,14 @@ export default {
         })
     },
     saveQuestion(){
-      // @TODO: Check
-      const token = localStorage.getItem('token');
-      if(!token){
-        // @TODO: zur veranschaulichung für dich
-        alert('Please login first')
-        return
-      }
       axios.post("https://localhost:3000/questions/create", {
         content: this.text,
         category_id: this.selected,
-        anonymous: this.anonymous
+        anonymous: this.anonymous,
+        refresh_token: localStorage.getItem('refresh_token')
       },{
         headers : {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         }
       })
         .then(response => {
