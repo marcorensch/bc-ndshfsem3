@@ -74,12 +74,13 @@ npm run setup
 
 #### User (/users/...)
 
-| Status    | Type   | Route  | Beschreibung            | Produktiv |
-|-----------|--------|--------|-------------------------|-----------|
-| :warning: | GET    | `/`    | Gibt alle User zurück   | Ja        |
-| :warning: | GET    | `/:id` | Gibt einen User zurück  | Ja        |
-| :x:       | PUT    | `/:id` | Aktualisiert einen User | Ja        |
-| :x:       | DELETE | `/:id` | Entfernt einen User     | Ja        |
+| Status    | Type   | Route    | Beschreibung                              | Request                       | Response        |
+|-----------|--------|----------|-------------------------------------------|-------------------------------|-----------------|
+| :warning: | GET    | `/`      | Gibt alle User zurück                     | Ja                            |                 |
+| :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                            |                 |
+| :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                            |                 |
+| :x:       | DELETE | `/:id`   | Entfernt einen User                       | Ja                            |                 |
+| :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email | true oder false |
 
 Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizierung erfolgt.
 
