@@ -135,7 +135,7 @@ export default {
     },
     async submitForm(){
       try{
-        return await axios.post('http://localhost:3000/auth/register', {
+        return await axios.post(this.host + '/auth/register', {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,

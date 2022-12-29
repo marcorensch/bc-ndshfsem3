@@ -66,6 +66,7 @@ import {required, minLength, sameAs, email} from "@vuelidate/validators";
 import axios from "axios";
 
 export default {
+  inject:['host'],
 
   setup() {
     return {v$: useVuelidate()}
@@ -125,8 +126,8 @@ export default {
         if (valid) {
           console.log("Form is valid => Submitted");
           // Submit form
-          const response = await this.submitForm();
-          console.log(response);
+         this.submitForm();
+
           this.$refs.form.reset();
           //todo show message if success
 
@@ -143,7 +144,7 @@ export default {
     async checkIfUsernameExist() {
       let response;
       try {
-        response = await axios.post('http://localhost:3000/user/check', {
+        response = await axios.post(this.host + '/user/check', {
           username: this.username
         })
 
@@ -157,7 +158,7 @@ export default {
     async checkIfEmailExist(){
       let response;
       try {
-        response = await axios.post('http://localhost:3000/user/check', {
+        response = await axios.post(this.host + '/user/check', {
           email: this.email
         })
 
@@ -167,21 +168,30 @@ export default {
       //TODO Route für Email check erstellen + message entgegennehmen und darstellen
       console.log(response);
     },
-    async submitForm() {
-      let response;
-      try {
-        response = await axios.post('http://localhost:3000/auth/register', {
-          firstname: this.firstname,
-          lastname: this.lastname,
-          email: this.email,
-          username: this.username,
-          password: this.password.newPassword,
+     submitForm() {
+      axios.post(this.host + '/auth/register', {
+        firstname: this.firstname,
+        lastname: this.lastname,
+        email: this.email,
+        username: this.username,
+        password: this.password.newPassword,
+      })
+        .then((response) =>  {
+
+          if (response.status === 201) {
+            console.log("User created");
+            console.log(response.data.message);
+            this.$router.push('/');
+          }
+
         })
-      } catch (error) {
-        console.log(error)
-      }
-      console.log(response);
-    }
+        .catch((error) => {
+          console.log(error.response.data);
+          console.log(error.response.data.relatedColumn);
+          console.log(error.response.data.message);
+        });
+     }
+
   },
 
 }
