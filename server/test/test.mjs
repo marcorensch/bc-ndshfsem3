@@ -183,21 +183,21 @@ describe('E-Mail Checker', function (){
 });
 
 describe('Registration Checker', function (){
-    const userController = new UserHelper(testDbConnectionData);
+    const userHelper = new UserHelper(testDbConnectionData);
 
     it('should store a new user with valid data in the db', async function () {
         // Preflight: Delete / Create User
-        await userController.deleteUserByUsername("proximate");
+        await userHelper.deleteUserByUsername("proximate");
         const user = new User("Marco","Rensch","proximate","marco.rensch@tld.com");
         user.setPassword("12345678");
 
         // Do check
-        const checkRegistering = await userController.registerUser(user);
-        const checkIsRegistered = await userController.getUserByUsername("proximate");
+        const checkRegistering = await userHelper.registerUser(user);
+        const checkIsRegistered = await userHelper.getUserByUsername("proximate");
         assert.equal(checkRegistering.data.affectedRows, 1);
         assert.equal(checkIsRegistered.username, "proximate");
 
         // Postflight: Delete User
-        await userController.deleteUserByUsername("proximate");
+        await userHelper.deleteUserByUsername("proximate");
     });
 })

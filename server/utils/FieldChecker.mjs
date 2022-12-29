@@ -16,7 +16,7 @@ export default class FieldChecker {
         this.question = {
             min: 20,
             max: 1000
-        },
+        };
         this.username = {
             regex : /^([a-z]+[.\-_]*[a-z]+)$/i,
             min: 3,
@@ -72,8 +72,8 @@ export default class FieldChecker {
     }
 
     async usernameIsAvailable(username){
-        const userController = new UserHelper(this.connectionData);
-        const result = await userController.getUserIdByUsername(username);
+        const userHelper = new UserHelper(this.connectionData);
+        const result = await userHelper.getUserIdByUsername(username);
         return result.data.length === 0;
     }
 

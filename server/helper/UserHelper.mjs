@@ -97,8 +97,8 @@ class UserHelper {
 
     async isAdministrator(id) {
         const usersGroup = await this.getUsersGroupByUserId(id);
-        const usergroupsController = new UsergroupsHelper();
-        const usergroups = await usergroupsController.getAllUsergroups();
+        const usergroupsHelper = new UsergroupsHelper();
+        const usergroups = await usergroupsHelper.getAllUsergroups();
         const adminGroup = usergroups.find(group => group.alias === "administrator");
         if(usersGroup === adminGroup.id) return true;
 

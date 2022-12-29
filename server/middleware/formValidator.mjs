@@ -26,9 +26,9 @@ const registrationValidator = async (req, res, next) => {
 const loginValidator = async (req, res, next) => {
     console.log("login validator called");
     let {username, password} = req.body;
-    const userController = new UserHelper();
+    const userHelper = new UserHelper();
 
-    const user = await userController.getUserByUsername(username);
+    const user = await userHelper.getUserByUsername(username);
 
     if(!user) return res.status(400).json(new ApiError('u-331'));
     if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332'));

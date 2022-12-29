@@ -6,7 +6,6 @@ import questionSanitizer from "../middleware/questionSanitizer.mjs";
 import QuestionHelper from "../helper/QuestionHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
-import userController from "../helper/UserHelper.mjs";
 
 router.get('/', async (req, res) => {
     const {count, offset, user_id, category_id, direction} = req.query;
@@ -17,8 +16,8 @@ router.get('/', async (req, res) => {
         category_id: category_id || false,
         direction: direction || "DESC"
     }
-    const questionController = new QuestionHelper();
-    const result = await questionController.getItems(queryParams);
+    const questionHelper = new QuestionHelper();
+    const result = await questionHelper.getItems(queryParams);
     res.status(200).json(result);
 });
 
@@ -26,8 +25,8 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
     let {content, category_id, anonymous} = req.body;
     console.log("Question data received: ", req.body);
     const userId = req.user.id;
-    const userController = new userController();
-    const user = await userController.getUserById(userId);
+    const userHelper = new userHelper();
+    const user = await userHelper.getUserById(userId);
 
     // Add a new Question to db
     console.log("Create Question");
@@ -35,9 +34,9 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
     const question = new Question(content, userId).setAnonymous(anonymous).setCategoryId(category_id);
 
     try{
-        const questionController = new QuestionHelper();
-        await questionController.storeItem(question);
-        const insertedQuestionId = await questionController.getLastItemIdCreatedByUserId(userId)
+        const questionHelper = new QuestionHelper();
+        await questionHelper.storeItem(question);
+        const insertedQuestionId = await questionHelper.getLastItemIdCreatedByUserId(userId)
 
         res.status(201).json({
             message: "Question created successfully",

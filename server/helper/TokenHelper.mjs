@@ -14,8 +14,8 @@ class TokenHelper {
     }
 
     async createToken(userId) {
-        const userController = new UserHelper();
-        const isAdmin = await userController.isAdministrator(userId);
+        const userHelper = new UserHelper();
+        const isAdmin = await userHelper.isAdministrator(userId);
         return await jwt.sign({id: userId, isAdmin}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
 
