@@ -35,6 +35,11 @@ class UserController {
         }
     }
 
+    async getUsersGroupByUserId(userId) {
+        const sql = "SELECT usergroup FROM users WHERE id=?";
+        const result = await this.databaseConnector.query(sql, [userId]);
+        return result.data[0].usergroup;
+    }
     async _getUserGroupIdByAlias(groupAlias) {
         const sql = "SELECT id FROM usergroups WHERE alias=?";
         const result = await this.databaseConnector.query(sql, [groupAlias]);
