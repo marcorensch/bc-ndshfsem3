@@ -22,7 +22,7 @@
               <input id="username" type="text" placeholder="Enter Username" name="username" v-model="username" required>
 
               <label for="password">Password</label>
-              <input id="password" type="password" placeholder="Enter Password" name="password" required>
+              <input id="password" type="password" placeholder="Enter Password" name="password" v-model="password" required>
               <label>
                 <input type="checkbox" checked="checked" name="remember" v-model="checked" >
                 Remember me
@@ -56,12 +56,11 @@ export default {
   },
   data() {
     return {
-      username: "",
-      checked: false,
     }
   },
   created() {
     this.username = localStorage.getItem("username") || "";
+    this.password = "";
     this.checked = localStorage.getItem("checked")
   },
 
@@ -76,11 +75,19 @@ export default {
     },
     doLogin() {
       console.log("doLogin");
+      this.$emit("loggedIn");
       this.rememberUsername()
-      axios.post("localhost:3000/auth/login", {
+      axios.post(this.host + "/auth/login", {
         username: this.username,
         password: this.password
       }).then((response) => {
+        console.log(response);
+        if(response.data.token) {
+          localStorage.setItem("token", response.data.token);
+         // this.$router.push("/");
+          this.$emit("loggedIn");
+
+        }
         console.log(response);
       }).catch((error) => {
         console.log(error);

@@ -53,6 +53,12 @@
     </div>
     <div class="flex"></div>
     <div class="menu" v-if="user">
+      <router-link class="button" to="/" @click="logout">
+        <span class="menu-icons"><font-awesome-icon icon="right-from-bracket"/></span>
+        <span class="title">Logout</span>
+      </router-link>
+    </div>
+    <div class="menu" v-if="user">
       <router-link class="button" to="/user/cockpit/overview">
         <span class="menu-icons"><font-awesome-icon icon="key"/></span>
         <span class="title">User Settings</span>
@@ -61,7 +67,7 @@
 
   </aside>
   <Teleport to="body">
-    <LoginModal :show="showLoginModal" @close="showLoginModal = false">
+    <LoginModal :show="showLoginModal" @close="showLoginModal = false" @loggedIn="loggedIn">
     </LoginModal>
   </Teleport>
 </template>
@@ -90,6 +96,14 @@ export default {
       this.is_expanded = !this.is_expanded
       localStorage.setItem('is_expanded', this.is_expanded)
       console.log(this.is_expanded)
+    },
+    logout(){
+      console.log('logout')
+      this.user = false
+    },
+    loggedIn(){
+      console.log('loggedIn')
+      this.user = true
     }
   }
 
