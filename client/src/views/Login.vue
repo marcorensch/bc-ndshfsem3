@@ -45,13 +45,13 @@ export default {
     },
     doLogin() {
       // @todo: validate input
-      axios.post("http://localhost:3000/auth/login", {
+      axios.post(this.host + "/auth/login", {
         username: this.username,
         password: this.password
       }).then((response) => {
         if(response.data.token) {
           localStorage.setItem("token", response.data.token);
-          this.$router.push("/");
+        //  this.$router.push("/");
         }
       }).catch((error) => {
         console.log(error);
