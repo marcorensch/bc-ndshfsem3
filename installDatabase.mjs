@@ -9,7 +9,7 @@ let databaseConnector;
 async function addAdminUser(connectionData, adminUser) {
 
     const userController = new UserHelper(connectionData);
-    adminUser.userGroup = await userController._getUserGroupIdByAlias("administrator");
+    adminUser.usergroup = await userController._getUserGroupIdByAlias("administrator");
 
     try {
         await userController.registerUser(adminUser);

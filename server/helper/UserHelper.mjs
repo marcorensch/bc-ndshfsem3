@@ -19,14 +19,13 @@ class UserHelper {
     }
 
     async registerUser(user) {
-        if(user.userGroup === null || user.userGroup === undefined) {
-            user.userGroup = await this._getUserGroupIdByAlias("registered")
+        if(user.usergroup === null || user.usergroup === undefined) {
+            user.usergroup = await this._getUserGroupIdByAlias("registered")
         }
-        if(user.userGroup) {
+        if(user.usergroup) {
             const sql = "INSERT INTO users (firstname, lastname, username, email, password, status, usergroup) VALUES (?,?,?,?,?,?,?)";
             try{
-                const response = await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, user.userGroup]);
-                return response;
+                return await this.databaseConnector.query(sql, [user.firstname, user.lastname, user.username, user.email, user.password, 1, user.usergroup]);
             }catch (error) {
                 throw error;
             }
