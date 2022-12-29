@@ -1,5 +1,7 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 import jwt from "jsonwebtoken";
+import UsergroupsController from "./UsergroupsController.mjs";
+import UserController from "./UserController.mjs";
 
 class TokenController {
     databaseConnector;
@@ -12,7 +14,8 @@ class TokenController {
     }
 
     async createToken(userId) {
-        return await jwt.sign({id: userId}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
+        const isAdmin = await this._isAdministrator(userId);
+        return await jwt.sign({id: userId, isAdmin}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
 
     async createRefreshToken(userId) {
@@ -44,6 +47,19 @@ class TokenController {
         const sql = "SELECT COUNT(token) AS count FROM access_tokens WHERE token=?";
         const res = await this.databaseConnector.query(sql, [refreshToken]);
         if(res.data[0].count > 0) return verify;
+        return false;
+    }
+
+    async _isAdministrator(userId) {
+        const userController = new UserController();
+        const usersGroup = await userController.getUsersGroupByUserId(userId);
+        console.log("Usergroup: ", usersGroup);
+        const usergroupsController = new UsergroupsController();
+        const usergroups = await usergroupsController.getAllUsergroups();
+        console.log("Usergroups: ", usergroups);
+        const adminGroup = usergroups.find(group => group.alias === "administrator");
+        if(usersGroup === adminGroup.id) return true;
+
         return false;
     }
 }
