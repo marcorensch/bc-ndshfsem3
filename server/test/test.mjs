@@ -165,11 +165,8 @@ describe('E-Mail Checker', function (){
 
         const userHelper = new UserHelper(testDbConnectionData);
 
-        // delete user
-        const status = await userHelper.deleteUserByUsername("test-user");
-
-        console.log(status);
-
+        // Preflight: Delete / Create User
+        await userHelper.deleteUserByUsername("test-user");
         const user = new User("Test","Test","test-user","user.name@tld.co.uk");
         user.setPassword("12345678");
         await userHelper.registerUser(user);
@@ -177,7 +174,7 @@ describe('E-Mail Checker', function (){
         // Do check
         const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
 
-        // delete user
+        // Postflight: Delete User
         await userHelper.deleteUserByUsername("test-user");
 
         assert.equal(check.errorCode, "u-322");
@@ -189,12 +186,18 @@ describe('Registration Checker', function (){
     const userController = new UserHelper(testDbConnectionData);
 
     it('should store a new user with valid data in the db', async function () {
-        // delete user
+        // Preflight: Delete / Create User
         await userController.deleteUserByUsername("proximate");
         const user = new User("Marco","Rensch","proximate","marco.rensch@tld.com");
         user.setPassword("12345678");
-        const check = await userController.registerUser(user);
-        assert.equal(check.data.affectedRows, 1);
+
+        // Do check
+        const checkRegistering = await userController.registerUser(user);
+        const checkIsRegistered = await userController.getUserByUsername("proximate");
+        assert.equal(checkRegistering.data.affectedRows, 1);
+        assert.equal(checkIsRegistered.username, "proximate");
+
+        // Postflight: Delete User
         await userController.deleteUserByUsername("proximate");
     });
 })
