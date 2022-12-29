@@ -4,9 +4,9 @@ import express from "express";
 import ApiError from "../model/ApiError.mjs";
 import {loginValidator, registrationValidator} from "../middleware/formValidator.mjs";
 
-import UserController from "../controller/UserController.mjs";
+import UserHelper from "../helper/UserHelper.mjs";
 import { formSanitizer, loginSanitizer } from "../middleware/formSanitizer.mjs";
-import TokenController from "../controller/TokenController.mjs";
+import TokenHelper from "../helper/TokenHelper.mjs";
 
 const router = express.Router();
 
@@ -21,17 +21,19 @@ router.post('/token', async (req, res) => {
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1];
     if(refreshToken == null) return res.status(401).json(new ApiError('u-341'));
-    const tokenController = new TokenController();
-    const user = await tokenController.checkRefreshToken(refreshToken);
-    if(!user) return res.status(403).json(new ApiError('u-342'));
-    const token = await tokenController.createToken(user.id);
+    const tokenHelper = new TokenHelper();
+    const refreshTokenData = await tokenHelper.checkRefreshToken(refreshToken);
+    if(!refreshTokenData || !refreshTokenData.id) return res.status(403).json(new ApiError('u-342'));
+    const userHelper = new UserHelper();
+    const user = await userHelper.getUserById(refreshTokenData.id);
+    const token = await tokenHelper.createToken(user);
     res.status(201).json({token});
 });
 router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
     console.log("User data received: ", req.user);
 
-    const userController = new UserController();
-    const result = await userController.registerUser(req.user);
+    const userHelper = new UserHelper();
+    const result = await userHelper.registerUser(req.user);
 
     if(result.success && result.data.affectedRows === 1) {
         res.status(201).json({
@@ -52,11 +54,12 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
 router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
     console.log("User data received & access granted: ", req.user);
 
-    const tokenController = new TokenController();
-    const token = await tokenController.createToken(req.user.id);
-    const refreshToken = await tokenController.createRefreshToken(req.user.id);
+    const tokenHelper = new TokenHelper();
+    console.log(req.user)
+    const token = await tokenHelper.createToken(req.user);
+    const refreshToken = await tokenHelper.createRefreshToken(req.user.id);
     try {
-        await tokenController.storeToken(refreshToken, req.user.id);
+        await tokenHelper.storeToken(refreshToken, req.user.id);
     }catch (e) {
         console.error("Error while storing refresh token:", e);
         return res.status(500).json(new ApiError('e-999'));
@@ -67,15 +70,15 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
         return;
     }
 
-    res.status(200).json({ message: "User logged in successfully", token, refreshToken });
+    res.status(200).json({ message: "User logged in successfully", token, refreshToken, userId: req.user.id, isAdmin: req.user.isadministrator });
 });
 
 router.delete('/logout', async (req, res) => {
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1];
     if(refreshToken == null) return res.status(401).json(new ApiError('u-341'));
-    const tokenController = new TokenController();
-    const result = await tokenController.deleteToken(refreshToken);
+    const tokenHelper = new TokenHelper();
+    const result = await tokenHelper.deleteToken(refreshToken);
     if(result.success && result.data.affectedRows === 1) {
         res.status(200).json({ message: "User logged out successfully" });
     }else{

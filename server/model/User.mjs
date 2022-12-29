@@ -8,7 +8,8 @@ class User {
     firstname;
     status;
     lastname;
-    userGroup;
+    usergroup;
+    isadministrator;
 
     constructor(firstname, lastname, username, email) {
         this.firstname = firstname;
@@ -17,19 +18,12 @@ class User {
         this.email = email;
     }
 
-    setId(id) {
-        this.id = id;
-    }
-
     setPassword(password, isHashed = false) {
         if (isHashed) {
             this.password = password;
         } else {
             this.password = this.hashPassword(password);
         }
-    }
-    setUserGroup(userGroup) {
-        this.userGroup = userGroup;
     }
 
     hashPassword(password) {

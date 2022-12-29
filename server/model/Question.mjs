@@ -22,6 +22,11 @@ class Question {
         this.anonymous = anonymous ? 1 : 0;
         return this;
     }
+
+    setId(id){
+        this.id = id;
+        return this;
+    }
 }
 
 export default Question;

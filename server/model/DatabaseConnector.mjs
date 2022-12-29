@@ -20,16 +20,16 @@ class DatabaseConnector {
             this.setConfiguration(connectionData);
         }
 
-        try{
+        try {
             this.getPool()
-        }catch (err) {
+        } catch (err) {
             throw err;
         }
     }
 
     getPool() {
         if (this.pool == null) {
-            try{
+            try {
                 this.createPool()
             } catch (err) {
                 throw err;
@@ -45,26 +45,27 @@ class DatabaseConnector {
         }
     }
 
-    configPool(withDb = false){
+    configPool(withDb = false) {
         let config = {
             host: this.host,
             port: this.port,
             user: this.user,
             password: this.password,
-            connectionLimit: 5
+            connectionLimit: 10
         };
-        if(withDb){
+        if (withDb) {
             config.database = this.database;
         }
         return config;
     }
+
     async fetchConnection() {
         this.getPool();
         if (this.pool) {
             try {
                 return await this.pool.getConnection();
-            }catch (err) {
-               throw err;
+            } catch (err) {
+                throw err;
             }
         } else {
             console.log("Error: No pool available");

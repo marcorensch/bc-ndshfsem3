@@ -1,6 +1,6 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
-class UsergroupsController {
+class UsergroupsHelper {
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
@@ -15,4 +15,4 @@ class UsergroupsController {
     }
 }
 
-export default UsergroupsController;
+export default UsergroupsHelper;

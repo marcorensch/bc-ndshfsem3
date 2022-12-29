@@ -1,21 +1,18 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 import jwt from "jsonwebtoken";
-import UsergroupsController from "./UsergroupsController.mjs";
-import UserController from "./UserController.mjs";
 
-class TokenController {
+class TokenHelper {
     databaseConnector;
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
     async checkToken(token) {
-        return await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     }
 
-    async createToken(userId) {
-        const isAdmin = await this._isAdministrator(userId);
-        return await jwt.sign({id: userId, isAdmin}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
+    async createToken(user) {
+        return jwt.sign({id: user.id, isAdmin: user.isadministrator}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
 
     async createRefreshToken(userId) {
@@ -44,24 +41,12 @@ class TokenController {
             return false;
         }
         console.log("RefreshToken Verify: " , verify);
+        console.log("RefreshToken: " , refreshToken);
         const sql = "SELECT COUNT(token) AS count FROM access_tokens WHERE token=?";
         const res = await this.databaseConnector.query(sql, [refreshToken]);
         if(res.data[0].count > 0) return verify;
         return false;
     }
-
-    async _isAdministrator(userId) {
-        const userController = new UserController();
-        const usersGroup = await userController.getUsersGroupByUserId(userId);
-        console.log("Usergroup: ", usersGroup);
-        const usergroupsController = new UsergroupsController();
-        const usergroups = await usergroupsController.getAllUsergroups();
-        console.log("Usergroups: ", usergroups);
-        const adminGroup = usergroups.find(group => group.alias === "administrator");
-        if(usersGroup === adminGroup.id) return true;
-
-        return false;
-    }
 }
 
-export default TokenController;
+export default TokenHelper;

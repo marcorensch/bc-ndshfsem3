@@ -2,7 +2,7 @@ import ApiError from "../model/ApiError.mjs";
 import isLength from "validator/lib/isLength.js";
 import isEmail from "validator/lib/isEmail.js";
 import {forbiddenList} from "./BadWords.mjs";
-import UserController from "../controller/UserController.mjs";
+import UserHelper from "../helper/UserHelper.mjs";
 
 export default class FieldChecker {
     username;
@@ -16,7 +16,7 @@ export default class FieldChecker {
         this.question = {
             min: 20,
             max: 1000
-        },
+        };
         this.username = {
             regex : /^([a-z]+[.\-_]*[a-z]+)$/i,
             min: 3,
@@ -45,7 +45,6 @@ export default class FieldChecker {
     }
 
     async isValidEmail(email){
-
         if(!isEmail(email)) return new ApiError('u-318', "email").setData({value: email});
         if(!await this.emailIsNew(email)) return new ApiError('u-322', "email").setData({value: email});
 
@@ -73,8 +72,8 @@ export default class FieldChecker {
     }
 
     async usernameIsAvailable(username){
-        const userController = new UserController(this.connectionData);
-        const result = await userController.getUserIdByUsername(username);
+        const userHelper = new UserHelper(this.connectionData);
+        const result = await userHelper.getUserIdByUsername(username);
         return result.data.length === 0;
     }
 
@@ -90,9 +89,9 @@ export default class FieldChecker {
     }
 
     async emailIsNew(email){
-        const userController = new UserController(this.connectionData);
-        const result = await userController.getUserIdByEmail(email);
-        return result.data.length === 0;
+        const userHelper = new UserHelper(this.connectionData);
+        const result = await userHelper.getUserIdByEmail(email);
+        return !result;
     }
 
     hasValidLength(string, min, max){

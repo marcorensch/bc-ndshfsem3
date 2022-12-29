@@ -1,6 +1,6 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
-class CategoryController {
+class CategoryHelper {
     databaseConnector = null;
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
@@ -57,4 +57,4 @@ class CategoryController {
     }
 }
 
-export default CategoryController;
+export default CategoryHelper;
