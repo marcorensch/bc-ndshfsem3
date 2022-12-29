@@ -1,9 +1,9 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 import jwt from "jsonwebtoken";
-import UsergroupsController from "./UsergroupsController.mjs";
-import UserController from "./UserController.mjs";
+import UsergroupsHelper from "./UsergroupsHelper.mjs";
+import UserHelper from "./UserHelper.mjs";
 
-class TokenController {
+class TokenHelper {
     databaseConnector;
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
@@ -14,7 +14,7 @@ class TokenController {
     }
 
     async createToken(userId) {
-        const userController = new UserController();
+        const userController = new UserHelper();
         const isAdmin = await userController.isAdministrator(userId);
         return await jwt.sign({id: userId, isAdmin}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
@@ -52,4 +52,4 @@ class TokenController {
     }
 }
 
-export default TokenController;
+export default TokenHelper;

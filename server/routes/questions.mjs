@@ -3,10 +3,10 @@ const router = express.Router();
 import {authenticateToken} from "../middleware/authenticate.mjs";
 import Question from "../model/Question.mjs";
 import questionSanitizer from "../middleware/questionSanitizer.mjs";
-import QuestionController from "../controller/QuestionController.mjs";
+import QuestionHelper from "../helper/QuestionHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
-import userController from "../controller/UserController.mjs";
+import userController from "../helper/UserHelper.mjs";
 
 router.get('/', async (req, res) => {
     const {count, offset, user_id, category_id, direction} = req.query;
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
         category_id: category_id || false,
         direction: direction || "DESC"
     }
-    const questionController = new QuestionController();
+    const questionController = new QuestionHelper();
     const result = await questionController.getItems(queryParams);
     res.status(200).json(result);
 });
@@ -35,7 +35,7 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
     const question = new Question(content, userId).setAnonymous(anonymous).setCategoryId(category_id);
 
     try{
-        const questionController = new QuestionController();
+        const questionController = new QuestionHelper();
         await questionController.storeItem(question);
         const insertedQuestionId = await questionController.getLastItemIdCreatedByUserId(userId)
 

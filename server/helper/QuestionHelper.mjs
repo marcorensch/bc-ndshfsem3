@@ -1,6 +1,6 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
-class QuestionController{
+class QuestionHelper {
     databaseConnector = null;
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
@@ -56,4 +56,4 @@ class QuestionController{
     }
 }
 
-export default QuestionController;
+export default QuestionHelper;

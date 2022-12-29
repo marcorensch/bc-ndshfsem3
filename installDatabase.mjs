@@ -1,14 +1,14 @@
 import DatabaseConnector from "./server/model/DatabaseConnector.mjs";
 import fs from "fs";
 import path from "path";
-import UserController from "./server/controller/UserController.mjs";
+import UserHelper from "./server/helper/UserHelper.mjs";
 import chalk from "chalk";
 
 let databaseConnector;
 
 async function addAdminUser(connectionData, adminUser) {
 
-    const userController = new UserController(connectionData);
+    const userController = new UserHelper(connectionData);
     adminUser.userGroup = await userController._getUserGroupIdByAlias("administrator");
 
     try {

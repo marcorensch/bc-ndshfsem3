@@ -6,12 +6,12 @@ const router = express.Router();
 import {authenticateToken} from "../middleware/authenticate.mjs";
 
 import Category from "../model/Category.mjs";
-import CategoryController from "../controller/CategoryController.mjs";
+import CategoryHelper from "../helper/CategoryHelper.mjs";
 import isAuthorized from "../middleware/authorizationChecker.mjs";
 import ApiError from "../model/ApiError.mjs";
 
 router.get('/', async (req, res) => {
-    const categoryController = new CategoryController();
+    const categoryController = new CategoryHelper();
     const result = await categoryController.getAllCategories();
 
     if (result.success) {
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    const categoryController = new CategoryController();
+    const categoryController = new CategoryHelper();
     const result = await categoryController.getItemById(id);
 
     if (result.success) {
@@ -42,7 +42,7 @@ router.post('/create', authenticateToken, async (req, res) => {
     const category = new Category(title);
 
     try {
-        const categoryController = new CategoryController();
+        const categoryController = new CategoryHelper();
         await categoryController.storeCategory(category);
         res.status(201).json({
             message: "Category created successfully",
@@ -60,7 +60,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     if (!id) return res.status(400).json({message: "Category id is missing"});
     if (!title) return res.status(400).json({message: "Title is required"});
 
-    const categoryController = new CategoryController();
+    const categoryController = new CategoryHelper();
     const category = new Category(title).setId(id);
 
     const result = await categoryController.updateCategory(category);
@@ -76,7 +76,7 @@ router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, r
     console.log("Delete Category");
     const id = req.params.id;
     if (!id) res.status(400).json({message: "Category Id is required"});
-    const categoryController = new CategoryController();
+    const categoryController = new CategoryHelper();
     const result = await categoryController.deleteItemById(id);
     console.log(result);
     if (result.success && result.data.affectedRows === 1) {

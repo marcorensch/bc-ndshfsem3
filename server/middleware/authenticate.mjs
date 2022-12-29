@@ -1,8 +1,8 @@
 import * as jwt from "jsonwebtoken";
-import TokenController from "../controller/TokenController.mjs";
+import TokenHelper from "../helper/TokenHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
-import userController from "../controller/UserController.mjs";
-import UserController from "../controller/UserController.mjs";
+import userController from "../helper/UserHelper.mjs";
+import UserHelper from "../helper/UserHelper.mjs";
 
 async function authenticateToken (req, res, next) {
     // @ ToDo was ist wenn Auth Header fehlt?
@@ -11,8 +11,8 @@ async function authenticateToken (req, res, next) {
 
     if (token == null) return res.sendStatus(401);
 
-    const tokenController = new TokenController();
-    const userController = new UserController();
+    const tokenController = new TokenHelper();
+    const userController = new UserHelper();
 
     try {
         const {id} = await tokenController.checkToken(token);

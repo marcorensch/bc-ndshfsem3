@@ -1,6 +1,6 @@
 import User from "../model/User.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
-import UserController from "../controller/UserController.mjs";
+import UserHelper from "../helper/UserHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
 
 const registrationValidator = async (req, res, next) => {
@@ -26,7 +26,7 @@ const registrationValidator = async (req, res, next) => {
 const loginValidator = async (req, res, next) => {
     console.log("login validator called");
     let {username, password} = req.body;
-    const userController = new UserController();
+    const userController = new UserHelper();
 
     const user = await userController.getUserByUsername(username);
 

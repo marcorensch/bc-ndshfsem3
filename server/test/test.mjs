@@ -2,7 +2,7 @@ import * as assert from "assert";
 import FieldChecker from "../utils/FieldChecker.mjs";
 import * as dotenv  from 'dotenv';
 import User from "../model/User.mjs";
-import UserController from "../controller/UserController.mjs";
+import UserHelper from "../helper/UserHelper.mjs";
 dotenv.config();
 
 const testDbConnectionData = {
@@ -163,27 +163,30 @@ describe('E-Mail Checker', function (){
     });
     it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
 
-        // register user
-        const userController = new UserController(testDbConnectionData);
+        const userHelper = new UserHelper(testDbConnectionData);
 
         // delete user
-        await userController.deleteUserByUsername("test-user");
+        const status = await userHelper.deleteUserByUsername("test-user");
+
+        console.log(status);
 
         const user = new User("Test","Test","test-user","user.name@tld.co.uk");
         user.setPassword("12345678");
-        await userController.registerUser(user);
+        await userHelper.registerUser(user);
 
         // Do check
         const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
-        assert.equal(check.errorCode, "u-322");
 
         // delete user
-        await userController.deleteUserByUsername("test-user");
+        await userHelper.deleteUserByUsername("test-user");
+
+        assert.equal(check.errorCode, "u-322");
+
     });
 });
 
 describe('Registration Checker', function (){
-    const userController = new UserController(testDbConnectionData);
+    const userController = new UserHelper(testDbConnectionData);
 
     it('should store a new user with valid data in the db', async function () {
         // delete user

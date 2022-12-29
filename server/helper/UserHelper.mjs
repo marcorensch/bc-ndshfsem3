@@ -1,9 +1,9 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
-import UsergroupsController from "./UsergroupsController.mjs";
+import UsergroupsHelper from "./UsergroupsHelper.mjs";
 import User from "../model/User.mjs";
 
 
-class UserController {
+class UserHelper {
     databaseConnector = null;
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
@@ -66,8 +66,11 @@ class UserController {
     async getUserIdByEmail(email) {
         const sql = "SELECT id FROM users WHERE email=?";
         const result = await this.databaseConnector.query(sql, [email]);
-        const user = await this._buildUserObject(result.data[0]);
-        return user;
+        if(result.data && result.data.length > 0) {
+            const user = await this._buildUserObject(result.data[0]);
+            return user.id;
+        }
+        return false;
     }
 
     async _buildUserObject(data) {
@@ -94,7 +97,7 @@ class UserController {
 
     async isAdministrator(id) {
         const usersGroup = await this.getUsersGroupByUserId(id);
-        const usergroupsController = new UsergroupsController();
+        const usergroupsController = new UsergroupsHelper();
         const usergroups = await usergroupsController.getAllUsergroups();
         const adminGroup = usergroups.find(group => group.alias === "administrator");
         if(usersGroup === adminGroup.id) return true;
@@ -103,4 +106,4 @@ class UserController {
     }
 }
 
-export default UserController;
+export default UserHelper;
