@@ -22,6 +22,7 @@ class ApiError {
     relatedColumn
     data;
     constructor(errorCode, column=null) {
+        this.success = false;
         this.errorCode = errorCode;
         this.message = errorCodes[errorCode] || "unkonwn error";
         this.relatedColumn = column;
