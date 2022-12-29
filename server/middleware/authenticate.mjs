@@ -4,7 +4,6 @@ import ApiError from "../model/ApiError.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
 
 async function authenticateToken (req, res, next) {
-    // @ ToDo was ist wenn Auth Header fehlt?
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -15,22 +14,19 @@ async function authenticateToken (req, res, next) {
 
     try {
         const {id} = await tokenHelper.checkToken(token);
-        const user = userHelper.getUserById(id);
-        req.user = user;
-        next();
+        req.user = await userHelper.getUserById(id);
     }catch(err) {
         if(err.TokenExpiredError === jwt.TokenExpiredError && req.body.refreshToken) {
-            const {id} = await tokenHelper.checkRefreshToken(req.body.refreshToken);
-            if(!id) return res.status(403).json(new ApiError('u-342'));
-            const user = userHelper.getUserById(id);
-            req.token = await tokenHelper.createToken(user.id);
+            const refreshTokenContent = await tokenHelper.checkRefreshToken(req.body.refreshToken);
+            if(!refreshTokenContent || !refreshTokenContent.id) return res.status(403).json(new ApiError('u-342'));
+            req.user = await userHelper.getUserById(refreshTokenContent.id);
+            req.token = await tokenHelper.createToken(req.user);
         }else{
             return res.status(403).json(new ApiError('u-342'));
         }
     }
 
+    next();
 }
-
-
 
 export {authenticateToken};

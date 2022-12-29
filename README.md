@@ -68,8 +68,8 @@ npm run setup
 
 ## Backend API Routen
 
-:white_check_mark: = fertig implementiert<br>
-:warning: = in Arbeit<br>
+:white_check_mark: = fertig implementiert & getestet<br>
+:warning: = in Arbeit / kann funktionieren - kann aber Fehler werfen<br>
 :x: = noch nicht implementiert.
 
 #### User (/users/...)
@@ -82,27 +82,30 @@ npm run setup
 | :x:       | DELETE | `/:id`   | Entfernt einen User                       | Ja                            |                 |
 | :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email | true oder false |
 
-Hinweis: Benutzer erstellen ist nicht möglich, da dies über die Authentifizierung erfolgt.
+Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 #### Fragen (/questions/...)
 
-| Status             | Type   | Route            | Beschreibung                        | Request                                                                 | Response |
-|--------------------|--------|------------------|-------------------------------------|-------------------------------------------------------------------------|----------|
-| :warning:          | GET    | `/`              | Gibt eine Liste aller Fragen zurück | body.count, body.offset, body.user_id, body.category_id, body.direction |          |
-| :x:                | GET    | `/:id`           | Gibt eine Frage zurück              | ja                                                                      |          |
-| :white_check_mark: | POST   | `/create`        | Erstellt eine neue Frage            | body.content, body.category_id, body.anonymous                          |          |
-| :x:                | PUT    | `/:id`           | Aktualisiert eine Frage             | ja                                                                      |          |
-| :x:                | DELETE | `/:id`           | Löscht eine Frage                   | ja                                                                      |          |
+| Status             | Type   | Route     | Beschreibung                        | Request                                                                               | Response                                                                      |
+|--------------------|--------|-----------|-------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| :white_check_mark: | GET    | `/`       | Gibt eine Liste aller Fragen zurück | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
+| :white_check_mark: | GET    | `/:id`    | Gibt eine Frage & Antworten zurück  | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
+| :white_check_mark: | POST   | `/create` | Erstellt eine neue Frage            | body.content, body.category_id, body.anonymous                                        |                                                                               |
+| :warning:          | PUT    | `/:id`    | Aktualisiert eine Frage             | ja                                                                                    |                                                                               |
+| :x:                | DELETE | `/:id`    | Löscht eine Frage                   | ja                                                                                    |                                                                               |
+
+*: Nur wenn Token vorhanden & valide ist sonst NULL
 
 #### Antworten (/answers/...)
 
-| Status | Type   | Route           | Beschreibung                                | Produktiv |
-|--------|--------|-----------------|---------------------------------------------|-----------|
-| :x:    | GET    | `/`             | Gibt eine Liste aller Antworten zurück      | Nein      |
-| :x:    | GET    | `/:question_id` | Gibt eine alle Antworten einer Frage zurück | Ja        |
-| :x:    | POST   | `/`             | Erstellt eine neue Antwort                  | Ja        |
-| :x:    | PUT    | `/:id`          | Aktualisiert eine Antwort                   | Ja        |
-| :x:    | DELETE | `/:id`          | Löscht eine Antwort                         | Ja        |
+| Status             | Type   | Route           | Beschreibung                                | Request                                                         | Response                           |
+|--------------------|--------|-----------------|---------------------------------------------|-----------------------------------------------------------------|------------------------------------|
+| :x:                | GET    | `/:question_id` | Gibt eine alle Antworten einer Frage zurück |                                                                 |                                    |
+| :white_check_mark: | POST   | `/create`       | Erstellt eine neue Antwort                  | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
+| :x:                | PUT    | `/:id`          | Aktualisiert eine Antwort                   | Ja                                                              |                                    |
+| :x:                | DELETE | `/:id`          | Löscht eine Antwort                         | Ja                                                              |                                    |
+
+*: Nur wenn neuer Token generiert wurde
 
 #### Kategorien (/categories/...)
 

@@ -1,5 +1,6 @@
 const errorCodes = {
     "e-999": "Unknown Error",
+    "e-100": "Not allowed",
     "u-317": "Field is required",
     "u-318": "Invalid email address",
     "u-319": "Invalid field length",
@@ -13,6 +14,7 @@ const errorCodes = {
     "c-331": "Category not found",
     "q-317": "Question text empty or too short",
     "q-318": "Category id is required",
+    "q-331": "Question not found",
 }
 class ApiError {
     errorCode;

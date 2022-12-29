@@ -54,7 +54,7 @@ class UserHelper {
     }
 
     async getUserByUsername(username) {
-        const sql = "SELECT id,username,firstname,lastname,email,password FROM users WHERE username=?";
+        const sql = "SELECT id,username,firstname,lastname,email,password,usergroup FROM users WHERE username=?";
         const result = await this.databaseConnector.query(sql, [username]);
         if(result.data.length > 0) {
             const user = await this._buildUserObject(result.data[0]);
@@ -77,9 +77,9 @@ class UserHelper {
         const user = new User(data.firstname, data.lastname, data.username, data.email);
         user.id = data.id;
         user.status = data.status;
-        user.userGroup = data.usergroup;
+        user.usergroup = data.usergroup;
         if(data.password) user.password = data.password;
-        user.isAdministrator = await this.isAdministrator(data.id);
+        user.isadministrator = await this.isAdministrator(user);
         return user;
     }
 
@@ -95,14 +95,12 @@ class UserHelper {
         return user;
     }
 
-    async isAdministrator(id) {
-        const usersGroup = await this.getUsersGroupByUserId(id);
+    async isAdministrator(user) {
         const usergroupsHelper = new UsergroupsHelper();
         const usergroups = await usergroupsHelper.getAllUsergroups();
         const adminGroup = usergroups.find(group => group.alias === "administrator");
-        if(usersGroup === adminGroup.id) return true;
 
-        return false;
+        return user.usergroup === adminGroup.id;
     }
 }
 

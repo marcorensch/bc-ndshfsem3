@@ -22,9 +22,11 @@ router.post('/token', async (req, res) => {
     const refreshToken = authHeader && authHeader.split(' ')[1];
     if(refreshToken == null) return res.status(401).json(new ApiError('u-341'));
     const tokenHelper = new TokenHelper();
-    const user = await tokenHelper.checkRefreshToken(refreshToken);
-    if(!user) return res.status(403).json(new ApiError('u-342'));
-    const token = await tokenHelper.createToken(user.id);
+    const refreshTokenData = await tokenHelper.checkRefreshToken(refreshToken);
+    if(!refreshTokenData || !refreshTokenData.id) return res.status(403).json(new ApiError('u-342'));
+    const userHelper = new UserHelper();
+    const user = await userHelper.getUserById(refreshTokenData.id);
+    const token = await tokenHelper.createToken(user);
     res.status(201).json({token});
 });
 router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
@@ -53,7 +55,8 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
     console.log("User data received & access granted: ", req.user);
 
     const tokenHelper = new TokenHelper();
-    const token = await tokenHelper.createToken(req.user.id);
+    console.log(req.user)
+    const token = await tokenHelper.createToken(req.user);
     const refreshToken = await tokenHelper.createRefreshToken(req.user.id);
     try {
         await tokenHelper.storeToken(refreshToken, req.user.id);
@@ -67,7 +70,7 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
         return;
     }
 
-    res.status(200).json({ message: "User logged in successfully", token, refreshToken });
+    res.status(200).json({ message: "User logged in successfully", token, refreshToken, userId: req.user.id, isAdmin: req.user.isadministrator });
 });
 
 router.delete('/logout', async (req, res) => {

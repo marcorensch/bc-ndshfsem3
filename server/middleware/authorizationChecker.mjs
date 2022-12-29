@@ -13,7 +13,7 @@ function isOwner(userId, item, target) {
 
 }
 
-function getController(target) {
+function getHelper(target) {
     switch(target) {
         case "user": return UserHelper;
         case "category": return CategoryHelper;
@@ -23,8 +23,9 @@ function getController(target) {
 }
 
 const isAuthorized = (target) => {
-    const controller = getController(target);
+    const controller = getHelper(target);
     return async (req, res, next) => {
+        console.log("authorizationChecker called");
         req.isAuthorized = false;
         const user = req.user;
         const ctrl = new controller();
