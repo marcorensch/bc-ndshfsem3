@@ -28,22 +28,9 @@ const loginValidator = async (req, res, next) => {
     let {username, password} = req.body;
     const userController = new UserController();
 
-    const dbResult = await userController.getUserByUsername(username);
+    const user = await userController.getUserByUsername(username);
 
-    if(!dbResult.success) return res.status(500).json(dbResult.data);
-    if(dbResult.data.length !== 1) return res.status(400).json(new ApiError('u-331'));
-
-    const user = new User(dbResult.data[0].firstname, dbResult.data[0].lastname, dbResult.data[0].username, dbResult.data[0].email);
-    user.setId(dbResult.data[0].id);
-    user.setPassword(dbResult.data[0].password, true);
-
-    console.log("user", user);
-
-    console.log("password",password)
-
-    // const passwordMatch = await bcrypt.compare(password, user.password);
-    // console.log("passwordMatch", passwordMatch);
-
+    if(!user) return res.status(400).json(new ApiError('u-331'));
     if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332'));
 
     req.user = user;

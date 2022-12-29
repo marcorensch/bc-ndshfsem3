@@ -1,4 +1,6 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
+import UsergroupsController from "./UsergroupsController.mjs";
+import User from "../model/User.mjs";
 
 
 class UserController {
@@ -53,12 +55,29 @@ class UserController {
 
     async getUserByUsername(username) {
         const sql = "SELECT id,username,firstname,lastname,email,password FROM users WHERE username=?";
-        return await this.databaseConnector.query(sql, [username]);
+        const result = await this.databaseConnector.query(sql, [username]);
+        if(result.data.length > 0) {
+            const user = await this._buildUserObject(result.data[0]);
+            return user;
+        }
+        return false;
     }
 
     async getUserIdByEmail(email) {
         const sql = "SELECT id FROM users WHERE email=?";
-        return await this.databaseConnector.query(sql, [email]);
+        const result = await this.databaseConnector.query(sql, [email]);
+        const user = await this._buildUserObject(result.data[0]);
+        return user;
+    }
+
+    async _buildUserObject(data) {
+        const user = new User(data.firstname, data.lastname, data.username, data.email);
+        user.id = data.id;
+        user.status = data.status;
+        user.userGroup = data.usergroup;
+        if(data.password) user.password = data.password;
+        user.isAdministrator = await this.isAdministrator(data.id);
+        return user;
     }
 
     async deleteUserByUsername(username) {
@@ -69,7 +88,18 @@ class UserController {
     async getUserById(id) {
         const sql = "SELECT id,firstname,lastname,username,email,status,usergroup FROM users WHERE id=?";
         const result = await this.databaseConnector.query(sql, [id]);
-        return result.data[0];
+        const user = await this._buildUserObject(result.data[0]);
+        return user;
+    }
+
+    async isAdministrator(id) {
+        const usersGroup = await this.getUsersGroupByUserId(id);
+        const usergroupsController = new UsergroupsController();
+        const usergroups = await usergroupsController.getAllUsergroups();
+        const adminGroup = usergroups.find(group => group.alias === "administrator");
+        if(usersGroup === adminGroup.id) return true;
+
+        return false;
     }
 }
 

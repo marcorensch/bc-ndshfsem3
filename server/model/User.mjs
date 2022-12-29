@@ -9,6 +9,7 @@ class User {
     status;
     lastname;
     userGroup;
+    isAdministrator;
 
     constructor(firstname, lastname, username, email) {
         this.firstname = firstname;

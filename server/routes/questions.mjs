@@ -6,6 +6,7 @@ import questionSanitizer from "../middleware/questionSanitizer.mjs";
 import QuestionController from "../controller/QuestionController.mjs";
 import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
+import userController from "../controller/UserController.mjs";
 
 router.get('/', async (req, res) => {
     const {count, offset, user_id, category_id, direction} = req.query;
@@ -25,6 +26,9 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
     let {content, category_id, anonymous} = req.body;
     console.log("Question data received: ", req.body);
     const userId = req.user.id;
+    const userController = new userController();
+    const user = await userController.getUserById(userId);
+
     // Add a new Question to db
     console.log("Create Question");
     console.log(req.body);
@@ -34,10 +38,12 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker,  a
         const questionController = new QuestionController();
         await questionController.storeItem(question);
         const insertedQuestionId = await questionController.getLastItemIdCreatedByUserId(userId)
+
         res.status(201).json({
             message: "Question created successfully",
             question_id: insertedQuestionId,
-            user_id: userId,
+            user_id: user.id,
+            is_admin: user.isAdministrator,
             token: req.token
         });
     }catch (error) {
