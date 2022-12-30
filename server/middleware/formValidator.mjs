@@ -31,7 +31,7 @@ const loginValidator = async (req, res, next) => {
     const user = await userHelper.getUserByUsername(username);
 
     if(!user) return res.status(400).json(new ApiError('u-331'));
-    if(!user.checkPassword(password)) return res.status(400).json(new ApiError('u-332'));
+    if(!user.checkPassword(password)) return res.status(401).json(new ApiError('u-332'));
 
     req.user = user;
 

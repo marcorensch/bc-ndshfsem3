@@ -13,9 +13,12 @@ function devServerConfig(){
     if(process.env.VUE_APP_HTTPS === "true"){
         console.log("Using https");
         return {
-            https: {
-                key: fs.readFileSync('certs/example.com+5-key.pem'),
-                cert: fs.readFileSync('certs/example.com+5.pem'),
+            server: {
+                type: 'https',
+                options: {
+                    key: fs.readFileSync('certs/example.com+5-key.pem'),
+                    cert: fs.readFileSync('certs/example.com+5.pem'),
+                }
             }
         }
     }

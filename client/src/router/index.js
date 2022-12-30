@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import UserCockpitOverview from "@/views/UserCockpitOverview";
 import AnswerNew from "@/views/AnswerNew";
@@ -11,8 +10,7 @@ import AdminCockpitOverview from "@/views/AdminCockpitOverview";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {path: '/', component: Home},
-        {path: '/login', component: Login},
+        {name: "Home", path: '/', component: Home},
         {path: '/register', component: Register},
         {path: '/user/cockpit/overview', component: UserCockpitOverview},
         {path: '/question/new', component: QuestionNew},

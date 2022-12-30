@@ -22,19 +22,22 @@
             <span class="title">Ask</span>
           </router-link>
         </li>
-        <li v-if="!user">
-          <router-link id="show-modal" @click="showLoginModal = true" class="button" to="/">
+        <template v-if="!user">
+          <li>
+            <a href="#" id="show-login-modal" @click="showLoginModal=true" class="button">
             <span class="menu-icons">
               <font-awesome-icon icon="user"/> </span>
-            <span class="title">Login</span>
-          </router-link>
-        </li>
-        <li v-if="!user">
-          <router-link class="button" to="/register">
-            <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
-            <span class="title">Signup</span>
-          </router-link>
-        </li>
+              <span class="title">Login</span>
+            </a>
+          </li>
+          <li>
+            <router-link class="button" to="/register">
+              <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
+              <span class="title">Signup</span>
+            </router-link>
+          </li>
+        </template>
+
         <li>
           <router-link class="button" to="/categorie1">
             <span class="menu-icons"><font-awesome-icon icon="crown"/></span>
@@ -53,10 +56,10 @@
     </div>
     <div class="flex"></div>
     <div class="menu" v-if="user">
-      <router-link class="button" to="/" @click="logout">
+      <a href="#" class="button" @click="handleLogoutClicked">
         <span class="menu-icons"><font-awesome-icon icon="right-from-bracket"/></span>
         <span class="title">Logout</span>
-      </router-link>
+      </a>
     </div>
     <div class="menu" v-if="user">
       <router-link class="button" to="/user/cockpit/overview">
@@ -67,7 +70,7 @@
 
   </aside>
   <Teleport to="body">
-    <LoginModal :show="showLoginModal" @close="showLoginModal = false" @loggedIn="loggedIn">
+    <LoginModal :show="showLoginModal" @close="handleModalClose" @loggedIn="loggedIn">
     </LoginModal>
   </Teleport>
 </template>
@@ -75,9 +78,11 @@
 <script>
 
 import LoginModal from "@/components/LoginModal";
+import axios from "axios";
 
 export default {
   name: 'Sidebar',
+  inject: ['host'],
   components: {
     LoginModal
   },
@@ -90,16 +95,38 @@ export default {
       user: false
     }
   },
-
+  mounted() {
+    this.user = this.checkTokenSet();
+  },
   methods: {
+    handleModalClose(){
+      this.showLoginModal = false
+      this.user = this.checkTokenSet();
+    },
+    checkTokenSet(){
+      return !!localStorage.getItem('token');
+    },
     toggleMenu() {
       this.is_expanded = !this.is_expanded
       localStorage.setItem('is_expanded', this.is_expanded)
       console.log(this.is_expanded)
     },
-    logout(){
-      console.log('logout')
-      this.user = false
+    handleLogoutClicked(){
+      axios.delete(this.host + "/auth/logout", {
+        headers:{
+          Authorization: 'Bearer ' + localStorage.getItem('refreshToken')
+        }
+      }).then((response) => {
+        if(response.data.success){
+          localStorage.removeItem('token');
+          localStorage.removeItem('refreshToken');
+          this.user = this.checkTokenSet();
+        }else{
+          console.log(response.data)
+        }
+      }).catch((error) => {
+        this.errorMessage = error.response.data.message
+      })
     },
     loggedIn(){
       console.log('loggedIn')

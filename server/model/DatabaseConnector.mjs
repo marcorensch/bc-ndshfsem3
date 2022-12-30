@@ -19,12 +19,6 @@ class DatabaseConnector {
         } else {
             this.setConfiguration(connectionData);
         }
-
-        try {
-            this.getPool()
-        } catch (err) {
-            throw err;
-        }
     }
 
     getPool() {
@@ -77,7 +71,7 @@ class DatabaseConnector {
         try {
             let conn = await this.fetchConnection();
             const result = await conn.query(sql, values);
-            conn.release();
+            conn.close();
             delete result.meta;
             return {success: true, data: result};
         } catch (err) {

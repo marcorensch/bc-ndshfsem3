@@ -7,6 +7,7 @@ import {loginValidator, registrationValidator} from "../middleware/formValidator
 import UserHelper from "../helper/UserHelper.mjs";
 import { formSanitizer, loginSanitizer } from "../middleware/formSanitizer.mjs";
 import TokenHelper from "../helper/TokenHelper.mjs";
+import TransportObject from "../model/TransportObject.mjs";
 
 const router = express.Router();
 
@@ -70,7 +71,9 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
         return;
     }
 
-    res.status(200).json({ message: "User logged in successfully", token, refreshToken, userId: req.user.id, isAdmin: req.user.isadministrator });
+    const transportObject = new TransportObject().setSuccess(true).setPayload({token, refreshToken, userId:req.user.id, isAdmin:req.user.isadministrator}).setMessage("User logged in successfully");
+
+    res.status(200).json(transportObject);
 });
 
 router.delete('/logout', async (req, res) => {
@@ -80,7 +83,8 @@ router.delete('/logout', async (req, res) => {
     const tokenHelper = new TokenHelper();
     const result = await tokenHelper.deleteToken(refreshToken);
     if(result.success && result.data.affectedRows === 1) {
-        res.status(200).json({ message: "User logged out successfully" });
+        const transportObject = new TransportObject().setSuccess(true).setMessage("User logged out successfully");
+        res.status(200).json(transportObject);
     }else{
         console.log("Error while logging out user:", result.data);
         res.status(500).json(new ApiError('e-999'));
