@@ -1,38 +1,22 @@
 <template>
   <main class="home-page">
-    <QuestionCard v-for="question in questionList " :question=question />
+    <ListOfQuestions />
   </main>
 </template>
 
 <script>
-import QuestionCard from "@/components/QuestionCard";
-import questions from "../../../server/demo/questions.mjs";
+import ListOfQuestions from "@/components/ListOfQuestions.vue";
 
 export default {
   name: "Home",
   components: {
-    QuestionCard,
+    ListOfQuestions,
   },
   data() {
-    return {
-      questionList: [],
-
-    };
+    return {};
   },
-  created() {
-    this.getDemoData();
-
-  },
-  methods: {
-    getDemoData() {
-      console.log(questions)
-      this.questionList = questions;
-
-    },
-
-
-
-  }
+  created() {},
+  methods: {}
 }
 </script>
 

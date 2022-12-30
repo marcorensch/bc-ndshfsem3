@@ -2,6 +2,9 @@
   <main class="question-page">
     <div class="container">
       <h1>Your Question</h1>
+
+      <ErrorMessageContainer :string="errorMessage" />
+
       <div id="editor">
         <editor
             :init="init"
@@ -62,11 +65,14 @@ import 'tinymce/plugins/wordcount/plugin'
 import Editor from '@tinymce/tinymce-vue'
 import axios from "axios";
 
+import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
+
 export default {
   name: "QuestionNew",
   inject: ['host'],
   data(){
     return {
+      errorMessage: "",
       category_id: false,
       anonymous: false,
       categories: [],
@@ -95,14 +101,14 @@ export default {
     }
   },
   components: {
-    'editor': Editor
+    'editor': Editor,
+    ErrorMessageContainer
   },
   methods:{
     getCategories(){
       axios.get(this.host + '/categories')
         .then(response => {
           this.categories = response.data
-          console.log(this.categories)
         })
         .catch(error => {
           console.log(error)
@@ -111,19 +117,20 @@ export default {
     saveQuestion(){
       axios.post(this.host + "/questions/create", {
         content: this.text,
-        category_id: this.selected,
+        category_id: this.category_id,
         anonymous: this.anonymous,
-        refresh_token: localStorage.getItem('refresh_token')
+        refresh_token: localStorage.getItem('refreshToken')
       },{
         headers : {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         }
       })
         .then(response => {
-          console.log(response)
+          console.log(response.data.success)
+          this.$router.push({ name: 'Home', params: { id: response.data.success.id } })
         })
         .catch(error => {
-          console.log(error)
+          this.errorMessage = error.response.data.message
         })
     }
   },

@@ -7,12 +7,6 @@ class QuestionHelper {
     }
 
     async getItems(queryParams){
-        // @ToDo : Inner Join Usernames
-        /*
-        SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q
-        LEFT JOIN categories c ON q.category_id = c.id
-        LEFT JOIN users u ON q.created_by = u.id
-         */
         let sql = `SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q`
             +` LEFT JOIN categories c ON q.category_id = c.id`
             +` LEFT JOIN users u ON q.created_by = u.id`;
@@ -41,7 +35,8 @@ class QuestionHelper {
             const response = await this.databaseConnector.query(sql, [question.content, question.category_id, question.created_by, question.anonymous]);
             return response;
         }catch (error) {
-            throw error;
+            console.log(error);
+            return false;
         }
     }
 
@@ -51,7 +46,8 @@ class QuestionHelper {
             const response = await this.databaseConnector.query(sql, [userId]);
             return response.data[0].id;
         }catch (error) {
-            throw error;
+            console.log(error);
+            return false;
         }
     }
 
@@ -62,7 +58,8 @@ class QuestionHelper {
             const response = await this.databaseConnector.query(sql, [question.content, question.category_id, question.anonymous, question.id]);
             return response;
         }catch (error) {
-            throw error;
+            console.log(error);
+            return false;
         }
     }
 
@@ -80,7 +77,20 @@ class QuestionHelper {
             const answers = await this.databaseConnector.query(answers_sql, [id]);
             return {question: question.data[0], answers: answers.data};
         }catch (error) {
-            throw error;
+            console.log(error);
+            return {};
+        }
+    }
+
+    async getTotalCount(category_id) {
+        let sql = "SELECT COUNT(*) AS count FROM questions";
+        if(category_id) sql += ` WHERE category_id=${category_id}`;
+        try{
+            const response = await this.databaseConnector.query(sql);
+            return response.data[0].count;
+        }catch (error) {
+            console.log(error);
+            return 0;
         }
     }
 }

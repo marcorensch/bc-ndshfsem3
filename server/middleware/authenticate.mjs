@@ -4,6 +4,7 @@ import ApiError from "../model/ApiError.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
 
 async function authenticateToken (req, res, next) {
+    console.log("Question data received: ", req.body);
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 

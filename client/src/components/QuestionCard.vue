@@ -1,16 +1,16 @@
 <template>
   <div class="card w-100">
     <span class="card-header" >
-      Category: {{question.category_id}}
+      {{item.categoryTitle}}
     </span>
     <div class="card-body">
-      <p class="card-title question-content">{{question.question}}</p>
+      <p class="card-title question-content">{{strippedContent}}</p>
       <div class="btn-section">
         <router-link to="/answer/new">
-          <button class="btn btn-primary float-start col">Create Answer</button>
+          <button class="btn btn-primary float-start col">I can answer this!</button>
         </router-link>
-        <router-link to="/">
-          <button class="btn btn-primary float-end col">Show X Answers</button>
+        <router-link to="/" v-if="item.answersCount">
+          <button class="btn btn-primary float-end col">Show {{item.answersCount}} Answers</button>
         </router-link>
       </div>
 
@@ -18,8 +18,8 @@
       </div>
 
     <div class="card-body">
-      <span>created:{{question.created}}</span>
-      <span class="float-end">by <a href="#">{{question.created_by}}</a></span>
+      <span>asked: {{item.created_at}}</span>
+      <span class="float-end">by <a href="#">{{item.username}}</a></span>
   </div>
   </div>
 </template>
@@ -30,11 +30,18 @@ export default {
   name: "QuestionCard",
   components: {},
   props: {
-    question: {
+    item: {
       type: Object,
       required: true
     },
-
+  },
+  computed: {
+    strippedContent() {
+      let regex = /(<([^>]+)>)/ig;
+      let string = this.item.content.replace(regex, "");
+      const length = 100;
+      return (string.length > length) ? string.slice(0, length-1).trim() + '...' : string;
+    }
   },
   data() {
     return {
@@ -43,8 +50,8 @@ export default {
     };
 
   },
-  created() {
-
+  mounted() {
+    this.item.created_at = new Date(this.item.created_at).toLocaleString();
   },
   methods: {
 

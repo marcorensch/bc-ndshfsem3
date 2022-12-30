@@ -10,7 +10,7 @@ import AdminCockpitOverview from "@/views/AdminCockpitOverview";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {path: '/', component: Home},
+        {name: "Home", path: '/', component: Home},
         {path: '/register', component: Register},
         {path: '/user/cockpit/overview', component: UserCockpitOverview},
         {path: '/question/new', component: QuestionNew},
