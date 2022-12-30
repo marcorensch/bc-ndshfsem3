@@ -6,11 +6,21 @@ import router from './router'
 
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {
-    faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket
+    faUpload,
+    faAnglesRight,
+    faUser,
+    faCrown,
+    faHouse,
+    faKey,
+    faXmark,
+    faUserPlus,
+    faComment,
+    faRightFromBracket,
+    faChevronLeft, faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-library.add(faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
+library.add(faChevronLeft,faChevronRight, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
 
 const app = createApp(App)
 app.component("font-awesome-icon", FontAwesomeIcon)

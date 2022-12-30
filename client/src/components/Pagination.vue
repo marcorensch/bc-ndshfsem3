@@ -1,13 +1,20 @@
 <template>
   <div class="pagination">
-    <button class="btn btn-primary" @click="pageChange(page - 1)" :disabled="page === 1">Previous</button>
-    <button class="btn btn-primary" @click="pageChange(page + 1)" :disabled="page === total">Next</button>
+    <button class="btn default" @click="pageChange(page - 1)" :disabled="page === 1">
+      <font-awesome-icon icon="chevron-left" />
+    </button>
+    <button class="btn default" @click="pageChange(page + 1)" :disabled="page === total">
+      <font-awesome-icon icon="chevron-right" />
+    </button>
   </div>
 </template>
 
 <script>
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
 export default {
   name: "Pagination",
+  components: {FontAwesomeIcon},
   props: {
     total: {
       type: Number,

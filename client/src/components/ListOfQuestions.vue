@@ -19,7 +19,7 @@ export default {
     return {
       pagination: {
         page: 1,
-        perPage: 3,
+        perPage: 2,
         total: 0,
       },
       questionList: [],

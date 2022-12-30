@@ -60,6 +60,23 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
+
+  &.default{
+    font-size: .8rem;
+    background-color: var(--dark);
+    border-radius: 2px;
+    color: (var(--light));
+    padding: 7px 10px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    width: 100px;
+    transition: 0.2s ease-out;
+
+    &:hover {
+      background-color: var(--primary);
+    }
+  }
 }
 
 .app-content {
