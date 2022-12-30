@@ -3,6 +3,7 @@
   <Header/>
   <div class="app-content">
     <Sidebar/>
+    <LoginModal />
     <router-view/>
   </div>
   </div>
@@ -11,10 +12,12 @@
 <script>
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import LoginModal from "@/components/LoginModal.vue";
 
 export default {
   name: 'App',
   components: {
+    LoginModal,
     Sidebar,
     Header,
 

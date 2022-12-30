@@ -64,6 +64,7 @@ import axios from "axios";
 
 export default {
   name: "QuestionNew",
+  inject: ['host'],
   data(){
     return {
       category_id: false,

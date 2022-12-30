@@ -5,16 +5,15 @@
         <div class="modal-container">
           <div class="header">
             <h2>Login Form</h2>
-            <router-link to="/">
             <button
                 class="modal-default-button close-button"
                 @click="$emit('close')">
               <font-awesome-icon icon="xmark"></font-awesome-icon>
             </button>
-            </router-link>
           </div>
 
 
+          <div v-if="errorMessage" class="error-message-container"><span>{{errorMessage}}</span></div>
           <form>
 
             <div class="form-container">
@@ -51,14 +50,19 @@ import axios from "axios";
 
 export default {
   name: "LoginModal",
+  inject: ['host'],
   props: {
     show: Boolean
   },
   data() {
     return {
+      errorMessage:"",
+      username: "",
+      password: "",
+      checked: false
     }
   },
-  created() {
+  mounted() {
     this.username = localStorage.getItem("username") || "";
     this.password = "";
     this.checked = localStorage.getItem("checked")
@@ -73,24 +77,22 @@ export default {
         localStorage.setItem("username", this.username);
       }
     },
-    doLogin() {
-      console.log("doLogin");
-      this.$emit("loggedIn");
+    doLogin(event) {
+      event.preventDefault();
       this.rememberUsername()
       axios.post(this.host + "/auth/login", {
         username: this.username,
         password: this.password
       }).then((response) => {
-        console.log(response);
-        if(response.data.token) {
-          localStorage.setItem("token", response.data.token);
-         // this.$router.push("/");
-          this.$emit("loggedIn");
-
+        if(response.data.success){
+          if(response.data.payload.token) localStorage.setItem("token", response.data.payload.token);
+          if(response.data.payload.refreshToken) localStorage.setItem("refreshToken", response.data.payload.refreshToken);
+          this.$emit("close");
+        }else{
+          console.log(response.data)
         }
-        console.log(response);
       }).catch((error) => {
-        console.log(error);
+        this.errorMessage = error.response.data.message
       })
     }
 
@@ -99,7 +101,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.error-message-container{
+  text-align: center;
+  background-color: #f44336;
+  border: 1px solid #d93427;
+  color: rgb(246, 221, 221);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;

@@ -1,8 +1,6 @@
 <template>
-
   <main class="home-page">
-
-    <QuestionCard v-for="question in questionList " :question =question />
+    <QuestionCard v-for="question in questionList " :question=question />
   </main>
 </template>
 
@@ -14,7 +12,6 @@ export default {
   name: "Home",
   components: {
     QuestionCard,
-
   },
   data() {
     return {
