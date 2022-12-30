@@ -14,7 +14,10 @@ class QuestionHelper {
 
         if(queryParams.direction) sql += ` ORDER BY id ${queryParams.direction}`;
         if(queryParams.count) sql += ` LIMIT ${queryParams.count}`;
-        if(queryParams.index) sql += ` OFFSET ${queryParams.index}`;
+        if(queryParams.page) {
+            const offset = (queryParams.page -1) * queryParams.count;
+            sql += ` OFFSET ${offset}`
+        };
 
         if(queryParams.user_id && queryParams.category_id){
             sql += ` AND category_id=${queryParams.category_id}`;

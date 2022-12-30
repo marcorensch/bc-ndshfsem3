@@ -11,15 +11,14 @@ import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import TransportObject from "../model/TransportObject.mjs";
 
 router.get('/', identifyCurrentUser, async (req, res) => {
-    const {count, offset, user_id, category_id, direction} = req.query;
+    const {count, page, user_id, category_id, direction} = req.query;
     const queryParams = {
         count: count || 25,
-        offset: offset || 0,
+        page: page || 1,
         user_id: user_id || false,
         category_id: category_id || false,
         direction: direction || "DESC"
     }
-
     const questionHelper = new QuestionHelper();
     const set = await questionHelper.getItems(queryParams);
     const total = await questionHelper.getTotalCount();
@@ -33,7 +32,7 @@ router.get('/', identifyCurrentUser, async (req, res) => {
         }).setMessage("Questions fetched successfully");
         res.status(200).json(transportObject);
     } else {
-        res.status(500).json(result);
+        res.status(500).json(set);
     }
 });
 

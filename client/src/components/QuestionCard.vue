@@ -1,7 +1,7 @@
 <template>
   <div class="card w-100">
     <span class="card-header" >
-      {{item.categoryTitle}}
+      {{item.id}} - {{item.categoryTitle}}
     </span>
     <div class="card-body">
       <p class="card-title question-content">{{strippedContent}}</p>
