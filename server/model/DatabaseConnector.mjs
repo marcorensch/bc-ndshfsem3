@@ -58,7 +58,7 @@ class DatabaseConnector {
 
     async createDatabase(dbName) {
         try {
-            this.createConnection(this.configureConnection(false));
+            await this.createConnection(this.configureConnection(false));
         } catch (err) {
             throw err;
         }
