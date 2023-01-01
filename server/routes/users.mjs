@@ -19,6 +19,12 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
+router.delete('/:id', authenticateToken, async (req, res) => {
+    console.log(req.params.id);
+
+    return res.status(200).json(new TransportObject().setPayload({token: req.token, user_id: req.user.id}));
+});
+
 router.get('/:id', (req, res) => {
     console.log("Get Data of User with ID: ", req.params.id);
     const user = users.find(user => user.id === parseInt(req.params.id));
