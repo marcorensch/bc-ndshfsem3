@@ -7,7 +7,6 @@ class DatabaseConnector {
     user;
     password;
     database;
-    pool;
 
     constructor(connectionData = false) {
         if (!connectionData) {
@@ -21,31 +20,22 @@ class DatabaseConnector {
         }
     }
 
-    getPool() {
-        if (this.pool == null) {
-            try {
-                this.createPool()
-            } catch (err) {
-                throw err;
-            }
-        }
-    }
-
-    createPool(config = this.configPool(true)) {
+    async createConnection(config = this.configureConnection(true)) {
         try {
-            this.pool = mariadb.createPool(config);
+            return mariadb.createConnection(config);
         } catch (err) {
             throw err;
         }
     }
 
-    configPool(withDb = false) {
+    configureConnection(withDb = false) {
         let config = {
             host: this.host,
             port: this.port,
             user: this.user,
+            metaAsArray: false,
             password: this.password,
-            connectionLimit: 10
+            // connectionLimit: 10
         };
         if (withDb) {
             config.database = this.database;
@@ -53,35 +43,22 @@ class DatabaseConnector {
         return config;
     }
 
-    async fetchConnection() {
-        this.getPool();
-        if (this.pool) {
-            try {
-                return await this.pool.getConnection();
-            } catch (err) {
-                throw err;
-            }
-        } else {
-            console.log("Error: No pool available");
-            return false;
-        }
-    }
-
     async query(sql, values) {
+        let conn = await this.createConnection();
         try {
-            let conn = await this.fetchConnection();
             const result = await conn.query(sql, values);
-            conn.close();
             delete result.meta;
             return {success: true, data: result};
         } catch (err) {
             throw err;
+        } finally {
+            if (conn) await conn.end();
         }
     }
 
     async createDatabase(dbName) {
         try {
-            this.createPool(this.configPool(false));
+            this.createConnection(this.configureConnection(false));
         } catch (err) {
             throw err;
         }
@@ -91,7 +68,7 @@ class DatabaseConnector {
 
     async dropDatabase(dbName) {
         try {
-            this.createPool(this.configPool(false));
+            this.createConnection(this.configureConnection(false));
         } catch (err) {
             throw err;
         }
