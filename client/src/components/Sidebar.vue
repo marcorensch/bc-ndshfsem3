@@ -125,6 +125,7 @@ export default {
       const refreshToken = localStorage.getItem('refreshToken');
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('isAdmin')
 
       axios.delete(this.host + "/auth/logout", {
         headers:{

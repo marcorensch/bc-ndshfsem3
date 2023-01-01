@@ -73,6 +73,8 @@ export default {
           })
           .catch(error => {
             console.log(error);
+            localStorage.removeItem('isAdmin')
+            this.$router.push({name: 'Home'});
           })
     },
     handleDeleteUser(id) {

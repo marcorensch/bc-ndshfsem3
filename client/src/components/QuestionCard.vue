@@ -19,7 +19,9 @@
 
     <div class="card-body">
       <span>asked: {{item.created_at}}</span>
-      <span class="float-end">by <a href="#" v-if="item.anonymous ? item.username= 'Anonym': item.username">{{item.username}}</a></span>
+      <span class="float-end">by
+        {{item.anonymous || !item.username ? "Anonym" : item.username}}
+      </span>
   </div>
   </div>
 </template>
