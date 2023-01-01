@@ -79,7 +79,7 @@ npm run setup
 | :warning: | GET    | `/`      | Gibt alle User zurück                     | Ja                            |                 |
 | :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                            |                 |
 | :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                            |                 |
-| :x:       | DELETE | `/:id`   | Entfernt einen User                       | Ja                            |                 |
+| :x:       | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id    |                 |
 | :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email | true oder false |
 
 Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
