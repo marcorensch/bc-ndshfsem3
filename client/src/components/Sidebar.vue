@@ -55,17 +55,26 @@
       </ul>
     </div>
     <div class="flex"></div>
-    <div class="menu" v-if="user">
-      <a href="#" class="button" @click="handleLogoutClicked">
-        <span class="menu-icons"><font-awesome-icon icon="right-from-bracket"/></span>
-        <span class="title">Logout</span>
-      </a>
-    </div>
+
     <div class="menu" v-if="user">
       <router-link class="button" to="/user/cockpit/overview">
         <span class="menu-icons"><font-awesome-icon icon="key"/></span>
         <span class="title">User Settings</span>
       </router-link>
+    </div>
+
+    <div class="menu" v-if="user && isAdmin">
+      <router-link class="button" :to="{name: 'Administration'}">
+        <span class="menu-icons"><font-awesome-icon icon="cogs"/></span>
+        <span class="title">Admin Settings</span>
+      </router-link>
+    </div>
+
+    <div class="menu" v-if="user">
+      <a href="#" class="button" @click="handleLogoutClicked">
+        <span class="menu-icons"><font-awesome-icon icon="right-from-bracket"/></span>
+        <span class="title">Logout</span>
+      </a>
     </div>
 
   </aside>
@@ -112,21 +121,26 @@ export default {
       console.log(this.is_expanded)
     },
     handleLogoutClicked(){
+      const refreshToken = localStorage.getItem('refreshToken');
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('isAdmin')
+
       axios.delete(this.host + "/auth/logout", {
         headers:{
-          Authorization: 'Bearer ' + localStorage.getItem('refreshToken')
+          Authorization: `Bearer ${refreshToken}`
         }
       }).then((response) => {
         if(response.data.success){
-          localStorage.removeItem('token');
-          localStorage.removeItem('refreshToken');
           this.user = this.checkTokenSet();
         }else{
           console.log(response.data)
         }
       }).catch((error) => {
         this.errorMessage = error.response.data.message
-      })
+      }).finally(()=>{
+        this.$router.push('/')
+      });
     },
     loggedIn(){
       console.log('loggedIn')

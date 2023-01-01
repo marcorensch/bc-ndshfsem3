@@ -91,6 +91,7 @@ export default {
         if(response.data.success){
           if(response.data.payload.token) localStorage.setItem("token", response.data.payload.token);
           if(response.data.payload.refreshToken) localStorage.setItem("refreshToken", response.data.payload.refreshToken);
+          if(response.data.payload.isAdmin) localStorage.setItem("isAdmin", response.data.payload.isAdmin);
           this.$emit("close");
         }else{
           console.log(response.data)

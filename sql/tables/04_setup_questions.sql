@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS `questions`
     `modified_at` timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`created_by`) REFERENCES users (`id`),
     FOREIGN KEY (`accepted_id`) REFERENCES answers (`id`),
     FOREIGN KEY (`category_id`) REFERENCES categories (`id`)
 ) ENGINE = InnoDB;
