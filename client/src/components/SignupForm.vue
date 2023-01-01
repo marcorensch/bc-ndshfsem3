@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h3>Signup form</h3>
+    <ErrorMessageContainer :string="errorMessage" />
     <form ref="form" @submit.prevent="handleSubmit">
       <div class="form-group ">
 
@@ -54,11 +55,18 @@
       </div>
     </form>
   </div>
+  <Teleport to="body">
+    <NotificationModal :show="showNotificationModal" :message=confirmMessage @confirm="handleConfirm"></NotificationModal>
+  </Teleport>
+
 </template>
 
 <script>
 import {useVuelidate} from "@vuelidate/core";
 import {required, minLength, sameAs, email} from "@vuelidate/validators";
+import ErrorMessageContainer from "@/components/ErrorMessageContainer";
+import NotificationModal from "@/components/NotificationModal";
+
 import axios from "axios";
 
 export default {
@@ -70,8 +78,15 @@ export default {
   },
 
   name: "SignupForm",
+  components:{
+    ErrorMessageContainer,
+    NotificationModal
+  },
   data() {
     return {
+      showNotificationModal: false,
+      confirmMessage: "",
+      errorMessage: "",
       form: "",
       firstname: '',
       lastname: '',
@@ -115,6 +130,11 @@ export default {
     }
   },
   methods: {
+    handleConfirm(){
+      this.showNotificationModal = false;
+      this.$router.push('/');
+    },
+
     async handleSubmit() {
       try {
         const valid = await this.v$.$validate();
@@ -182,9 +202,8 @@ export default {
         .then((response) =>  {
 
           if (response.status === 201) {
-            console.log("User created");
-            console.log(response.data.message);
-            this.$router.push('/');
+            this.showNotificationModal = true;
+            this.confirmMessage = response.data.message;
           }
 
         })
@@ -192,6 +211,7 @@ export default {
           console.log(error.response.data);
           console.log(error.response.data.relatedColumn);
           console.log(error.response.data.message);
+          this.errorMessage = error.response.data.relatedColumn + " " + error.response.data.message;
         });
      }
 
