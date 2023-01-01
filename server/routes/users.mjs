@@ -3,6 +3,7 @@ import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import {authenticateToken} from "../middleware/authenticate.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
 import TransportObject from "../model/TransportObject.mjs";
+import ApiError from "../model/ApiError.mjs";
 
 const router = express.Router();
 
@@ -22,7 +23,15 @@ router.get('/', authenticateToken, async (req, res) => {
 router.delete('/:id', authenticateToken, async (req, res) => {
     console.log(req.params.id);
 
-    return res.status(200).json(new TransportObject().setPayload({token: req.token, user_id: req.user.id}));
+    const userHelper = new UserHelper();
+    try{
+        const result = await userHelper.deleteUserById(req.params.id);
+        const transportObject = new TransportObject().setPayload({result, token: req.token, user_id: req.user.id});
+        res.status(200).json(transportObject);
+    }catch (e) {
+        console.error(e);
+        res.status(500).json(new ApiError('e-999'));
+    }
 });
 
 router.get('/:id', (req, res) => {

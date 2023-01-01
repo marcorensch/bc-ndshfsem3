@@ -6,6 +6,5 @@ CREATE TABLE IF NOT EXISTS `answers`
     `created_at`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`created_by`) REFERENCES users (`id`)
+    PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;

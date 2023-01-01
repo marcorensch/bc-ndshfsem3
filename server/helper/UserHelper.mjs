@@ -90,6 +90,11 @@ class UserHelper {
         return await this.databaseConnector.query(sql, [username]);
     }
 
+    async deleteUserById(userId) {
+        const sql = "DELETE FROM users WHERE id=?";
+        return await this.databaseConnector.query(sql, [userId]);
+    }
+
     async getUserById(id) {
         const sql = "SELECT id,firstname,lastname,username,email,status,usergroup FROM users WHERE id=?";
         const result = await this.databaseConnector.query(sql, [id]);
