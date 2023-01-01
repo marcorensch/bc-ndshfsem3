@@ -74,13 +74,13 @@ npm run setup
 
 #### User (/users/...)
 
-| Status    | Type   | Route    | Beschreibung                              | Request                           | Response        |
-|-----------|--------|----------|-------------------------------------------|-----------------------------------|-----------------|
-| :warning: | GET    | `/`      | Gibt alle User zurück                     | header.token, header.refreshToken |                 |
-| :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                                |                 |
-| :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                                |                 |
-| :x:       | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id        |                 |
-| :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email     | true oder false |
+| Status             | Type   | Route    | Beschreibung                              | Request                           | Response        |
+|--------------------|--------|----------|-------------------------------------------|-----------------------------------|-----------------|
+| :white_check_mark: | GET    | `/`      | Gibt alle User zurück                     | header.token, header.refreshToken |                 |
+| :warning:          | GET    | `/:id`   | Gibt einen User zurück                    | Ja                                |                 |
+| :x:                | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                                |                 |
+| :white_check_mark: | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id        |                 |
+| :x:                | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email     | true oder false |
 
 Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
