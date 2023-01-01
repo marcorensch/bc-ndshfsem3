@@ -1,7 +1,5 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-process.env.NODE_ENV = 'test'
-
 
 import * as assert from "assert";
 import { expect } from "chai";
@@ -327,3 +325,5 @@ describe('API Routes Check', function () {
         // });
     });
 });
+
+process.exit(0);

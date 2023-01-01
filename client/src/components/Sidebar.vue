@@ -112,14 +112,15 @@ export default {
       console.log(this.is_expanded)
     },
     handleLogoutClicked(){
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+
       axios.delete(this.host + "/auth/logout", {
         headers:{
           Authorization: 'Bearer ' + localStorage.getItem('refreshToken')
         }
       }).then((response) => {
         if(response.data.success){
-          localStorage.removeItem('token');
-          localStorage.removeItem('refreshToken');
           this.user = this.checkTokenSet();
         }else{
           console.log(response.data)

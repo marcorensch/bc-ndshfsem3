@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.mjs",
   "scripts": {
-    "test": "mocha test/test.mjs",
+    "test": "NODE_ENV=test mocha test/test.mjs",
     "start": "nodemon server.mjs"
   },
   "keywords": [],
