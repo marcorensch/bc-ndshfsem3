@@ -25,7 +25,7 @@ export default class FieldChecker {
             returnValue: true
         };
         this.firstname = {
-            regex : /^([a-z]+([\-\t ]*[a-z])+)$/i,
+            regex : /^([\p{Letter}\p{Mark}]+[\-\t ]*[\p{Letter}\p{Mark}]+)$/iu, // https://dev.to/tillsanders/let-s-stop-using-a-za-z-4a0m
             min: 3,
             max: 20,
             returnValue: true

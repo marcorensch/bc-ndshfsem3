@@ -25,5 +25,8 @@
     "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
     "mariadb": "^3.0.2"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.3"
   }
 }

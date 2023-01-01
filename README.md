@@ -79,7 +79,7 @@ npm run setup
 | :warning: | GET    | `/`      | Gibt alle User zurück                     | Ja                            |                 |
 | :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                            |                 |
 | :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                            |                 |
-| :x:       | DELETE | `/:id`   | Entfernt einen User                       | Ja                            |                 |
+| :x:       | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id    |                 |
 | :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email | true oder false |
 
 Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
@@ -90,7 +90,7 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 |--------------------|--------|-----------|-------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | :white_check_mark: | GET    | `/`       | Gibt eine Liste aller Fragen zurück | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
 | :white_check_mark: | GET    | `/:id`    | Gibt eine Frage & Antworten zurück  | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
-| :white_check_mark: | POST   | `/create` | Erstellt eine neue Frage            | header.token, body.regreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
+| :white_check_mark: | POST   | `/create` | Erstellt eine neue Frage            | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
 | :warning:          | PUT    | `/:id`    | Aktualisiert eine Frage             | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
 | :x:                | DELETE | `/:id`    | Löscht eine Frage                   | ja                                                                                    |                                                                               |
 
@@ -100,7 +100,6 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 | Status             | Type   | Route           | Beschreibung                                | Request                                                         | Response                           |
 |--------------------|--------|-----------------|---------------------------------------------|-----------------------------------------------------------------|------------------------------------|
-| :x:                | GET    | `/:question_id` | Gibt eine alle Antworten einer Frage zurück |                                                                 |                                    |
 | :white_check_mark: | POST   | `/create`       | Erstellt eine neue Antwort                  | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
 | :x:                | PUT    | `/:id`          | Aktualisiert eine Antwort                   | Ja                                                              |                                    |
 | :x:                | DELETE | `/:id`          | Löscht eine Antwort                         | Ja                                                              |                                    |

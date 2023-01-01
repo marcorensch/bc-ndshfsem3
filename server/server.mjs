@@ -50,3 +50,5 @@ app.use('/categories', categoriesRoute);
 app.use((req, res, next) => {
     res.status(404).send('Houston, we have a Problem! (Route not found)');
 });
+
+export {app};

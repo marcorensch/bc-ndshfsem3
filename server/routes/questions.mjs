@@ -38,11 +38,8 @@ router.get('/', identifyCurrentUser, async (req, res) => {
 
 router.post('/create', authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
     let {content, category_id, anonymous} = req.body;
-    console.log("Question data received: ", req.body);
 
     // Add a new Question to db
-    console.log("Create Question");
-    console.log(req.body);
     const question = new Question(content, req.user.id).setAnonymous(anonymous).setCategoryId(category_id);
     let transportObject = new TransportObject();
     try {

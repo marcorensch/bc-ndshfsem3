@@ -1,16 +1,24 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+process.env.NODE_ENV = 'test'
+
+
 import * as assert from "assert";
+import { expect } from "chai";
+import supertest from "supertest";
+import {app} from "../server.mjs";
+
 import FieldChecker from "../utils/FieldChecker.mjs";
-import * as dotenv  from 'dotenv';
 import User from "../model/User.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
-dotenv.config();
+import TokenHelper from "../helper/TokenHelper.mjs";
 
 const testDbConnectionData = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME+'_test',
+    database: process.env.DB_NAME + '_test',
 }
 
 describe('String Checker', function () {
@@ -101,6 +109,10 @@ describe('String Checker', function () {
             const check = fieldChecker.isValidString("Hans - Joachim", "firstname");
             assert.equal(check, true);
         });
+        it('should return true for "Claré"', function () {
+            const check = fieldChecker.isValidString("Claré", "firstname");
+            assert.equal(check, true);
+        });
     });
     describe('Lastname Check', function () {
         it('should return ApiError Code u-319 if two characters long', function () {
@@ -123,9 +135,13 @@ describe('String Checker', function () {
             const check = fieldChecker.isValidString("-Lastname-", "lastname");
             assert.equal(check.errorCode, "u-320");
         });
+        it('should return true for "Müller"', function () {
+            const check = fieldChecker.isValidString("Müller", "lastname");
+            assert.equal(check, true);
+        });
     });
 });
-describe('E-Mail Checker', function (){
+describe('E-Mail Checker', function () {
 
     const fieldChecker = new FieldChecker(testDbConnectionData);
 
@@ -167,7 +183,7 @@ describe('E-Mail Checker', function (){
 
         // Preflight: Delete / Create User
         await userHelper.deleteUserByUsername("test-user");
-        const user = new User("Test","Test","test-user","user.name@tld.co.uk");
+        const user = new User("Test", "Test", "test-user", "user.name@tld.co.uk");
         user.setPassword("12345678");
         await userHelper.registerUser(user);
 
@@ -182,26 +198,132 @@ describe('E-Mail Checker', function (){
     });
 });
 
-describe('Registration Checker', function (){
-    const userHelper = new UserHelper(testDbConnectionData);
-
+describe('Registration Checker', function () {
+    const userHelper = new UserHelper();
+    const userName = "proximate"
+    const password = "12345678";
     beforeEach(async function () {
-        await userHelper.deleteUserByUsername("proximate");
+        await userHelper.deleteUserByUsername(userName);
     });
     afterEach(async function () {
-        await userHelper.deleteUserByUsername("proximate");
+        await userHelper.deleteUserByUsername(userName);
     });
 
 
     it('should store a new user with valid data in the db', async function () {
 
-        const user = new User("Marco","Rensch","proximate","marco.rensch@tld.com");
-        user.setPassword("12345678");
+        const user = new User("Marco", "Rensch", userName, "marco.rensch@tld.com");
+        user.setPassword(password);
 
         const checkRegistering = await userHelper.registerUser(user);
-        const checkIsRegistered = await userHelper.getUserByUsername("proximate");
+        const checkIsRegistered = await userHelper.getUserByUsername(userName);
         assert.equal(checkRegistering.data.affectedRows, 1);
-        assert.equal(checkIsRegistered.username, "proximate");
+        assert.equal(checkIsRegistered.username, userName);
 
     });
 })
+
+describe('API Routes Check', function () {
+    const userHelper = new UserHelper();
+
+    describe("Auth Routes /auth", function () {
+
+        const plain_pw = "12345678";
+        const username = "proximate";
+
+        before(async function () {
+            await userHelper.deleteUserByUsername(username);
+        });
+
+        it(`POST /register Should register new User ${username}`,  function (done) {
+            //Prepare
+            supertest(app)
+                .post("/auth/register")
+                .send({
+                    firstname: "Marco",
+                    lastname: "Rensch",
+                    username: username,
+                    email: "mymail@email.com",
+                    password: "12345678"
+                })
+                .expect(201)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+
+        });
+
+        it(`POST /login Should login User ${username}`, function (done) {
+            // Prepare
+            supertest(app)
+                .post("/auth/login")
+                .send({username, password: plain_pw})
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    const payload = res.body.payload;
+                    expect(payload).to.have.property("token");
+                    expect(payload).to.have.property("refreshToken");
+                    expect(payload.token).to.be.a("string");
+                    expect(payload.refreshToken).to.be.a("string");
+                    expect(payload.token).to.not.equal(payload.refreshToken);
+                    expect(payload.token.length).to.be.greaterThan(10);
+                    expect(payload.refreshToken.length).to.be.greaterThan(10);
+                    expect(payload.token).to.not.equal("");
+                    expect(payload.refreshToken).to.not.equal("");
+                    done();
+                });
+        });
+    });
+
+    describe("GET /", () => {
+        it("should return 200 OK", (done) => {
+            supertest(app)
+                .get("/")
+                .expect(200, done);
+        });
+    });
+
+    describe("Question Routes /questions", () => {
+
+        describe("GET /questions", () => {
+            it("should return 200 OK", (done) => {
+                supertest(app)
+                    .get("/questions")
+                    .expect(200, done);
+            });
+        });
+
+
+        // describe("POST /create", () => {
+        //     it("should return 201 OK", (done) => {
+        //         supertest(app)
+        //             .post("/questions/create")
+        //             .set("Authorization", "Bearer " + token)
+        //             .send({
+        //                 content: "Test Description for a Question with a very long text... not really",
+        //                 anonymous: false,
+        //                 category_id: 1,
+        //                 refreshToken: refreshToken
+        //             })
+        //             .expect(201, done);
+        //     });
+        // });
+
+        // describe("GET /questions/:id", () => {
+        //     it("should return 200 OK", (done) => {
+        //         supertest(app)
+        //             .get("/questions/1")
+        //             .expect(200, done);
+        //     });
+        // });
+        // describe("GET /questions/:id/answers", () => {
+        //     it("should return 200 OK", (done) => {
+        //         supertest(app)
+        //             .get("/questions/1/answers")
+        //             .expect(200, done);
+        //     });
+        // });
+    });
+});
