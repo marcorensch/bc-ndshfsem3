@@ -39,7 +39,7 @@ export default {
   --light: #f1f5f9;
   --sidebar-width: 300px;
 
-  /*#3f71b8;*/
+
 
 }
 
