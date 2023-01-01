@@ -11,11 +11,13 @@ async function identifyCurrentUser (req, res, next) {
         const tokenHelper = new TokenHelper();
         try {
             const tokenContent = await tokenHelper.checkToken(tokenString);
+            console.log(tokenContent);
             req.userId = tokenContent.id;
             req.isAdmin = tokenContent.isAdmin;
-        }catch(err) {}
-    }
+        }catch(err) {
 
+        }
+    }
     next();
 }
 
