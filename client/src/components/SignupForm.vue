@@ -137,32 +137,39 @@ export default {
       }
 
     },
-    async checkIfUsernameExist() {
-      let response;
-      try {
-        response = await axios.post(this.host + '/user/check', {
+      checkIfUsernameExist() {
+        axios.post(this.host + '/user/check', {
           username: this.username
         })
-
-      } catch (error) {
-        console.log(error)
-      }
-      //TODO Route für Username check erstellen + message entgegennehmen und darstellen
-      console.log(response);
-
-    },
-    async checkIfEmailExist(){
-      let response;
-      try {
-        response = await axios.post(this.host + '/user/check', {
-          email: this.email
+        .then(response => {
+          if (response.data){
+            console.log("Username already exist")
+            this.v$.username.$error = true;
+            this.v$.username.required.$message = "Username already exist";
+          }
+          console.log("Username is available")
+        })
+        .catch(error => {
+          console.log(error)
         })
 
-      } catch (error) {
+    },
+    checkIfEmailExist(){
+        axios.post(this.host + '/user/check', {
+          email: this.email
+        })
+      .then(response => {
+        if (response.data){
+          console.log("Email already exist")
+          this.v$.email.$error = true;
+          this.v$.email.email.$message = "Email already exist";
+        }
+        console.log("Email is available")
+      })
+      .catch(error => {
         console.log(error)
-      }
-      //TODO Route für Email check erstellen + message entgegennehmen und darstellen
-      console.log(response);
+      })
+
     },
      submitForm() {
       axios.post(this.host + '/auth/register', {
