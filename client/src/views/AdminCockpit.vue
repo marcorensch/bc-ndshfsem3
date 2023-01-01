@@ -17,7 +17,7 @@
             <td>{{ user.username }}</td>
             <td>{{ user.role }}</td>
             <td>
-              <button class="delete-btn-icon" @click="handleDeleteUser(user._id)"><font-awesome-icon icon="trash" /></button>
+              <button :disabled="!user.removable" class="delete-btn-icon" @click="handleDeleteUser(user.id)"><font-awesome-icon icon="trash" /></button>
             </td>
           </tr>
           </tbody>
@@ -53,7 +53,14 @@ export default {
       })
           .then(response => {
             console.log(response.data);
-            this.users = response.data;
+            this.users = response.data.payload.users;
+            this.users.map(user => {
+              user.removable = user.id !==  response.data.payload.user_id;
+            })
+            if(response.data.payload.token) {
+              console.log('token refreshed');
+              localStorage.setItem('token', response.data.payload.token);
+            }
           })
           .catch(error => {
             console.log(error);
@@ -68,7 +75,7 @@ export default {
           }
         })
             .then(() => {
-              this.users = this.users.filter(user => user._id !== id)
+              this.users = this.users.filter(user => user.id !== id)
             })
             .catch(err => {
               console.log(err)

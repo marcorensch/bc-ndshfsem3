@@ -11,8 +11,11 @@ class UserHelper {
 
     async getAllUsers() {
         try {
-            const sql = "SELECT id,firstname,lastname,username,email,status,created,usergroup FROM users";
-            return await this.databaseConnector.query(sql, null);
+            let sql = "SELECT u.id,u.firstname,u.lastname,u.username,u.email,u.status,u.created_at, u.usergroup, ug.title as roletitle FROM users u";
+            sql += " LEFT JOIN usergroups ug ON u.usergroup=ug.id";
+            sql += " ORDER BY created_at DESC";
+            const res = await this.databaseConnector.query(sql, null);
+            return res.data;
         } catch (error) {
             console.log(error);
         }
