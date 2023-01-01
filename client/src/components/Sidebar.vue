@@ -101,8 +101,7 @@ export default {
     return {
       is_expanded: localStorage.getItem('is_expanded') === 'true',
       showLoginModal: false,
-      user: false,
-      isAdmin: localStorage.getItem('isAdmin') === 'true',
+      user: false
     }
   },
   mounted() {

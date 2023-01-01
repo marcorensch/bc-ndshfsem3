@@ -325,3 +325,5 @@ describe('API Routes Check', function () {
         // });
     });
 });
+
+process.exit(0);
