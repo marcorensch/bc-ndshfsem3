@@ -31,7 +31,6 @@ router.post('/token', async (req, res) => {
     res.status(201).json({token});
 });
 router.post('/register', formSanitizer, registrationValidator, async (req, res) => {
-    console.log("User data received: ", req.user);
 
     const userHelper = new UserHelper();
     const result = await userHelper.registerUser(req.user);
@@ -53,10 +52,7 @@ router.post('/register', formSanitizer, registrationValidator, async (req, res) 
     }
 });
 router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
-    console.log("User data received & access granted: ", req.user);
-
     const tokenHelper = new TokenHelper();
-    console.log(req.user)
     const token = await tokenHelper.createToken(req.user);
     const refreshToken = await tokenHelper.createRefreshToken(req.user.id);
     try {

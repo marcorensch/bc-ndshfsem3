@@ -2,7 +2,6 @@ import sanitizeHtml from 'sanitize-html';
 
 function formSanitizer(req, res, next) {
     const { firstname, lastname, username, password, email } = req.body;
-
     const allowedTags = [];
     const allowedAttributes = {};
 
