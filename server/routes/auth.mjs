@@ -78,6 +78,7 @@ router.delete('/logout', async (req, res) => {
     if(refreshToken == null) return res.status(401).json(new ApiError('u-341'));
     const tokenHelper = new TokenHelper();
     const result = await tokenHelper.deleteToken(refreshToken);
+
     if(result.success && result.data.affectedRows === 1) {
         const transportObject = new TransportObject().setSuccess(true).setMessage("User logged out successfully");
         res.status(200).json(transportObject);

@@ -112,12 +112,13 @@ export default {
       console.log(this.is_expanded)
     },
     handleLogoutClicked(){
+      const refreshToken = localStorage.getItem('refreshToken');
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
 
       axios.delete(this.host + "/auth/logout", {
         headers:{
-          Authorization: 'Bearer ' + localStorage.getItem('refreshToken')
+          Authorization: `Bearer ${refreshToken}`
         }
       }).then((response) => {
         if(response.data.success){
@@ -127,7 +128,9 @@ export default {
         }
       }).catch((error) => {
         this.errorMessage = error.response.data.message
-      })
+      }).finally(()=>{
+        this.$router.push('/')
+      });
     },
     loggedIn(){
       console.log('loggedIn')
