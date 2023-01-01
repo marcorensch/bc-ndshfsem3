@@ -16,11 +16,11 @@ import {
     faUserPlus,
     faComment,
     faRightFromBracket,
-    faChevronLeft, faChevronRight
+    faChevronLeft, faChevronRight, faCogs, faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-library.add(faChevronLeft,faChevronRight, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
+library.add(faChevronLeft, faTrash, faChevronRight, faCogs, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
 
 const app = createApp(App)
 app.component("font-awesome-icon", FontAwesomeIcon)

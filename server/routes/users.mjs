@@ -1,13 +1,13 @@
 import express from "express";
+import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
+import {authenticateToken} from "../middleware/authenticate.mjs";
 
 const router = express.Router();
 
-import users from "../demo/users.mjs";
-
 // Do work here
 
-router.get('/', (req, res) => {
-    res.json(users);
+router.get('/', authenticateToken, (req, res) => {
+    console.log("DRIN")
 });
 
 router.get('/:id', (req, res) => {

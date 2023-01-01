@@ -74,13 +74,13 @@ npm run setup
 
 #### User (/users/...)
 
-| Status    | Type   | Route    | Beschreibung                              | Request                       | Response        |
-|-----------|--------|----------|-------------------------------------------|-------------------------------|-----------------|
-| :warning: | GET    | `/`      | Gibt alle User zurück                     | Ja                            |                 |
-| :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                            |                 |
-| :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                            |                 |
-| :x:       | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id    |                 |
-| :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email | true oder false |
+| Status    | Type   | Route    | Beschreibung                              | Request                           | Response        |
+|-----------|--------|----------|-------------------------------------------|-----------------------------------|-----------------|
+| :warning: | GET    | `/`      | Gibt alle User zurück                     | header.token, header.refreshToken |                 |
+| :warning: | GET    | `/:id`   | Gibt einen User zurück                    | Ja                                |                 |
+| :x:       | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                                |                 |
+| :x:       | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id        |                 |
+| :x:       | GET    | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email     | true oder false |
 
 Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
@@ -98,11 +98,11 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 #### Antworten (/answers/...)
 
-| Status             | Type   | Route           | Beschreibung                                | Request                                                         | Response                           |
-|--------------------|--------|-----------------|---------------------------------------------|-----------------------------------------------------------------|------------------------------------|
-| :white_check_mark: | POST   | `/create`       | Erstellt eine neue Antwort                  | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
-| :x:                | PUT    | `/:id`          | Aktualisiert eine Antwort                   | Ja                                                              |                                    |
-| :x:                | DELETE | `/:id`          | Löscht eine Antwort                         | Ja                                                              |                                    |
+| Status             | Type   | Route     | Beschreibung               | Request                                                         | Response                           |
+|--------------------|--------|-----------|----------------------------|-----------------------------------------------------------------|------------------------------------|
+| :white_check_mark: | POST   | `/create` | Erstellt eine neue Antwort | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
+| :x:                | PUT    | `/:id`    | Aktualisiert eine Antwort  | Ja                                                              |                                    |
+| :x:                | DELETE | `/:id`    | Löscht eine Antwort        | Ja                                                              |                                    |
 
 *: Nur wenn neuer Token generiert wurde
 
