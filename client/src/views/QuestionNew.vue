@@ -24,7 +24,11 @@
               </select>
             </div>
             <div class="col">
-              <label for="checkbox">Tags: </label>
+              <label>Tags: </label>
+              <vue3-tags-input  :tags="tags"
+                                :validate="customValidate"
+                               placeholder="enter some tags"
+                               @on-tags-changed="handleChangeTag"/>
             </div>
             <div class="col">
               <span>Ask Anonymously</span>
@@ -51,6 +55,7 @@ import 'tinymce/tinymce'
 import 'tinymce/icons/default/icons'
 import 'tinymce/themes/silver/theme'
 import 'tinymce/skins/ui/oxide/skin.css'
+import Vue3TagsInput from 'vue3-tags-input';
 
 // TinyMCE plugins
 // https://www.tiny.cloud/docs/tinymce/6/plugins/
@@ -70,6 +75,7 @@ import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
 export default {
   name: "QuestionNew",
   inject: ['host'],
+
   data(){
     return {
       errorMessage: "",
@@ -77,7 +83,10 @@ export default {
       anonymous: false,
       categories: [],
       text:"",
-      editor: null
+      editor: null,
+      tags:[]
+
+
     }
   },
   setup () {
@@ -102,7 +111,8 @@ export default {
   },
   components: {
     'editor': Editor,
-    ErrorMessageContainer
+    ErrorMessageContainer,
+    Vue3TagsInput
   },
   methods:{
     getCategories(){
@@ -118,6 +128,7 @@ export default {
       axios.post(this.host + "/questions/create", {
         content: this.text,
         category_id: this.category_id,
+        tags: this.tags,
         anonymous: this.anonymous,
         refresh_token: localStorage.getItem('refreshToken')
       },{
@@ -132,8 +143,18 @@ export default {
         .catch(error => {
           this.errorMessage = error.response.data.message
         })
+    },
+    handleChangeTag(tags) {
+      this.tags = tags;
+      console.log(this.tags)
+    },
+    customValidate(value) {
+      //todo Regex für erlaubte Tags definieren
+      const regex = new RegExp(/^[a-zA-Z]+$/);
+      return regex.test(value)
     }
   },
+
   async mounted() {
     this.getCategories();
   }
@@ -167,5 +188,19 @@ ul{
   &:hover {
     background-color: var(--primary);
   }
+}
+
+
+.v3ti .v3ti-tag {
+  background: var(--primary);
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag {
+  color: var(--light);
+  transition: color .3s;
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag:hover {
+  color: #ffffff;
 }
 </style>
