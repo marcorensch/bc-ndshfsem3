@@ -256,7 +256,9 @@ describe('API Routes Check', function () {
             // Prepare
             supertest(app)
                 .post("/auth/login")
-                .send({username, password: plain_pw})
+                .set({
+                    "authorization": "Basic " + Buffer.from(username + ":" + plain_pw).toString("base64")
+                })
                 .expect(200)
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -325,5 +327,3 @@ describe('API Routes Check', function () {
         // });
     });
 });
-
-process.exit(0);
