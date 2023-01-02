@@ -101,7 +101,8 @@ export default {
     return {
       is_expanded: localStorage.getItem('is_expanded') === 'true',
       showLoginModal: false,
-      user: false
+      user: false,
+      isAdmin: false,
     }
   },
   mounted() {
@@ -111,6 +112,7 @@ export default {
     handleModalClose(){
       this.showLoginModal = false
       this.user = this.checkTokenSet();
+      this.isAdmin = localStorage.getItem('isAdmin') === 'true';
     },
     checkTokenSet(){
       return !!localStorage.getItem('token');
@@ -122,6 +124,7 @@ export default {
     },
     handleLogoutClicked(){
       const refreshToken = localStorage.getItem('refreshToken');
+      this.isAdmin = false;
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('isAdmin')

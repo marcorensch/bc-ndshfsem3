@@ -84,9 +84,10 @@ export default {
     doLogin(event) {
       event.preventDefault();
       this.rememberUsername()
-      axios.post(this.host + "/auth/login", {
-        username: this.username,
-        password: this.password
+      axios.post(this.host + "/auth/login", {},{
+        headers: {
+          Authorization: "Basic " + btoa(this.username + ":" + this.password)
+        }
       }).then((response) => {
         if(response.data.success){
           if(response.data.payload.token) localStorage.setItem("token", response.data.payload.token);
