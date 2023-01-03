@@ -25,10 +25,25 @@
             </div>
             <div class="col">
               <label>Tags: </label>
-              <vue3-tags-input  :tags="tags"
+              <vue3-tags-input  v-model:tags="tags"
+                                v-model="tag"
+                                :select="true"
+                                :select-items="selectItems"
                                 :validate="customValidate"
-                               placeholder="enter some tags"
-                               @on-tags-changed="handleChangeTag"/>
+                                :allow-duplicates="false"
+                                placeholder="enter some tags"
+                                @on-select="handleSelectedTag"
+                               @on-tags-changed="handleChangeTag">
+                <template #item="{ tag, index }">
+                  {{ tag.text }}
+                </template>
+                <template #no-data>
+                  No Data
+                </template>
+                <template #select-item="tag">
+                  {{ tag.text }}
+                </template>
+              </vue3-tags-input>
             </div>
             <div class="col">
               <span>Ask Anonymously</span>
@@ -71,6 +86,7 @@ import Editor from '@tinymce/tinymce-vue'
 import axios from "axios";
 
 import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
+import {indexOf} from "core-js/internals/array-includes";
 
 export default {
   name: "QuestionNew",
@@ -84,7 +100,10 @@ export default {
       categories: [],
       text:"",
       editor: null,
-      tags:[]
+      tags:[],
+      tag: '',
+      selectItems: [{ text: 'HTML' }, { text: 'CSS'}, { text: 'VUE'}],
+      parkplatz: [],
 
 
     }
@@ -130,19 +149,24 @@ export default {
         category_id: this.category_id,
         tags: this.tags,
         anonymous: this.anonymous,
-        refresh_token: localStorage.getItem('refreshToken')
       },{
         headers : {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'RefreshToken': localStorage.getItem('refreshToken'),
         }
       })
         .then(response => {
-          console.log(response.data.success)
-          this.$router.push({ name: 'Home', params: { id: response.data.success.id } })
+          if(response.data.payload.token){
+            localStorage.setItem('token', response.data.payload.token)
+          }
+          this.$router.push({ name: 'Home' })
         })
         .catch(error => {
           this.errorMessage = error.response.data.message
         })
+    },
+    handleSelectedTag(tag) {
+      this.tags.push(tag);
     },
     handleChangeTag(tags) {
       this.tags = tags;

@@ -11,18 +11,14 @@ async function authenticateToken (req, res, next) {
 
     if (token == null) return res.sendStatus(401);
 
-    console.log("TOKEN", token);
-
     const tokenHelper = new TokenHelper();
     const userHelper = new UserHelper();
 
     try {
         const {id} = await tokenHelper.checkToken(token);
-        console.log(id);
         req.user = await userHelper.getUserById(id);
     }catch(err) {
         if(err instanceof jwt.TokenExpiredError && refreshToken) {
-            console.log(refreshToken);
             const refreshTokenContent = await tokenHelper.checkRefreshToken(refreshToken);
             if(!refreshTokenContent || !refreshTokenContent.id) return res.status(403).json(new ApiError('u-342'));
             req.user = await userHelper.getUserById(refreshTokenContent.id);
@@ -31,7 +27,6 @@ async function authenticateToken (req, res, next) {
             return res.status(403).json(new ApiError('u-342'));
         }
     }
-
     next();
 }
 

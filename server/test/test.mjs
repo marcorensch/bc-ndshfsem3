@@ -207,7 +207,6 @@ describe('Registration Checker', function () {
         await userHelper.deleteUserByUsername(userName);
     });
 
-
     it('should store a new user with valid data in the db', async function () {
 
         const user = new User("Marco", "Rensch", userName, "marco.rensch@tld.com");
