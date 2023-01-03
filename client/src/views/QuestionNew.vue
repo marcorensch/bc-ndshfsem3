@@ -162,6 +162,25 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.v3ti .v3ti-tag {
+  background: var(--dark);
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag {
+  color: var(--light);
+  transition: color .3s;
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag {
+  text-decoration: none;
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag:hover {
+  color: #ffffff;
+}
+</style>
+
 <style lang="scss" scoped>
 
 .select-section{
@@ -191,16 +210,5 @@ ul{
 }
 
 
-.v3ti .v3ti-tag {
-  background: var(--primary);
-}
 
-.v3ti .v3ti-tag .v3ti-remove-tag {
-  color: var(--light);
-  transition: color .3s;
-}
-
-.v3ti .v3ti-tag .v3ti-remove-tag:hover {
-  color: #ffffff;
-}
 </style>
