@@ -6,8 +6,8 @@
     <div class="card-body">
       <p class="card-title question-content">{{strippedContent}}</p>
       <div class="btn-section">
-        <router-link to="/answer/new">
-          <button class="btn btn-primary float-start col">I can answer this!</button>
+        <router-link :to="{name: 'New Answer', params:{id: item.id}}" class="btn btn-primary float-start col">
+          I can answer this!
         </router-link>
         <router-link to="/" v-if="item.answersCount">
           <button class="btn btn-primary float-end col">Show {{item.answersCount}} Answers</button>

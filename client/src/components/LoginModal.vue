@@ -71,7 +71,6 @@ export default {
     this.password = "";
     this.checked = localStorage.getItem("checked")
   },
-
   methods: {
     rememberUsername() {
       localStorage.setItem("checked", this.checked)

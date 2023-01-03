@@ -15,7 +15,7 @@ const router = createRouter({
         {path: '/register', component: Register},
         {path: '/user/cockpit/overview', component: UserCockpitOverview},
         {path: '/question/new', component: QuestionNew},
-        {path: '/answer/new', component: AnswerNew},
+        {name: "New Answer", path: '/answer/new/:id', component: AnswerNew, props: true},
         {path: '/user/cockpit/edit', component: UserCockpitEdit},
     ]
 })
