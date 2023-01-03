@@ -21,43 +21,43 @@ async function addAdminUser(connectionData, adminUser) {
 
 }
 
-async function dropDatabase(connectionData) {
-
+async function dropDatabase(connectionData, dbTypeInMsg) {
     try {
         databaseConnector = new DatabaseConnector(connectionData);
-        const result = await databaseConnector.dropDatabase(connectionData.database);
-        return true; // Note: The current connector does not return anything usable on drop database if no error occurs.
+        await databaseConnector.dropDatabase(connectionData.database);
+        console.log(chalk.bold.green(`${dbTypeInMsg} Database removed successfully`));
+        return true;
     } catch (err) {
-        console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
-        return false;
+        if(err.code === 'ER_BAD_DB_ERROR') {
+            console.log(chalk.bold.yellow(`Database '${err.text.split("'")[1]}' does not exist`));
+        }else{
+            _showError(err);
+        }
+        return false
     }
 }
 
-async function create (connectionData) {
-    try {
-        databaseConnector = new DatabaseConnector(connectionData);
-        await createDatabase(connectionData.database);
-        const results = await createTables('./sql/tables');
-        return true;
-    } catch (err) {
-        console.log(chalk.bold.redBright("SQL Error: " + err.errno + " " + err.code + " " + err.text));
-        return false;
-    }
+async function create(connectionData, dbTypeInMsg) {
+    console.log(chalk.bold.blue(`Creating ${dbTypeInMsg} Database "${connectionData.database}"...`));
+    databaseConnector = new DatabaseConnector(connectionData);
+    await createDatabase(connectionData.database);
+    console.log(chalk.bold.green(`${dbTypeInMsg} Database created successfully`));
+    await createTables('./sql/tables');
+    console.log(chalk.bold.green(`${dbTypeInMsg} Tables created successfully`));
 }
 
 async function createDatabase(dbName) {
     try {
         return await databaseConnector.createDatabase(dbName);
     } catch (err) {
-        throw err;
+        console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
+        _showError(err);
     }
 }
 
-async function createTables (pathToScripts) {
-
+async function createTables(pathToScripts) {
     const scripts = await getSqlFiles(pathToScripts);
     console.log(scripts);
-    databaseConnector.createPool();
     const results = [];
 
     for (const script of scripts) {
@@ -66,11 +66,34 @@ async function createTables (pathToScripts) {
             const result = await databaseConnector.query(sql, null);
             results.push({'script': script, 'status': result});
         } catch (err) {
-            throw err;
+            _showError(err);
         }
     }
 
     return results;
+}
+
+function _showError(err) {
+    switch (err.code) {
+        case 'ER_ACCESS_DENIED_ERROR':
+        case 'ER_DBACCESS_DENIED_ERROR':
+            console.log(chalk.bold.redBright(`Access denied for user '${err.sqlMessage.split("'")[1]}'@'${err.sqlMessage.split("'")[3]}'`));
+            process.exit(1);
+            break;
+        case 'ER_BAD_DB_ERROR':
+            console.log(chalk.bold.redBright(`Database '${err.text.split("'")[1]}' doesn't exist`));
+            process.exit(1);
+            break;
+        case 'ER_DB_CREATE_EXISTS':
+            console.log(chalk.bold.yellow(`Database '${err.text.split("'")[1]}' already exists`));
+            break;
+        case 'ER_DB_DROP_EXISTS':
+            console.log(chalk.bold.yellow(`Database '${err.text.split("'")[1]}' doesn't exist`));
+            break;
+        default:
+            console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
+            process.exit(1);
+    }
 }
 
 async function getSqlFiles(pathToScripts) {
