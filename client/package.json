@@ -21,6 +21,7 @@
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
     "pinia": "^2.0.28",
+    "pinia-plugin-persist": "^1.0.0",
     "tinymce": "^5.10.7",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",

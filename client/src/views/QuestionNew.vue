@@ -75,7 +75,7 @@ import Editor from '@tinymce/tinymce-vue'
 import axios from "axios";
 
 import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
-import {indexOf} from "core-js/internals/array-includes";
+import { useUserStore } from "@/stores/UserStore";
 
 export default {
   name: "QuestionNew",
@@ -90,6 +90,7 @@ export default {
       text:"",
       editor: null,
       tags:[],
+      userStore: useUserStore()
     }
   },
   setup () {
@@ -135,13 +136,13 @@ export default {
         anonymous: this.anonymous,
       },{
         headers : {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'RefreshToken': `${localStorage.getItem('refreshToken')}`,
+          'Authorization': `Bearer ${this.userStore.getTokens.token}`,
+          'RefreshToken': `${this.userStore.getTokens.refreshToken}`,
         }
       })
         .then(response => {
           if(response.data.payload.token){
-            localStorage.setItem('token', response.data.payload.token)
+            this.userStore.setToken(response.data.payload.token)
           }
           this.$router.push({ name: 'Home' })
         })

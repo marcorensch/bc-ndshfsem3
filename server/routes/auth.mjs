@@ -67,7 +67,7 @@ router.post('/login', loginSanitizer, loginValidator, async (req, res) => {
         return;
     }
 
-    const transportObject = new TransportObject().setSuccess(true).setPayload({token, refreshToken, userId:req.user.id, isAdmin:req.user.isadministrator}).setMessage("User logged in successfully");
+    const transportObject = new TransportObject().setSuccess(true).setPayload({token, refreshToken, user:req.user}).setMessage("User logged in successfully");
 
     res.status(200).json(transportObject);
 });
