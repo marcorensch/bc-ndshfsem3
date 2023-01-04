@@ -1,6 +1,6 @@
 <template>
-  <QuestionCard v-for="question in questionList" :item="question" />
-  <Pagination :total="pagination.total" :page="pagination.page" @pageChange="handlePageChange" />
+  <QuestionCard v-for="question in questionList" :item="question"/>
+  <Pagination :total="pagination.total" :page="pagination.page" @pageChange="handlePageChange"/>
 </template>
 
 <script>
@@ -38,19 +38,14 @@ export default {
         params: {count: this.pagination.perPage, page: this.pagination.page}
       })
           .then((response) => {
-            console.log(response)
             this.pagination.total = Math.ceil(response.data.payload.total / this.pagination.perPage);
             this.questionList = response.data.payload.questions;
-            console.log(this.pagination)
           })
           .catch((error) => {
             console.log(error);
+            this.questionList = [];
           });
     },
   }
 }
 </script>
-
-<style scoped>
-
-</style>

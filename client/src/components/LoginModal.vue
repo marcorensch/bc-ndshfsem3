@@ -49,6 +49,8 @@
 <script>
 import axios from "axios";
 import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
+import { useUserStore } from "@/stores/UserStore";
+
 export default {
   name: "LoginModal",
   inject: ['host'],
@@ -63,7 +65,8 @@ export default {
       errorMessage:"",
       username: "",
       password: "",
-      checked: false
+      checked: false,
+      userStore: useUserStore()
     }
   },
   mounted() {
@@ -89,15 +92,16 @@ export default {
         }
       }).then((response) => {
         if(response.data.success){
-          if(response.data.payload.token) localStorage.setItem("token", response.data.payload.token);
-          if(response.data.payload.refreshToken) localStorage.setItem("refreshToken", response.data.payload.refreshToken);
-          if(response.data.payload.isAdmin) localStorage.setItem("isAdmin", response.data.payload.isAdmin);
+          console.log(response.data.payload)
+          this.userStore.setUser(response.data.payload.user)
+          if(response.data.payload.token) this.userStore.setToken(response.data.payload.token)
+          if(response.data.payload.refreshToken) this.userStore.setRefreshToken(response.data.payload.refreshToken)
           this.$emit("close");
         }else{
           console.log(response.data)
         }
       }).catch((error) => {
-        this.errorMessage = error.response.data.message
+        console.log(error)
       })
     }
 

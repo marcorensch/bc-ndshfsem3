@@ -38,6 +38,7 @@
 <script>
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {useUserStore} from "@/stores/UserStore";
 
 export default {
   name: "AdminCockpitOverview",
@@ -45,7 +46,8 @@ export default {
   inject: ["host"],
   data() {
     return {
-      users: []
+      users: [],
+      userStore: useUserStore(),
     }
   },
   mounted() {
@@ -55,8 +57,8 @@ export default {
     getUsers() {
       axios.get(`${this.host}/users`,{
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          RefreshToken: localStorage.getItem('refreshToken')
+          Authorization: `Bearer ${this.userStore.getTokens.token}`,
+          RefreshToken: `${this.userStore.getTokens.refreshToken}`
         }
       })
           .then(response => {
@@ -68,13 +70,12 @@ export default {
             })
             if(response.data.payload.token) {
               console.log('token refreshed');
-              localStorage.setItem('token', response.data.payload.token);
+              this.userStore.setToken(response.data.payload.token);
             }
           })
           .catch(error => {
             console.log(error);
-            localStorage.removeItem('isAdmin')
-            this.$router.push({name: 'Home'});
+            // this.$router.push({name: 'Home'});
           })
     },
     handleDeleteUser(id) {

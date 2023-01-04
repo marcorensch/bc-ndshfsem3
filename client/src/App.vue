@@ -20,7 +20,6 @@ export default {
     LoginModal,
     Sidebar,
     Header,
-
   },
   data() {
     return {

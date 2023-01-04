@@ -15,14 +15,14 @@
             <span class="title">Home</span>
           </router-link>
         </li>
-        <li v-if="user">
+        <li v-if="userStore.isLoggedIn">
           <router-link  class="button" to="/question/new">
             <span class="menu-icons">
               <font-awesome-icon icon="comment"/> </span>
             <span class="title">Ask</span>
           </router-link>
         </li>
-        <template v-if="!user">
+        <template v-if="!userStore.isLoggedIn">
           <li>
             <a href="#" id="show-login-modal" @click="showLoginModal=true" class="button">
             <span class="menu-icons">
@@ -55,22 +55,21 @@
       </ul>
     </div>
     <div class="flex"></div>
-
-    <div class="menu" v-if="user">
+    <div class="menu" v-if="userStore.isLoggedIn">
       <router-link class="button" to="/user/cockpit/overview">
         <span class="menu-icons"><font-awesome-icon icon="key"/></span>
         <span class="title">User Settings</span>
       </router-link>
     </div>
 
-    <div class="menu" v-if="user && isAdmin">
+    <div class="menu" v-if="userStore.isLoggedIn && userStore.isAdmin">
       <router-link class="button" :to="{name: 'Administration'}">
         <span class="menu-icons"><font-awesome-icon icon="cogs"/></span>
         <span class="title">Admin Settings</span>
       </router-link>
     </div>
 
-    <div class="menu" v-if="user">
+    <div class="menu" v-if="userStore.isLoggedIn">
       <a href="#" class="button" @click="handleLogoutClicked">
         <span class="menu-icons"><font-awesome-icon icon="right-from-bracket"/></span>
         <span class="title">Logout</span>
@@ -88,6 +87,7 @@
 
 import LoginModal from "@/components/LoginModal";
 import axios from "axios";
+import { useUserStore } from "@/stores/UserStore";
 
 export default {
   name: 'Sidebar',
@@ -101,33 +101,24 @@ export default {
     return {
       is_expanded: localStorage.getItem('is_expanded') === 'true',
       showLoginModal: false,
-      user: false,
-      isAdmin: false,
+      userStore: useUserStore(),
+      user: null,
     }
   },
   mounted() {
-    this.user = this.checkTokenSet();
+
   },
   methods: {
     handleModalClose(){
       this.showLoginModal = false
-      this.user = this.checkTokenSet();
-      this.isAdmin = localStorage.getItem('isAdmin') === 'true';
-    },
-    checkTokenSet(){
-      return !!localStorage.getItem('token');
     },
     toggleMenu() {
       this.is_expanded = !this.is_expanded
       localStorage.setItem('is_expanded', this.is_expanded)
-      console.log(this.is_expanded)
     },
     handleLogoutClicked(){
-      const refreshToken = localStorage.getItem('refreshToken');
-      this.isAdmin = false;
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('isAdmin')
+      const {token, refreshToken} = this.userStore.getTokens;
+      this.userStore.logout();
 
       axios.delete(this.host + "/auth/logout", {
         headers:{
@@ -135,7 +126,7 @@ export default {
         }
       }).then((response) => {
         if(response.data.success){
-          this.user = this.checkTokenSet();
+
         }else{
           console.log(response.data)
         }
@@ -146,8 +137,6 @@ export default {
       });
     },
     loggedIn(){
-      console.log('loggedIn')
-      this.user = true
     }
   }
 

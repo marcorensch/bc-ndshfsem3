@@ -35,5 +35,8 @@ export default {
 </script>
 
 <style scoped>
-
+.pagination{
+  display: flex;
+  justify-content: center;
+}
 </style>
