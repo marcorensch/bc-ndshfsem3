@@ -15,7 +15,7 @@
         <div class="container">
           <div class="row">
             <div class="col">
-              <label for="category">Category:</label>
+              <label class="selection-title" for="category">Category:</label>
               <select id="category" v-model="category_id" class="form-select mb-3" aria-label="Default select example">
                 <option selected value="">Please select one</option>
                 <option v-for="cat in categories" v-bind:value="cat.id">
@@ -24,7 +24,7 @@
               </select>
             </div>
             <div class="col">
-              <label>Tags: </label>
+              <label class="selection-title">Tags: </label>
               <vue3-tags-input  :tags="tags"
                                 placeholder="enter some tags"
                                 @on-tags-changed="handleChangeTag"
@@ -34,7 +34,7 @@
               </vue3-tags-input>
             </div>
             <div class="col">
-              <span>Ask Anonymously</span>
+              <label class="selection-title">Ask anonymously:</label>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="ask_anonymous" v-model="anonymous">
                 <label class="form-check-label" for="ask_anonymous">
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <button class="btn btn-primary" @click="saveQuestion">confirm</button>
+        <button class="btn btn-primary" @click="saveQuestion">Save</button>
 
       </div>
     </div>
@@ -175,11 +175,13 @@ export default {
 <style lang="scss">
 .v3ti .v3ti-tag {
   background: var(--dark);
+  height:30px;
 }
 
 .v3ti .v3ti-tag .v3ti-remove-tag {
   color: var(--light);
   transition: color .3s;
+
 }
 
 .v3ti .v3ti-tag .v3ti-remove-tag {
@@ -203,7 +205,7 @@ ul{
 }
 
 .btn{
-  font-size: 1rem;
+  font-size: 1.2rem;
   background-color: var(--dark);
   border-radius: 2px;
   color: (var(--light));
@@ -217,6 +219,27 @@ ul{
   &:hover {
     background-color: var(--primary);
   }
+}
+
+.form-check{
+  display: flex;
+  align-items: center;
+}
+
+.form-check-input{
+  height: 30px;
+  width: 30px;
+  margin-right: 10px;
+}
+
+.form-check-input:checked{
+  background-color: var(--dark);
+}
+
+.selection-title{
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 
