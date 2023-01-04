@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
-
+import { createPinia } from "pinia";
 
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {
@@ -25,6 +25,7 @@ library.add(faChevronLeft, faTrash, faChevronRight, faCogs, faUpload, faAnglesRi
 const app = createApp(App)
 app.component("font-awesome-icon", FontAwesomeIcon)
 app.use(router)
+app.use(createPinia())
 app.provide('host', process.env.VUE_APP_HTTPS === "true" ? "https://localhost:" + process.env.VUE_APP_SERVER_PORT : "http://localhost:" + process.env.VUE_APP_SERVER_PORT)
 app.mount('#app')
 
