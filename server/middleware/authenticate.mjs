@@ -22,6 +22,7 @@ async function authenticateToken (req, res, next) {
             const refreshTokenContent = await tokenHelper.checkRefreshToken(refreshToken);
             if(!refreshTokenContent || !refreshTokenContent.id) return res.status(403).json(new ApiError('u-342'));
             req.user = await userHelper.getUserById(refreshTokenContent.id);
+            console.log(req.user)
             req.token = await tokenHelper.createToken(req.user);
         }else{
             return res.status(403).json(new ApiError('u-342'));

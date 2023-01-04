@@ -25,24 +25,12 @@
             </div>
             <div class="col">
               <label>Tags: </label>
-              <vue3-tags-input  v-model:tags="tags"
-                                v-model="tag"
-                                :select="true"
-                                :select-items="selectItems"
+              <vue3-tags-input  :tags="tags"
+                                placeholder="enter some tags"
+                                @on-tags-changed="handleChangeTag"
                                 :validate="customValidate"
                                 :allow-duplicates="false"
-                                placeholder="enter some tags"
-                                @on-select="handleSelectedTag"
-                               @on-tags-changed="handleChangeTag">
-                <template #item="{ tag, index }">
-                  {{ tag.text }}
-                </template>
-                <template #no-data>
-                  No Data
-                </template>
-                <template #select-item="tag">
-                  {{ tag.text }}
-                </template>
+                                :add-tag-on-keys="[13]">
               </vue3-tags-input>
             </div>
             <div class="col">
@@ -71,6 +59,7 @@ import 'tinymce/icons/default/icons'
 import 'tinymce/themes/silver/theme'
 import 'tinymce/skins/ui/oxide/skin.css'
 import Vue3TagsInput from 'vue3-tags-input';
+import {swearWords} from '../utils/BadWords.mjs'
 
 // TinyMCE plugins
 // https://www.tiny.cloud/docs/tinymce/6/plugins/
@@ -101,11 +90,6 @@ export default {
       text:"",
       editor: null,
       tags:[],
-      tag: '',
-      selectItems: [{ text: 'HTML' }, { text: 'CSS'}, { text: 'VUE'}],
-      parkplatz: [],
-
-
     }
   },
   setup () {
@@ -152,7 +136,7 @@ export default {
       },{
         headers : {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'RefreshToken': localStorage.getItem('refreshToken'),
+          'RefreshToken': `${localStorage.getItem('refreshToken')}`,
         }
       })
         .then(response => {
@@ -165,17 +149,18 @@ export default {
           this.errorMessage = error.response.data.message
         })
     },
-    handleSelectedTag(tag) {
-      this.tags.push(tag);
-    },
     handleChangeTag(tags) {
       this.tags = tags;
       console.log(this.tags)
     },
+
     customValidate(value) {
+      if(swearWords().includes(value)){
+        return false
+      }
       //todo Regex für erlaubte Tags definieren
       const regex = new RegExp(/^[a-zA-Z]+$/);
-      return regex.test(value)
+      return true //regex.test(value)
     }
   },
 

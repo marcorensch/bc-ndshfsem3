@@ -13,6 +13,9 @@ export default class FieldChecker {
 
     constructor(connectionData = false) {
         this.connectionData = connectionData;
+        this.tags = {
+            forbidden: forbiddenList,
+        };
         this.question = {
             min: 20,
             max: 1000
@@ -102,5 +105,13 @@ export default class FieldChecker {
         if(typeof value == "string") return value === "1" || value === "true";
         if(typeof value == "boolean") return value;
         return value === 1;
+    }
+
+    checkTags(tags){
+        let checkedTags = [];
+        for (const tag of tags) {
+            if(!this.tags.forbidden().includes(tag)) checkedTags.push(tag);
+        }
+        return checkedTags;
     }
 }

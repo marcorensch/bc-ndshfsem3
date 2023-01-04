@@ -1,4 +1,5 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
+import {re} from "@babel/core/lib/vendor/import-meta-resolve.js";
 
 class QuestionHelper {
     databaseConnector = null;
@@ -36,7 +37,7 @@ class QuestionHelper {
         const sql = "INSERT INTO questions (content, category_id, created_by, anonymous) VALUES (?,?,?,?)";
         try{
             const response = await this.databaseConnector.query(sql, [question.content, question.category_id, question.created_by, question.anonymous]);
-            return response;
+            return response.data.insertId;
         }catch (error) {
             console.log(error);
             return false;
@@ -95,6 +96,36 @@ class QuestionHelper {
             console.log(error);
             return 0;
         }
+    }
+
+    async storeTags(createdQuestionId, tags) {
+        const values = tags.map(tag => `('${tag}','${this._createAlias(tag)}')`).join(",");
+        let sql = `INSERT IGNORE INTO tags (title, alias) VALUES ${values}`;
+        try{
+            await this.databaseConnector.query(sql);
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
+
+        await this._linkTagsToQuestion(createdQuestionId, tags);
+        return true;
+    }
+
+    _createAlias(string){
+        return string.toLowerCase().replace(/ /g,"-");
+    }
+
+    async _linkTagsToQuestion(createdQuestionId, tags) {
+        const values = tags.map(tag => `((SELECT id FROM tags WHERE title='${tag}'),${createdQuestionId})`).join(",");
+        let sql = `INSERT IGNORE INTO question_tags (tag_id, question_id) VALUES ${values}`;
+        try{
+            await this.databaseConnector.query(sql);
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
+        return true;
     }
 }
 

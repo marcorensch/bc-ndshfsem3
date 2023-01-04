@@ -2,7 +2,7 @@ import ApiError from "../model/ApiError.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
 
 function questionChecker(req, res, next) {
-    const { content, category_id, anonymous } = req.body;
+    const { content, category_id, anonymous, tags } = req.body;
     const fieldChecker = new FieldChecker();
 
     if (!content) {
@@ -16,6 +16,7 @@ function questionChecker(req, res, next) {
     req.body.content = content;
     req.body.category_id = category_id;
     req.body.anonymous = fieldChecker.setBoolean(anonymous);
+    req.body.tags = fieldChecker.checkTags(tags);
 
     next();
 }

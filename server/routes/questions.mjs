@@ -37,17 +37,20 @@ router.get('/', identifyCurrentUser, async (req, res) => {
 });
 
 router.post('/create', authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
-    let {content, category_id, anonymous} = req.body;
+    let {content, category_id, anonymous, tags} = req.body;
 
     // Add a new Question to db
     const question = new Question(content, req.user.id).setAnonymous(anonymous).setCategoryId(category_id);
     let transportObject = new TransportObject();
     try {
         const questionHelper = new QuestionHelper();
-        if(!await questionHelper.storeItem(question)) return res.status(500).json(new ApiError("e-999"));
-        const insertedQuestionId = await questionHelper.getLastItemIdCreatedByUserId(req.user.id);
+        const createdQuestionId = await questionHelper.storeItem(question);
+        console.log("Created Question Id: " + createdQuestionId);
+        console.log("Tags: " + tags);
+        if(!createdQuestionId) return res.status(500).json(new ApiError("e-999"));
+        await questionHelper.storeTags(createdQuestionId, tags);
         transportObject.setPayload({
-            question_id: insertedQuestionId,
+            question_id: Number(createdQuestionId),
             user_id: req.user.id,
             is_admin: req.user.isadministrator,
             token: req.token
@@ -58,6 +61,7 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker, as
         res.status(500).json(error);
     }
     transportObject.setSuccess(true).setMessage("Question created successfully");
+    console.log(transportObject);
     res.status(201).json(transportObject);
 });
 

@@ -12,6 +12,8 @@ class TokenHelper {
     }
 
     async createToken(user) {
+        console.log("Create Token");
+        console.log(user);
         return jwt.sign({id: user.id, isAdmin: user.isadministrator}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
 
