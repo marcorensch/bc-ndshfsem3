@@ -154,71 +154,74 @@ describe('E-Mail Checker', function () {
         const check = await fieldChecker.isValidEmail("invalidemail@tld");
         assert.equal(check.errorCode, "u-318");
     });
-    it('should return true for valid email "user@tld.com"', async function () {
-        const check = await fieldChecker.isValidEmail("user@tld.com");
-        assert.equal(check, true);
-    });
-    it('should return true for valid email "user@tld.ch"', async function () {
-        const check = await fieldChecker.isValidEmail("user@tld.ch");
-        assert.equal(check, true);
-    });
-    it('should return true for valid email "user@tld.co.uk"', async function () {
-        const check = await fieldChecker.isValidEmail("user@tld.co.uk");
-        assert.equal(check, true);
-    });
-    it('should return true for valid email "user-name@tld.co.uk"', async function () {
-        const check = await fieldChecker.isValidEmail("user-name@tld.co.uk");
-        assert.equal(check, true);
-    });
-    it('should return true for valid email "user.name@tld.co.uk"', async function () {
-        const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
-        assert.equal(check, true);
-    });
-    it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
+    if(process.env.NODE_ENV === "test") {
+        it('should return true for valid email "user@tld.com"', async function () {
+            const check = await fieldChecker.isValidEmail("user@tld.com");
+            assert.equal(check, true);
+        });
+        it('should return true for valid email "user@tld.ch"', async function () {
+            const check = await fieldChecker.isValidEmail("user@tld.ch");
+            assert.equal(check, true);
+        });
+        it('should return true for valid email "user@tld.co.uk"', async function () {
+            const check = await fieldChecker.isValidEmail("user@tld.co.uk");
+            assert.equal(check, true);
+        });
+        it('should return true for valid email "user-name@tld.co.uk"', async function () {
+            const check = await fieldChecker.isValidEmail("user-name@tld.co.uk");
+            assert.equal(check, true);
+        });
+        it('should return true for valid email "user.name@tld.co.uk"', async function () {
+            const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
+            assert.equal(check, true);
+        });
+        it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
 
-        const userHelper = new UserHelper(testDbConnectionData);
+            const userHelper = new UserHelper(testDbConnectionData);
 
-        // Preflight: Delete / Create User
-        await userHelper.deleteUserByUsername("test-user");
-        const user = new User("Test", "Test", "test-user", "user.name@tld.co.uk");
-        user.setPassword("12345678");
-        await userHelper.registerUser(user);
+            // Preflight: Delete / Create User
+            await userHelper.deleteUserByUsername("test-user");
+            const user = new User("Test", "Test", "test-user", "user.name@tld.co.uk");
+            user.setPassword("12345678");
+            await userHelper.registerUser(user);
 
-        // Do check
-        const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
+            // Do check
+            const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
 
-        // Postflight: Delete User
-        await userHelper.deleteUserByUsername("test-user");
+            // Postflight: Delete User
+            await userHelper.deleteUserByUsername("test-user");
 
-        assert.equal(check.errorCode, "u-322");
+            assert.equal(check.errorCode, "u-322");
 
-    });
+        });
+    }
 });
 
-describe('Registration Checker', function () {
-    const userHelper = new UserHelper();
-    const userName = "proximate"
-    const password = "12345678";
-    beforeEach(async function () {
-        await userHelper.deleteUserByUsername(userName);
-    });
-    afterEach(async function () {
-        await userHelper.deleteUserByUsername(userName);
-    });
+if(process.env.NODE_ENV === "test") {
+    describe('Registration Checker', function () {
+        const userHelper = new UserHelper();
+        const userName = "proximate"
+        const password = "12345678";
+        beforeEach(async function () {
+            await userHelper.deleteUserByUsername(userName);
+        });
+        afterEach(async function () {
+            await userHelper.deleteUserByUsername(userName);
+        });
 
-    it('should store a new user with valid data in the db', async function () {
+        it('should store a new user with valid data in the db', async function () {
 
-        const user = new User("Marco", "Rensch", userName, "marco.rensch@tld.com");
-        user.setPassword(password);
+            const user = new User("Marco", "Rensch", userName, "marco.rensch@tld.com");
+            user.setPassword(password);
 
-        const checkRegistering = await userHelper.registerUser(user);
-        const checkIsRegistered = await userHelper.getUserByUsername(userName);
-        assert.equal(checkRegistering.data.affectedRows, 1);
-        assert.equal(checkIsRegistered.username, userName);
+            const checkRegistering = await userHelper.registerUser(user);
+            const checkIsRegistered = await userHelper.getUserByUsername(userName);
+            assert.equal(checkRegistering.data.affectedRows, 1);
+            assert.equal(checkIsRegistered.username, userName);
 
-    });
-})
-
+        });
+    })
+}
 if(process.env.NODE_ENV === "test") {
     describe('API Routes Check', function () {
         const userHelper = new UserHelper();
