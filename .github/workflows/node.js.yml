@@ -48,7 +48,7 @@ jobs:
         mysql -h 127.0.0.1 -P3800 -u root -proot -e "CREATE DATABASE IF NOT EXISTS babylon_test;"
     - name: Run SQL files to install database tables
       run: |
-        for file in ./sql/*.sql; do
+        for file in sql/*.sql; do
         mysql -h 127.0.0.1 -P3800 -u root -proot-D babylon_test < "$file"
         done
     - name: Install Dependencies
