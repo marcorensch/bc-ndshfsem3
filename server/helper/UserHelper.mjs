@@ -5,7 +5,7 @@ import User from "../model/User.mjs";
 
 class UserHelper {
     databaseConnector = null;
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 

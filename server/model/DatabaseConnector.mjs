@@ -8,13 +8,13 @@ class DatabaseConnector {
     password;
     database;
 
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         if (!connectionData) {
             this.host = process.env.DB_HOST;
             this.port = process.env.DB_PORT;
             this.user = process.env.DB_USER;
             this.password = process.env.DB_PASSWORD;
-            this.database = process.env.NODE_ENV === 'test' ? process.env.DB_NAME + '_test' : process.env.DB_NAME;
+            this.database = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_NAME : process.env.DB_NAME;
         } else {
             this.setConfiguration(connectionData);
         }
