@@ -174,7 +174,8 @@ describe('E-Mail Checker', function () {
         it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
 
             // Preflight: Delete / Create User
-            await userHelper.deleteUserByUsername("test-user");
+            const res_del = await userHelper.deleteUserByUsername("test-user");
+            console.log(res_del);
             const user = new User("Test", "Test", "test-user", "user.name@tld.co.uk");
             user.setPassword("12345678");
             await userHelper.registerUser(user);
