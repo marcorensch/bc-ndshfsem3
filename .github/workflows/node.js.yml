@@ -63,4 +63,11 @@ jobs:
     - name: Install Dependencies
       run: npm install
     - name: Run CI Tests
+      env:
+        NODE_ENV: citest
+        DB_HOST: ${{ matrix.database-host }}
+        DB_PORT: ${{ matrix.host-port }}
+        DB_USER: root
+        DB_PASSWORD: ${{ matrix.database-root-pwd }}
+        TEST_DB_NAME: ${{ matrix.database-name }}
       run: npm run ci-test
