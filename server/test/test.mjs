@@ -20,7 +20,7 @@ const testDbConnectionData = {
 }
 
 describe('String Checker', function () {
-    const fieldChecker = new FieldChecker();
+    const fieldChecker = new FieldChecker(testDbConnectionData);
     describe('Username Check', async function () {
         it('should return ApiError Code u-319 if two characters long', async function () {
             const check = await fieldChecker.isValidUsername("ab");
