@@ -20,7 +20,6 @@ const testDbConnectionData = {
 }
 
 describe('String Checker', function () {
-    console.log("Test DB Connection Data: ", testDbConnectionData);
     const fieldChecker = new FieldChecker(testDbConnectionData);
     describe('Username Check', async function () {
         it('should return ApiError Code u-319 if two characters long', async function () {
@@ -136,7 +135,10 @@ describe('String Checker', function () {
 });
 describe('E-Mail Checker', function () {
 
+    console.log("Connection Data:", testDbConnectionData);
     const fieldChecker = new FieldChecker(testDbConnectionData);
+    const userHelper = new UserHelper(testDbConnectionData);
+
 
     it('should return ApiError Code u-318 for invalid email "invalidemail"', async function () {
         const check = await fieldChecker.isValidEmail("invalidemail");
@@ -172,8 +174,6 @@ describe('E-Mail Checker', function () {
         assert.equal(check, true);
     });
     it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
-
-        const userHelper = new UserHelper(testDbConnectionData);
 
         // Preflight: Delete / Create User
         await userHelper.deleteUserByUsername("test-user");
