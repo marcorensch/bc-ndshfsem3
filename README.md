@@ -129,6 +129,7 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :white_check_mark: | POST   | `/register` | Registriert einen neuen User                                 | body.firstname, body.lastname, body.username, body.password, body.email | {message} oder ApiError           |
 | :white_check_mark: | POST   | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | auth.token (>> RefreshToken)                                            | {token:"..."}                     |
 
+
 # API Dokumentation
 
 ## Richtlinien für Benutzerdaten
