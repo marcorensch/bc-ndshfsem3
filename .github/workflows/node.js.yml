@@ -30,7 +30,7 @@ jobs:
       run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
     - name: Start MariaDB container
       run: |
-        docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=password -p 3306:3306 mariadb
+        docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 mariadb
     - name: Install Database Tables
       run: exec mysql -uroot  -proot  babylon_test< ./sql/tables/00a_setup_usergroups.sql
     - name: Install Dependencies
