@@ -71,4 +71,6 @@ jobs:
         DB_PASSWORD: ${{ matrix.database-root-pwd }}
         TEST_DB_NAME: ${{ matrix.database-name }}
         DB_NAME: ${{ matrix.database-name }}
+        ACCESS_TOKEN_SECRET: "test"
+        REFRESH_TOKEN_SECRET: "auch-test"
       run: npm run test
