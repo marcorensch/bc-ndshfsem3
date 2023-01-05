@@ -51,7 +51,7 @@ jobs:
     - name: Run SQL files to install database tables
       env:
         NODE_ENV: citest
-        DB_HOST: ${{ matrix.host }}
+        DB_HOST: ${{ matrix.database-host }}
         DB_PORT: ${{ matrix.host-port }}
         DB_USER: root
         DB_PASSWORD: ${{ matrix.database-root-pwd }}
