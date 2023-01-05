@@ -31,7 +31,7 @@ jobs:
         mysql database: 'babylon_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'root' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-        mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
+        mysql password: 'developer' # Required if "mysql user" exists. The password for the "mysql user"
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -39,17 +39,17 @@ jobs:
         cache: 'npm'
     - name: Verify MariaDB connection
       run: |
-          while ! mysqladmin ping -h"127.0.0.1" -P3800 --silent; do
+          while ! mysqladmin ping -h"127.0.0.1" -P 3800 --silent; do
             sleep 1
           done          
 
     - name: Run SQL query
       run: |
-        mysql -h localhost -P3800 -u root -proot -e "CREATE DATABASE IF NOT EXISTS babylon_test;"
+        mysql -h "127.0.0.1" -P 3800 -u root -p root -e "CREATE DATABASE IF NOT EXISTS babylon_test;"
     - name: Run SQL files to install database tables
       run: |
         for file in sql/tables/*.sql; do
-        mysql -h localhost -P3800 -u root -proot-D babylon_test < "$file"
+        mysql -h "127.0.0.1" -P 3800 -u root -p root-D babylon_test < "$file"
         done
     - name: Install Dependencies
       run: npm install
