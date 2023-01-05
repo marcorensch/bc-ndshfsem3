@@ -1,8 +1,9 @@
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 import * as assert from "assert";
-import { expect } from "chai";
+import {expect} from "chai";
 import supertest from "supertest";
 import {app} from "../server.mjs";
 
@@ -37,19 +38,16 @@ describe('String Checker', function () {
 
         it('should return ApiError u-320 for Username "-myusername"', async function () {
             const check = await fieldChecker.isValidUsername("-myusername");
-            console.log(check);
             assert.equal(check.errorCode, "u-320");
         });
 
         it('should return ApiError u-320 for Username "myusername-"', async function () {
             const check = await fieldChecker.isValidUsername("myusername-");
-            console.log(check);
             assert.equal(check.errorCode, "u-320");
         });
 
         it('should return value "user<>name" in ApiError u-320 for Username "user<>name"', async function () {
             const check = await fieldChecker.isValidUsername("user<>name");
-            console.log(check);
             assert.equal(check.errorCode, "u-320");
             assert.equal(check.data.value, "user<>name");
         });
@@ -57,19 +55,16 @@ describe('String Checker', function () {
     describe('Password Check', function () {
         it('should return value false in ApiError u-320 for Password "ab123><grapefruit"', function () {
             const check = fieldChecker.isValidString("ab123><grapefruit", "password");
-            console.log(check);
             assert.equal(check.data.value, false);
         });
 
         it('should return ApiError u-319 for Password "ab123"', function () {
             const check = fieldChecker.isValidString("ab123", "password");
-            console.log(check);
             assert.equal(check.errorCode, "u-319");
         });
 
         it('should return ApiError u-320 for Password "ab123><grapefruit"', function () {
             const check = fieldChecker.isValidString("ab123><grapefruit", "password");
-            console.log(check);
             assert.equal(check.errorCode, "u-320");
         });
     });
@@ -154,179 +149,177 @@ describe('E-Mail Checker', function () {
         const check = await fieldChecker.isValidEmail("invalidemail@tld");
         assert.equal(check.errorCode, "u-318");
     });
-    if(process.env.NODE_ENV === "test") {
-        it('should return true for valid email "user@tld.com"', async function () {
-            const check = await fieldChecker.isValidEmail("user@tld.com");
-            assert.equal(check, true);
-        });
-        it('should return true for valid email "user@tld.ch"', async function () {
-            const check = await fieldChecker.isValidEmail("user@tld.ch");
-            assert.equal(check, true);
-        });
-        it('should return true for valid email "user@tld.co.uk"', async function () {
-            const check = await fieldChecker.isValidEmail("user@tld.co.uk");
-            assert.equal(check, true);
-        });
-        it('should return true for valid email "user-name@tld.co.uk"', async function () {
-            const check = await fieldChecker.isValidEmail("user-name@tld.co.uk");
-            assert.equal(check, true);
-        });
-        it('should return true for valid email "user.name@tld.co.uk"', async function () {
-            const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
-            assert.equal(check, true);
-        });
-        it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
 
-            const userHelper = new UserHelper(testDbConnectionData);
+    it('should return true for valid email "user@tld.com"', async function () {
+        const check = await fieldChecker.isValidEmail("user@tld.com");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user@tld.ch"', async function () {
+        const check = await fieldChecker.isValidEmail("user@tld.ch");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user@tld.co.uk"', async function () {
+        const check = await fieldChecker.isValidEmail("user@tld.co.uk");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user-name@tld.co.uk"', async function () {
+        const check = await fieldChecker.isValidEmail("user-name@tld.co.uk");
+        assert.equal(check, true);
+    });
+    it('should return true for valid email "user.name@tld.co.uk"', async function () {
+        const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
+        assert.equal(check, true);
+    });
+    it('should return ApiError u-322 for already registered email "user.name@tld.co.uk"', async function () {
 
-            // Preflight: Delete / Create User
-            await userHelper.deleteUserByUsername("test-user");
-            const user = new User("Test", "Test", "test-user", "user.name@tld.co.uk");
-            user.setPassword("12345678");
-            await userHelper.registerUser(user);
+        const userHelper = new UserHelper(testDbConnectionData);
 
-            // Do check
-            const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
+        // Preflight: Delete / Create User
+        await userHelper.deleteUserByUsername("test-user");
+        const user = new User("Test", "Test", "test-user", "user.name@tld.co.uk");
+        user.setPassword("12345678");
+        await userHelper.registerUser(user);
 
-            // Postflight: Delete User
-            await userHelper.deleteUserByUsername("test-user");
+        // Do check
+        const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
 
-            assert.equal(check.errorCode, "u-322");
+        // Postflight: Delete User
+        await userHelper.deleteUserByUsername("test-user");
 
-        });
-    }
+        assert.equal(check.errorCode, "u-322");
+
+    });
+
 });
 
-if(process.env.NODE_ENV === "test") {
-    describe('Registration Checker', function () {
-        const userHelper = new UserHelper();
-        const userName = "proximate"
-        const password = "12345678";
-        beforeEach(async function () {
-            await userHelper.deleteUserByUsername(userName);
-        });
-        afterEach(async function () {
-            await userHelper.deleteUserByUsername(userName);
-        });
 
-        it('should store a new user with valid data in the db', async function () {
+describe('Registration Checker', function () {
+    const userHelper = new UserHelper();
+    const userName = "proximate"
+    const password = "12345678";
+    beforeEach(async function () {
+        await userHelper.deleteUserByUsername(userName);
+    });
+    afterEach(async function () {
+        await userHelper.deleteUserByUsername(userName);
+    });
 
-            const user = new User("Marco", "Rensch", userName, "marco.rensch@tld.com");
-            user.setPassword(password);
+    it('should store a new user with valid data in the db', async function () {
 
-            const checkRegistering = await userHelper.registerUser(user);
-            const checkIsRegistered = await userHelper.getUserByUsername(userName);
-            assert.equal(checkRegistering.data.affectedRows, 1);
-            assert.equal(checkIsRegistered.username, userName);
+        const user = new User("Marco", "Rensch", userName, "marco.rensch@tld.com");
+        user.setPassword(password);
 
-        });
-    })
-}
-if(process.env.NODE_ENV === "test") {
-    describe('API Routes Check', function () {
-        const userHelper = new UserHelper();
+        const checkRegistering = await userHelper.registerUser(user);
+        const checkIsRegistered = await userHelper.getUserByUsername(userName);
+        assert.equal(checkRegistering.data.affectedRows, 1);
+        assert.equal(checkIsRegistered.username, userName);
 
-        describe("Auth Routes /auth", function () {
+    });
+})
 
-            const plain_pw = "12345678";
-            const username = "proximate";
+describe('API Routes Check', function () {
+    const userHelper = new UserHelper();
 
-            before(async function () {
-                await userHelper.deleteUserByUsername(username);
-            });
+    describe("Auth Routes /auth", function () {
 
-            it(`POST /register Should register new User ${username}`, function (done) {
-                //Prepare
-                supertest(app)
-                    .post("/auth/register")
-                    .send({
-                        firstname: "Marco",
-                        lastname: "Rensch",
-                        username: username,
-                        email: "mymail@email.com",
-                        password: "12345678"
-                    })
-                    .expect(201)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-                        done();
-                    });
+        const plain_pw = "12345678";
+        const username = "proximate";
 
-            });
-
-            it(`POST /login Should login User ${username}`, function (done) {
-                // Prepare
-                supertest(app)
-                    .post("/auth/login")
-                    .set({
-                        "authorization": "Basic " + Buffer.from(username + ":" + plain_pw).toString("base64")
-                    })
-                    .expect(200)
-                    .end(function (err, res) {
-                        if (err) return done(err);
-                        const payload = res.body.payload;
-                        expect(payload).to.have.property("token");
-                        expect(payload).to.have.property("refreshToken");
-                        expect(payload.token).to.be.a("string");
-                        expect(payload.refreshToken).to.be.a("string");
-                        expect(payload.token).to.not.equal(payload.refreshToken);
-                        expect(payload.token.length).to.be.greaterThan(10);
-                        expect(payload.refreshToken.length).to.be.greaterThan(10);
-                        expect(payload.token).to.not.equal("");
-                        expect(payload.refreshToken).to.not.equal("");
-                        done();
-                    });
-            });
+        before(async function () {
+            await userHelper.deleteUserByUsername(username);
         });
 
-        describe("GET /", () => {
+        it(`POST /register Should register new User ${username}`, function (done) {
+            //Prepare
+            supertest(app)
+                .post("/auth/register")
+                .send({
+                    firstname: "Marco",
+                    lastname: "Rensch",
+                    username: username,
+                    email: "mymail@email.com",
+                    password: "12345678"
+                })
+                .expect(201)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+
+        });
+
+        it(`POST /login Should login User ${username}`, function (done) {
+            // Prepare
+            supertest(app)
+                .post("/auth/login")
+                .set({
+                    "authorization": "Basic " + Buffer.from(username + ":" + plain_pw).toString("base64")
+                })
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    const payload = res.body.payload;
+                    expect(payload).to.have.property("token");
+                    expect(payload).to.have.property("refreshToken");
+                    expect(payload.token).to.be.a("string");
+                    expect(payload.refreshToken).to.be.a("string");
+                    expect(payload.token).to.not.equal(payload.refreshToken);
+                    expect(payload.token.length).to.be.greaterThan(10);
+                    expect(payload.refreshToken.length).to.be.greaterThan(10);
+                    expect(payload.token).to.not.equal("");
+                    expect(payload.refreshToken).to.not.equal("");
+                    done();
+                });
+        });
+    });
+
+    describe("GET /", () => {
+        it("should return 200 OK", (done) => {
+            supertest(app)
+                .get("/")
+                .expect(200, done);
+        });
+    });
+
+    describe("Question Routes /questions", () => {
+
+        describe("GET /questions", () => {
             it("should return 200 OK", (done) => {
                 supertest(app)
-                    .get("/")
+                    .get("/questions")
                     .expect(200, done);
             });
         });
 
-        describe("Question Routes /questions", () => {
 
-            describe("GET /questions", () => {
-                it("should return 200 OK", (done) => {
-                    supertest(app)
-                        .get("/questions")
-                        .expect(200, done);
-                });
-            });
+        // describe("POST /create", () => {
+        //     it("should return 201 OK", (done) => {
+        //         supertest(app)
+        //             .post("/questions/create")
+        //             .set("Authorization", "Bearer " + token)
+        //             .send({
+        //                 content: "Test Description for a Question with a very long text... not really",
+        //                 anonymous: false,
+        //                 category_id: 1,
+        //                 refreshToken: refreshToken
+        //             })
+        //             .expect(201, done);
+        //     });
+        // });
 
-
-            // describe("POST /create", () => {
-            //     it("should return 201 OK", (done) => {
-            //         supertest(app)
-            //             .post("/questions/create")
-            //             .set("Authorization", "Bearer " + token)
-            //             .send({
-            //                 content: "Test Description for a Question with a very long text... not really",
-            //                 anonymous: false,
-            //                 category_id: 1,
-            //                 refreshToken: refreshToken
-            //             })
-            //             .expect(201, done);
-            //     });
-            // });
-
-            // describe("GET /questions/:id", () => {
-            //     it("should return 200 OK", (done) => {
-            //         supertest(app)
-            //             .get("/questions/1")
-            //             .expect(200, done);
-            //     });
-            // });
-            // describe("GET /questions/:id/answers", () => {
-            //     it("should return 200 OK", (done) => {
-            //         supertest(app)
-            //             .get("/questions/1/answers")
-            //             .expect(200, done);
-            //     });
-            // });
-        });
+        // describe("GET /questions/:id", () => {
+        //     it("should return 200 OK", (done) => {
+        //         supertest(app)
+        //             .get("/questions/1")
+        //             .expect(200, done);
+        //     });
+        // });
+        // describe("GET /questions/:id/answers", () => {
+        //     it("should return 200 OK", (done) => {
+        //         supertest(app)
+        //             .get("/questions/1/answers")
+        //             .expect(200, done);
+        //     });
+        // });
     });
-}
+});

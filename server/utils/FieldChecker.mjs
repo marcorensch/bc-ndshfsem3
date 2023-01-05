@@ -11,7 +11,7 @@ export default class FieldChecker {
     password;
     connectionData;
 
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         this.connectionData = connectionData;
         this.tags = {
             forbidden: forbiddenList,
