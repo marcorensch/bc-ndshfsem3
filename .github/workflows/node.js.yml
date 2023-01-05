@@ -58,7 +58,7 @@ jobs:
         TEST_DB_NAME: ${{ matrix.database-name }}
       run: |
         for file in sql/tables/*.sql; do
-        mysql -h $DB_HOST -P $DB_PORT -u$DB_USER -p$DB_PASSWORD -D$TEST_DB_NAME < "$file"
+        mysql -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASSWORD -D$TEST_DB_NAME < "$file"
         done
     - name: Install Dependencies
       run: npm install
