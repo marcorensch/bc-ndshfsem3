@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.mjs",
   "scripts": {
-    "ci-test": "mocha test/test.mjs",
+    "ci-test": "cross-env NODE_ENV=citest DB_HOST=localhost DB_PORT=3800 DB_USER=root DB_PASSWORD=root DB_NAME=babylon mocha test/test.mjs",
     "test": "cross-env NODE_ENV=test mocha test/test.mjs",
     "start": "nodemon server.mjs"
   },
