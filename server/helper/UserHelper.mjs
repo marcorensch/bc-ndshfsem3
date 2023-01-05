@@ -87,7 +87,6 @@ class UserHelper {
     }
 
     async deleteUserByUsername(username) {
-        console.log("deleteUserByUsername", this.databaseConnector.database);
         const sql = "DELETE FROM users WHERE username=?";
         return await this.databaseConnector.query(sql, [username]);
     }
