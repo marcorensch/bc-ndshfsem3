@@ -81,6 +81,7 @@ class DatabaseConnector {
     }
 
     setConfiguration(connectionData) {
+        console.log("In Set Config:", connectionData);
         this.host = connectionData.host;
         this.port = connectionData.port;
         this.user = connectionData.user;

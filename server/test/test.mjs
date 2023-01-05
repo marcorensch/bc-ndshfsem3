@@ -179,7 +179,7 @@ describe('E-Mail Checker', function () {
             user.setPassword("12345678");
             await userHelper.registerUser(user);
 
-            console.log(fieldChecker.connectionData)
+            console.log(userHelper.databaseConnector.database);
 
             // Do check
             const check = await fieldChecker.isValidEmail("user.name@tld.co.uk");
