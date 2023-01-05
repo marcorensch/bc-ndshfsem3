@@ -35,11 +35,11 @@ jobs:
       run: docker ps
     - name: Run SQL query
       run: |
-        mysql -h localhost -P 3306 -u root -proot -e "CREATE DATABASE babylon_test;"
+        mysql -h 127.0.0.1 -P 3306 -u root -proot -e "CREATE DATABASE babylon_test;"
     - name: Run SQL files to install database tables
       run: |
         for file in sql/*.sql; do
-        mysql -h localhost -P 3306 -u root -proot-D babylon_test < "$file"
+        mysql -h 127.0.0.1 -P 3306 -u root -proot-D babylon_test < "$file"
         done
     - name: Install Dependencies
       run: npm install
