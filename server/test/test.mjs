@@ -19,8 +19,11 @@ const testDbConnectionData = {
     database: process.env.TEST_DB_NAME,
 }
 
+const userHelper = new UserHelper(testDbConnectionData);
+const fieldChecker = new FieldChecker(testDbConnectionData);
+
 describe('String Checker', function () {
-    const fieldChecker = new FieldChecker(testDbConnectionData);
+
     describe('Username Check', async function () {
         it('should return ApiError Code u-319 if two characters long', async function () {
             const check = await fieldChecker.isValidUsername("ab");
@@ -135,11 +138,6 @@ describe('String Checker', function () {
 });
 describe('E-Mail Checker', function () {
 
-    console.log("Connection Data:", testDbConnectionData);
-    const fieldChecker = new FieldChecker(testDbConnectionData);
-    const userHelper = new UserHelper(testDbConnectionData);
-
-
     it('should return ApiError Code u-318 for invalid email "invalidemail"', async function () {
         const check = await fieldChecker.isValidEmail("invalidemail");
         assert.equal(check.errorCode, "u-318");
@@ -195,9 +193,9 @@ describe('E-Mail Checker', function () {
 
 
 describe('Registration Checker', function () {
-    const userHelper = new UserHelper();
     const userName = "proximate"
     const password = "12345678";
+
     beforeEach(async function () {
         await userHelper.deleteUserByUsername(userName);
     });
@@ -219,7 +217,6 @@ describe('Registration Checker', function () {
 })
 
 describe('API Routes Check', function () {
-    const userHelper = new UserHelper();
 
     describe("Auth Routes /auth", function () {
 
