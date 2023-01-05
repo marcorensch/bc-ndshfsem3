@@ -247,7 +247,7 @@ describe('API Routes Check', function () {
                     "authorization": "Basic " + Buffer.from(username + ":" + plain_pw).toString("base64")
                 })
                 .expect(200)
-                .end(function (err, res) {
+                .end(function (err, res, done) {
                     if (err) return done(err);
                     const payload = res.body.payload;
                     expect(payload).to.have.property("token");
