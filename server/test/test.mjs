@@ -1,7 +1,3 @@
-import * as dotenv from 'dotenv';
-
-dotenv.config();
-
 import * as assert from "assert";
 import {expect} from "chai";
 import supertest from "supertest";
@@ -214,17 +210,21 @@ describe('Registration Checker', function () {
     });
 })
 describe('API Routes Check', function () {
+    const plain_pw = "12345678";
+    const username = "proximate";
 
-    describe("Auth Routes /auth", function () {
+    describe("Registration", function () {
 
-        const plain_pw = "12345678";
-        const username = "proximate";
+        beforeEach(async function () {
+            await userHelper.deleteUserByUsername(username);
+        });
 
-        before(async function () {
+        afterEach(async function () {
             await userHelper.deleteUserByUsername(username);
         });
 
         it(`POST /register Should register new User ${username}`, function (done) {
+            console.log("Registering new User");
             //Prepare
             supertest(app)
                 .post("/auth/register")
@@ -239,16 +239,28 @@ describe('API Routes Check', function () {
 
         });
 
-        it(`POST /login Should login User ${username}`, function (done) {
-            // Prepare
-            supertest(app)
+    });
+
+    describe("Login", function () {
+        beforeEach(async function () {
+            const user = new User("Marco", "Rensch", username, "marco.rensch@tld.com");
+            user.setPassword(plain_pw);
+            await userHelper.registerUser(user);
+        });
+
+        afterEach(async function () {
+            await userHelper.deleteUserByUsername(username);
+        });
+
+        it(`POST /login Should login User ${username}`, function () {
+            return supertest(app)
                 .post("/auth/login")
                 .set({
                     "authorization": "Basic " + Buffer.from(username + ":" + plain_pw).toString("base64")
                 })
                 .expect(200)
-                .end(function (err, res, done) {
-                    if (err) return done(err);
+                .then((res,err) => {
+                    if (err) throw err;
                     const payload = res.body.payload;
                     expect(payload).to.have.property("token");
                     expect(payload).to.have.property("refreshToken");
@@ -259,7 +271,6 @@ describe('API Routes Check', function () {
                     expect(payload.refreshToken.length).to.be.greaterThan(10);
                     expect(payload.token).to.not.equal("");
                     expect(payload.refreshToken).to.not.equal("");
-                    done();
                 });
         });
     });

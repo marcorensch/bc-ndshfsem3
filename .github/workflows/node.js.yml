@@ -71,4 +71,4 @@ jobs:
         DB_PASSWORD: ${{ matrix.database-root-pwd }}
         TEST_DB_NAME: ${{ matrix.database-name }}
         DB_NAME: ${{ matrix.database-name }}
-      run: npm run ci-test
+      run: npm run test

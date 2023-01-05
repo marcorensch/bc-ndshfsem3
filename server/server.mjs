@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+
 import * as https from "https";
 import express from 'express';
 import 'babel-polyfill';
