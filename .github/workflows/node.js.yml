@@ -73,4 +73,6 @@ jobs:
         DB_NAME: ${{ matrix.database-name }}
         ACCESS_TOKEN_SECRET: "test"
         REFRESH_TOKEN_SECRET: "auch-test"
+        JWT_TOKEN_VALIDITY: "5m"
+        JWT_REFRESH_TOKEN_VALIDITY: "1d"
       run: npm run test
