@@ -13,6 +13,19 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_DATABASE: babylon_test
+          MYSQL_ROOT_PASSWORD: root
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
 
     strategy:
       matrix:
@@ -28,14 +41,19 @@ jobs:
         cache: 'npm'
     - name: Shutdown Ubuntu MySQL (SUDO)
       run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
-    - name: Start MariaDB container
+    - name: Verify MariaDB connection
+      env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        docker run -d --name mariadb -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 mariadb
-    - name: Check if Container is running
-      run: docker ps
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done          
+
     - name: Run SQL query
+      env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        mysql -h 127.0.0.1 -P 3306 -u root -proot -e "CREATE DATABASE babylon_test;"
+        mysql -h 127.0.0.1 -P"$PORT" -u root -proot -e "CREATE DATABASE babylon_test;"
     - name: Run SQL files to install database tables
       run: |
         for file in sql/*.sql; do
