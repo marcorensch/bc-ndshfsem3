@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 class TokenHelper {
     databaseConnector;
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
@@ -12,8 +12,6 @@ class TokenHelper {
     }
 
     async createToken(user) {
-        console.log("Create Token");
-        console.log(user);
         return jwt.sign({id: user.id, isAdmin: user.isadministrator}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_VALIDITY});
     }
 

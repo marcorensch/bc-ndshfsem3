@@ -6,6 +6,10 @@ import {app} from "../server.mjs";
 import FieldChecker from "../utils/FieldChecker.mjs";
 import User from "../model/User.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
+import TokenHelper from "../helper/TokenHelper.mjs";
+import Category from "../model/Category.mjs";
+import CategoryHelper from "../helper/CategoryHelper.mjs";
+import QuestionHelper from "../helper/QuestionHelper.mjs";
 
 const testDbConnectionData = {
     host: process.env.DB_HOST,
@@ -17,6 +21,9 @@ const testDbConnectionData = {
 
 const userHelper = new UserHelper(testDbConnectionData);
 const fieldChecker = new FieldChecker(testDbConnectionData);
+const tokenHelper = new TokenHelper(testDbConnectionData);
+const categoryHelper = new CategoryHelper(testDbConnectionData);
+const questionHelper = new QuestionHelper(testDbConnectionData);
 
 describe('String Checker', function () {
 
@@ -224,7 +231,6 @@ describe('API Routes Check', function () {
         });
 
         it(`POST /register Should register new User ${username}`, function (done) {
-            console.log("Registering new User");
             //Prepare
             supertest(app)
                 .post("/auth/register")
@@ -252,26 +258,25 @@ describe('API Routes Check', function () {
             await userHelper.deleteUserByUsername(username);
         });
 
-        it(`POST /login Should login User ${username}`, function () {
-            return supertest(app)
+        it(`POST /login Should login User ${username}`, async function () {
+            const res = await supertest(app)
                 .post("/auth/login")
                 .set({
                     "authorization": "Basic " + Buffer.from(username + ":" + plain_pw).toString("base64")
-                })
-                .expect(200)
-                .then((res,err) => {
-                    if (err) throw err;
-                    const payload = res.body.payload;
-                    expect(payload).to.have.property("token");
-                    expect(payload).to.have.property("refreshToken");
-                    expect(payload.token).to.be.a("string");
-                    expect(payload.refreshToken).to.be.a("string");
-                    expect(payload.token).to.not.equal(payload.refreshToken);
-                    expect(payload.token.length).to.be.greaterThan(10);
-                    expect(payload.refreshToken.length).to.be.greaterThan(10);
-                    expect(payload.token).to.not.equal("");
-                    expect(payload.refreshToken).to.not.equal("");
                 });
+            expect(200)
+            expect(res.body).to.have.property("payload");
+            const payload = res.body.payload;
+            expect(payload).to.have.property("token");
+            expect(payload).to.have.property("refreshToken");
+            expect(payload.token).to.be.a("string");
+            expect(payload.refreshToken).to.be.a("string");
+            expect(payload.token).to.not.equal(payload.refreshToken);
+            expect(payload.token.length).to.be.greaterThan(10);
+            expect(payload.refreshToken.length).to.be.greaterThan(10);
+            expect(payload.token).to.not.equal("");
+            expect(payload.refreshToken).to.not.equal("");
+
         });
     });
 
@@ -283,31 +288,65 @@ describe('API Routes Check', function () {
         });
     });
 
-    describe("Question Routes /questions", () => {
+    describe("Question Routes /questions", async () => {
+
+        const text = "Test Description for a Question with a very long text... not really";
+        const catTitle = "Test Category";
+
+        beforeEach(async function () {
+            await questionHelper.deleteItemBy("content", text);
+            await categoryHelper.deleteItemBy("title", catTitle);
+            await userHelper.deleteUserByUsername(username);
+        })
+
+        after(async function () {
+            await questionHelper.deleteItemBy("content", text);
+            await categoryHelper.deleteItemBy("title", catTitle);
+            await userHelper.deleteUserByUsername(username);
+        })
 
         describe("GET /questions", () => {
-            it("should return 200 OK", (done) => {
-                supertest(app)
-                    .get("/questions")
-                    .expect(200, done);
+            it("should return 200 OK", async function (){
+                const res = await supertest(app).get("/questions");
+                expect(res.status).to.equal(200);
             });
         });
 
 
-        // describe("POST /create", () => {
-        //     it("should return 201 OK", (done) => {
-        //         supertest(app)
-        //             .post("/questions/create")
-        //             .set("Authorization", "Bearer " + token)
-        //             .send({
-        //                 content: "Test Description for a Question with a very long text... not really",
-        //                 anonymous: false,
-        //                 category_id: 1,
-        //                 refreshToken: refreshToken
-        //             })
-        //             .expect(201, done);
-        //     });
-        // });
+        describe("POST /create", () => {
+            it("should return 201 OK", async () => {
+                // Prepare
+                // Create user and flag as admin
+                const userData = new User("Marco", "Rensch", username, "test@test.ch");
+                userData.setPassword(plain_pw);
+                await userHelper.registerUser(userData);
+                let user = await userHelper.getUserByUsername(username);
+                await userHelper.setUsergroupForUserWithName(user, "administrator");
+                user = await userHelper.getUserByUsername(username); // Refresh user after setting usergroup
+                // gen tokens
+                const token = await tokenHelper.createToken(user);
+                const refreshToken = await tokenHelper.createRefreshToken(user);
+
+                // gen category
+                const category = new Category(catTitle);
+                const result = await categoryHelper.storeCategory(category);
+                const categoryId = Number(result.data.insertId);
+
+                // Do request
+                const res = await supertest(app)
+                    .post("/questions/create")
+                    .set("Authorization", "Bearer " + token)
+                    .set("RefreshToken", refreshToken)
+                    .send({
+                        content: text,
+                        anonymous: false,
+                        category_id: categoryId,
+                        refreshToken: refreshToken,
+                        tags: [],
+                    })
+                    .expect(201);
+            });
+        });
 
         // describe("GET /questions/:id", () => {
         //     it("should return 200 OK", (done) => {

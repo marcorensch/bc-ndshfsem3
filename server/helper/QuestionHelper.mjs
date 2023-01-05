@@ -3,7 +3,7 @@ import {re} from "@babel/core/lib/vendor/import-meta-resolve.js";
 
 class QuestionHelper {
     databaseConnector = null;
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
@@ -126,6 +126,17 @@ class QuestionHelper {
             return false;
         }
         return true;
+    }
+
+    async deleteItemBy(key, value){
+        const sql = `DELETE FROM questions WHERE ${key}=?`;
+        try{
+            const response = await this.databaseConnector.query(sql, [value]);
+            return response;
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 }
 

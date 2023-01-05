@@ -2,7 +2,7 @@ import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
 class CategoryHelper {
     databaseConnector = null;
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
@@ -50,6 +50,16 @@ class CategoryHelper {
         const sql = "DELETE FROM categories WHERE id = ?";
         try{
             const response = await this.databaseConnector.query(sql, [id]);
+            return response;
+        }catch (error) {
+            throw error;
+        }
+    }
+
+    async deleteItemBy(key, value) {
+        const sql = `DELETE FROM categories WHERE ${key} = ?`;
+        try{
+            const response = await this.databaseConnector.query(sql, [value]);
             return response;
         }catch (error) {
             throw error;

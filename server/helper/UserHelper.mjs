@@ -110,6 +110,18 @@ class UserHelper {
 
         return user.usergroup === adminGroup.id;
     }
+
+    async setUsergroupForUserWithName(user, usergroupAlias) {
+        const usergroupsHelper = new UsergroupsHelper(this.connectionData);
+        const usergroups = await usergroupsHelper.getAllUsergroups();
+        const usergroup = usergroups.find(group => group.alias === usergroupAlias);
+
+        if(usergroup) {
+            const sql = "UPDATE users SET usergroup=? WHERE id=?";
+            return await this.databaseConnector.query(sql, [usergroup.id, user.id]);
+        }
+        return false;
+    }
 }
 
 export default UserHelper;
