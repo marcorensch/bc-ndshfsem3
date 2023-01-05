@@ -6,6 +6,7 @@ import User from "../model/User.mjs";
 class UserHelper {
     databaseConnector = null;
     constructor(connectionData) {
+        this.connectionData = connectionData;
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
@@ -104,7 +105,7 @@ class UserHelper {
     }
 
     async isAdministrator(user) {
-        const usergroupsHelper = new UsergroupsHelper();
+        const usergroupsHelper = new UsergroupsHelper(this.connectionData);
         const usergroups = await usergroupsHelper.getAllUsergroups();
         const adminGroup = usergroups.find(group => group.alias === "administrator");
 

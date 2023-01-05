@@ -1,7 +1,7 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
 class UsergroupsHelper {
-    constructor(connectionData = false) {
+    constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
     async getAllUsergroups() {
