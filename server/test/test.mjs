@@ -15,7 +15,7 @@ const testDbConnectionData = {
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME + '_test',
+    database: process.env.TEST_DB_NAME,
 }
 
 describe('String Checker', function () {

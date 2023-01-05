@@ -62,6 +62,11 @@ const configuration = {
         "default": "babylon",
         "hint": "The name of the database"
     },
+    "test_db_name": {
+        "key": "TEST_DB_NAME",
+        "default": "babylon_test",
+        "hint": "The name of the database"
+    },
     "server_port": {
         "key": "SERVER_PORT",
         "default": "3000",
