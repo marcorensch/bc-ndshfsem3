@@ -39,7 +39,7 @@ router.post('/create', authenticateToken, async (req, res) => {
     // Add a new Question to db
     console.log("Create Category");
     console.log(req.body);
-    const category = new Category(title);
+    const category = await Category.create(title);
 
     try {
         const categoryHelper = new CategoryHelper();
@@ -61,7 +61,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     if (!title) return res.status(400).json({message: "Title is required"});
 
     const categoryHelper = new CategoryHelper();
-    const category = new Category(title).setId(id);
+    const category = await Category.create(title).setId(id);
 
     const result = await categoryHelper.updateCategory(category);
     if (result.success && result.data.affectedRows === 1) {
@@ -77,6 +77,8 @@ router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, r
     const id = req.params.id;
     if (!id) res.status(400).json({message: "Category Id is required"});
     const categoryHelper = new CategoryHelper();
+    // Unlink all questions from this category
+    const unlinkResult = await categoryHelper.unlinkQuestionsFromCategory(id);
     const result = await categoryHelper.deleteItemById(id);
     console.log(result);
     if (result.success && result.data.affectedRows === 1) {

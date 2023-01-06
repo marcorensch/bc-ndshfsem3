@@ -220,6 +220,14 @@ describe('API Routes Check', function () {
     const plain_pw = "12345678";
     const username = "proximate";
 
+    describe("General Access GET /", () => {
+        it("should return 200 OK when calling GET on '/'", (done) => {
+            supertest(app)
+                .get("/")
+                .expect(200, done);
+        });
+    });
+
     describe("Registration", function () {
 
         beforeEach(async function () {
@@ -280,11 +288,16 @@ describe('API Routes Check', function () {
         });
     });
 
-    describe("GET /", () => {
-        it("should return 200 OK", (done) => {
-            supertest(app)
-                .get("/")
-                .expect(200, done);
+    describe("Categories", function () {
+        describe("Create Category", function () {
+            it("should return 401 when not logged in and try to create a new Category", async function () {
+                const res = await supertest(app)
+                    .post("/categories/create")
+                    .send({
+                        name: "Test Category"
+                    });
+                expect(401);
+            });
         });
     });
 
@@ -328,7 +341,7 @@ describe('API Routes Check', function () {
                 const refreshToken = await tokenHelper.createRefreshToken(user);
 
                 // gen category
-                const category = new Category(catTitle);
+                const category = await Category.create(catTitle);
                 const result = await categoryHelper.storeCategory(category);
                 const categoryId = Number(result.data.insertId);
 

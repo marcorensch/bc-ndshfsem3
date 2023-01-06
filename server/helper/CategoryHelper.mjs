@@ -65,6 +65,26 @@ class CategoryHelper {
             throw error;
         }
     }
+
+    async checkAliasExists(alias) {
+        const sql = "SELECT COUNT(*) AS count FROM categories WHERE alias = ?";
+        try{
+            const response = await this.databaseConnector.query(sql, [alias]);
+            return response.data[0].count;
+        }catch (error) {
+            throw error;
+        }
+    }
+
+    async unlinkQuestionsFromCategory(id) {
+        const sql = "UPDATE questions SET category_id = NULL WHERE category_id = ?";
+        try{
+            const response = await this.databaseConnector.query(sql, [id]);
+            return response;
+        }catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default CategoryHelper;
