@@ -34,23 +34,26 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/create', authenticateToken, async (req, res) => {
+    if(!req.user.isadministrator) return res.status(403).json(new ApiError('e-100'));
+    const categoryHelper = new CategoryHelper();
     let {title} = req.body;
-    const userId = req.user.id;
-    // Add a new Question to db
+    // Add a new Category to db
     console.log("Create Category");
     console.log(req.body);
     const category = await Category.create(title);
 
+    console.log(category);
+
     try {
-        const categoryHelper = new CategoryHelper();
-        await categoryHelper.storeCategory(category);
-        res.status(201).json({
+        const status = await categoryHelper.storeCategory(category);
+        console.log(status);
+        return res.status(201).json({
             message: "Category created successfully",
             category: category
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json(error);
+        return res.status(500).json(error);
     }
 });
 
@@ -90,18 +93,6 @@ router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, r
         res.status(500).json(new ApiError('e-999').setData(result));
     }
 
-});
-
-router.post('/answer', (req, res) => {
-    // Answer a Question
-    console.log("Answer a Question");
-    console.log(req.body);
-});
-
-router.get('/get', (req, res) => {
-    // Get a Question and its answers
-    console.log("Get a Question and its answers from database");
-    console.log(req.body);
 });
 
 export default router;

@@ -33,12 +33,6 @@ async function authenticateToken (req, res, next) {
 
 async function authenticateUser(req, res, next) {
 
-    console.log("AUTHENTICATE USER");
-    console.log(req.user)
-
-    const userHelper = new UserHelper();
-
-
     next();
 }
 

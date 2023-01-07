@@ -7,7 +7,7 @@ class CategoryHelper {
     }
 
     async getAllCategories(){
-        const sql = "SELECT id, title FROM categories";
+        const sql = "SELECT id, title FROM categories ORDER BY title ASC";
         try{
             const response = await this.databaseConnector.query(sql, null);
             return response;

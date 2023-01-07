@@ -1,7 +1,7 @@
 <template>
   <main class="adminCockpitOverview-page">
     <h3>Admin Cockpit</h3>
-    <div>
+    <div class="mt-5">
       <h4>Users</h4>
       <div class="table-responsive nxd-max-height-large">
         <table class="table table-striped table-hover">
@@ -35,9 +35,21 @@
         </table>
       </div>
     </div>
-    <div>
+    <div class="mt-5">
       <h4>Categories</h4>
-      <div class="table-responsive nxd-max-height-large">
+      <form>
+        <div class="form-group">
+          <div class="row">
+            <div class="col">
+          <input type="text" class="form-control" id="new_cat_title" placeholder="Enter new Category Title">
+            </div>
+            <div class="col-md-auto">
+              <button class="btn btn-primary" @click="handleAddCategory">Add Category</button>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="mt-3 table-responsive nxd-max-height-large">
         <table class="table table-striped table-hover">
           <thead>
           <tr>
@@ -86,6 +98,7 @@ export default {
     this.getCategories();
   },
   methods: {
+
     getUsers() {
       axios.get(`${this.host}/users`, {
         headers: {
@@ -143,7 +156,7 @@ export default {
       if (selection) {
         axios.delete(`${this.host}/categories/${id}`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${this.userStore.getTokens.token}`,
           }
         })
             .then(() => {
@@ -153,6 +166,31 @@ export default {
               console.log(err)
             })
       }
+    },
+    handleAddCategory(e){
+      e.preventDefault();
+      const inputField = document.getElementById('new_cat_title');
+      let title = inputField.value;
+      inputField.value = '';
+
+      if(this.categories.find(category => category.title === title)){
+        alert('Category already exists');
+        return;
+      }
+
+      axios.post(`${this.host}/categories/create`, {
+        title: title
+      }, {
+        headers: {
+          Authorization: `Bearer ${this.userStore.getTokens.token}`,
+        }
+      })
+          .then(response => {
+            this.getCategories();
+          })
+          .catch(err => {
+            console.log(err)
+          })
     }
   },
 }
