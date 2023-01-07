@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
     const categoryHelper = new CategoryHelper();
     const result = await categoryHelper.getCategories(onlyFavorites);
 
+    console.log(result);
     if (result.success) {
         res.status(200).json(result.data);
     } else {

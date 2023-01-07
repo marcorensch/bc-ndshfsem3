@@ -8,7 +8,9 @@ Marco Rensch.
 - Node Version 18.x
 - NPM Version 7.x
 - MariaDB min. Version 10.10.x oder MySQL min. Version 5.7.x
-
+- Eigenes Zertifikat für HTTPS (optional) - siehe [Self signed Zertifikat generieren](https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/)
+  - Hinweis: Unter MacOS muss das Zertifikat in den Keychain importiert werden und anschliessend als vertrauenswürdig markiert werden.
+  
 ## Installation Datenbank
 
 ### Windows
