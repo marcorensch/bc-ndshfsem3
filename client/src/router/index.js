@@ -6,6 +6,7 @@ import AnswerNew from "@/views/AnswerNew";
 import QuestionNew from "@/views/QuestionNew";
 import UserCockpitEdit from "@/views/UserCockpitEdit";
 import AdminCockpitOverview from "@/views/AdminCockpit.vue";
+import CategoryQuestions from "@/views/CategoryQuestions.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -17,6 +18,7 @@ const router = createRouter({
         {path: '/question/new', component: QuestionNew},
         {name: "New Answer", path: '/answer/new/:id', component: AnswerNew, props: true},
         {path: '/user/cockpit/edit', component: UserCockpitEdit},
+        {name: 'CategoryQuestions', path: '/categories/:id', component: CategoryQuestions, props: true},
     ]
 })
 

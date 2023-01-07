@@ -38,16 +38,10 @@
           </li>
         </template>
 
-        <li>
-          <router-link class="button" to="/categorie1">
-            <span class="menu-icons"><font-awesome-icon icon="crown"/></span>
-            <span class="title">Category 1</span>
-          </router-link>
-        </li>
-        <li>
-          <router-link class="button" to="/categorie2">
-            <span class="menu-icons"><font-awesome-icon icon="crown"/></span>
-            <span class="title">Category 2</span>
+        <li v-for="category in favoriteCategories">
+          <router-link class="button" :to="{ name: 'CategoryQuestions', params: { id : category.id }}">
+            <span class="menu-icons"><font-awesome-icon icon="boxes"/></span>
+            <span class="title">{{category.title}}</span>
           </router-link>
         </li>
 <!-- Test Views -->
@@ -96,19 +90,28 @@ export default {
     LoginModal
   },
 
-
   data() {
     return {
       is_expanded: localStorage.getItem('is_expanded') === 'true',
       showLoginModal: false,
       userStore: useUserStore(),
       user: null,
+      favoriteCategories: []
     }
   },
   mounted() {
-
+    this.getFavoriteCategories()
   },
   methods: {
+    getFavoriteCategories() {
+      axios.get(this.host + '/categories',{
+        params: {
+          onlyFavorites: true
+        }
+      }).then(response => {
+        this.favoriteCategories = response.data;
+      })
+    },
     handleModalClose(){
       this.showLoginModal = false
     },

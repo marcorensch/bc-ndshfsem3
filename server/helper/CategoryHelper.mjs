@@ -6,10 +6,14 @@ class CategoryHelper {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
 
-    async getAllCategories(){
-        const sql = "SELECT id, title, fav FROM categories ORDER BY title ASC";
+    async getCategories(onlyFavorites = false) {
+        let sql = "SELECT id, title, fav FROM categories ORDER BY title ASC";
+        if(onlyFavorites){
+            sql = "SELECT id, title, fav FROM categories WHERE fav = 1 ORDER BY title ASC";
+        }
         try{
             const response = await this.databaseConnector.query(sql, null);
+            console.log(onlyFavorites, response);
             return response;
         }catch (error) {
             throw error;

@@ -143,7 +143,7 @@ describe('String Checker', function () {
 describe('Category', function () {
     describe('Category Check', function () {
         beforeEach(async function () {
-            const categories = await categoryHelper.getAllCategories();
+            const categories = await categoryHelper.getCategories();
             if(categories.data.length > 0) {
                 for (const category of categories.data) {
                     await categoryHelper.deleteItemById(category.id);
@@ -161,7 +161,7 @@ describe('Category', function () {
             assert.equal(category2.alias, "my-category-1");
         });
         after(async function () {
-            const categories = await categoryHelper.getAllCategories();
+            const categories = await categoryHelper.getCategories();
             if(categories.data.length > 0) {
                 for (const category of categories.data) {
                     await categoryHelper.deleteItemById(category.id);

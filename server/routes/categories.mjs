@@ -11,8 +11,9 @@ import isAuthorized from "../middleware/authorizationChecker.mjs";
 import ApiError from "../model/ApiError.mjs";
 
 router.get('/', async (req, res) => {
+    const onlyFavorites = req.query.onlyFavorites === "true";
     const categoryHelper = new CategoryHelper();
-    const result = await categoryHelper.getAllCategories();
+    const result = await categoryHelper.getCategories(onlyFavorites);
 
     if (result.success) {
         res.status(200).json(result.data);
@@ -25,9 +26,8 @@ router.get('/:id', async (req, res) => {
     const id = req.params.id;
     const categoryHelper = new CategoryHelper();
     const result = await categoryHelper.getItemById(id);
-
     if (result.success) {
-        res.status(200).json(result.data);
+        res.status(200).json(result.data[0]);
     } else {
         res.status(500).json(result);
     }

@@ -11,7 +11,13 @@ class QuestionHelper {
         let sql = `SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q`
             +` LEFT JOIN categories c ON q.category_id = c.id`
             +` LEFT JOIN users u ON q.created_by = u.id`;
+
         if(queryParams.user_id) sql += ` WHERE created_by=${queryParams.user_id}`;
+        if(queryParams.user_id && queryParams.category_id){
+            sql += ` AND category_id=${queryParams.category_id}`;
+        }else if(queryParams.category_id){
+            sql += ` WHERE category_id=${queryParams.category_id}`;
+        }
 
         if(queryParams.direction) sql += ` ORDER BY id ${queryParams.direction}`;
         if(queryParams.count) sql += ` LIMIT ${queryParams.count}`;
@@ -20,11 +26,6 @@ class QuestionHelper {
             sql += ` OFFSET ${offset}`
         };
 
-        if(queryParams.user_id && queryParams.category_id){
-            sql += ` AND category_id=${queryParams.category_id}`;
-        }else if(queryParams.category_id){
-            sql += ` WHERE category_id=${queryParams.category_id}`;
-        }
         try {
             return await this.databaseConnector.query(sql);
         } catch (error) {

@@ -116,7 +116,6 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :white_check_mark: | PUT    |         | `/:id`                                 | Aktualisiert eine Kategorie                                  | body.title | true oder DB Error              |
 | :x:                | DELETE |         | `/:id`                                 | Löscht eine Kategorie                                        |            |                                 |
 | :x:                | GET    |         | `/questions/`                          | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück |            |                                 |
-| :x:                | GET    |         | `/questions/:question_id`              | Gibt alle Kategorien einer Frage zurück                      |            |                                 |
 | :x:                | POST   |         | `/questions/`                          | Erstellt eine neue Fragen-Kategorien Verknüpfung             |            |                                 |
 | :x:                | DELETE |         | `/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung                    |            |                                 |
 
