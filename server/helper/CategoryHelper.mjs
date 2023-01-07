@@ -7,7 +7,7 @@ class CategoryHelper {
     }
 
     async getAllCategories(){
-        const sql = "SELECT id, title FROM categories ORDER BY title ASC";
+        const sql = "SELECT id, title, fav FROM categories ORDER BY title ASC";
         try{
             const response = await this.databaseConnector.query(sql, null);
             return response;
@@ -27,9 +27,9 @@ class CategoryHelper {
     }
 
     async updateCategory(category){
-        const sql = "UPDATE categories SET title=?, alias=? WHERE id = ?";
+        const sql = "UPDATE categories SET title=?, alias=?, fav=? WHERE id = ?";
         try{
-            const response = await this.databaseConnector.query(sql, [category.title, category.alias, category.id]);
+            const response = await this.databaseConnector.query(sql, [category.title, category.alias, category.isFavorite, category.id]);
             return response;
         }catch (error) {
             throw error;

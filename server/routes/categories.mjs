@@ -59,19 +59,27 @@ router.post('/create', authenticateToken, async (req, res) => {
 
 router.put('/:id', authenticateToken, async (req, res) => {
     const id = req.params.id;
-    const {title} = req.body;
+    const {title, fav} = req.body;
     if (!id) return res.status(400).json({message: "Category id is missing"});
     if (!title) return res.status(400).json({message: "Title is required"});
 
     const categoryHelper = new CategoryHelper();
-    const category = await Category.create(title).setId(id);
-
-    const result = await categoryHelper.updateCategory(category);
-    if (result.success && result.data.affectedRows === 1) {
-        res.status(200).json(result.success);
-    } else {
-        res.status(500).json(result);
+    const category = await Category.create(title);
+    category.setId(id);
+    category.setFavorite(fav);
+    let result;
+    try {
+        result = await categoryHelper.updateCategory(category);
+        if (result.success && result.data.affectedRows === 1) {
+            return res.status(200).json(result.success);
+        }
+    } catch (error) {
+        if(error.code === 'ER_DUP_ENTRY') return res.status(400).json(new ApiError('c-322'));
+        res.status(500).json(error);
     }
+
+    console.log("Error while updating category", result);
+    res.status(500).json(new ApiError('e-999'));
 });
 
 router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, res) => {

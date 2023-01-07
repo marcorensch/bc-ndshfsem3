@@ -17,11 +17,11 @@ import {
     faUserPlus,
     faComment,
     faRightFromBracket,
-    faChevronLeft, faChevronRight, faCogs, faTrash
+    faChevronLeft, faChevronRight, faCogs, faTrash, faPencil, faSave, faStar
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-library.add(faChevronLeft, faTrash, faChevronRight, faCogs, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
+library.add(faChevronLeft, faTrash, faPencil, faSave, faStar, faChevronRight, faCogs, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
 const pinia = createPinia();
 pinia.use(piniaPersist);
 

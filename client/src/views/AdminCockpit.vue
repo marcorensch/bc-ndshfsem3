@@ -41,7 +41,7 @@
         <div class="form-group">
           <div class="row">
             <div class="col">
-          <input type="text" class="form-control" id="new_cat_title" placeholder="Enter new Category Title">
+              <input type="text" class="form-control" id="new_cat_title" placeholder="Enter new Category Title">
             </div>
             <div class="col-md-auto">
               <button class="btn btn-primary" @click="handleAddCategory">Add Category</button>
@@ -54,20 +54,59 @@
           <thead>
           <tr>
             <th>ID</th>
-            <th>Title</th>
+            <th>Favorite</th>
+            <th class="col-md-10">Title</th>
             <th>Actions</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="category in categories" :key="category.id">
-            <td data-toggle="tooltip" data-placement="top" title="Category ID">{{ category.id }}</td>
-            <td data-toggle="tooltip" data-placement="top" title="Title">{{ category.title }}</td>
-            <td>
-              <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + category.title"
-                      :disabled="!category.removable" class="delete-btn-icon"
-                      @click="handleDeleteCategory(category.id)">
-                <font-awesome-icon icon="trash"/>
-              </button>
+          <tr v-for="category in categories" :key="category.id" :data-cat-id="category.id">
+            <td data-toggle="tooltip" data-placement="top" title="Category ID" class="align-middle">{{ category.id }}</td>
+            <td data-toggle="tooltip" data-placement="top" title="is Favorite" class="text-center align-middle" @click="handleIsFavToggleClicked">
+              <font-awesome-icon icon="star" class="favorite-icon" :class="{isFav : category.fav}"/>
+            </td>
+            <td data-toggle="tooltip" data-placement="top" title="Title" class="align-middle">
+              <span :id="'category-'+category.id+'-title'" :data-cat-id="category.id" :data-cat-title="category.title" @click="handleEditCategory" v-if="!category.edit">{{
+                  category.title
+                }}</span>
+              <div v-else :data-cat-id="category.id">
+                <div class="row">
+                  <div class="col">
+                    <input type="text" class="form-control" :id="'cat_title_' + category.id" :value="category.title">
+                  </div>
+                  <div class="col-md-auto">
+                    <div class="btn-group" role="group" aria-label="Category Title Actions">
+                      <button title="Cancel Changes" type="button" class="btn btn-warning"
+                              @click="handleUnsetEditClicked">
+                        <font-awesome-icon icon="times"/>
+                      </button>
+                      <button title="Save Changes" type="button" class="btn btn-success"
+                              @click="handleCategoryTitleUpdate">
+                        <font-awesome-icon icon="save"/>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="align-middle">
+              <div class="row">
+                <div class="col-md-auto">
+                  <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + category.title"
+                          :disabled="!category.removable" class="delete-btn-icon"
+                          @click="handleDeleteCategory(category.id)">
+                    <font-awesome-icon icon="trash"/>
+                  </button>
+                </div>
+                <div class="col-md-auto">
+                  <button :title="'Edit ' + category.title + ' Category'"
+                          class="edit-btn-icon"
+                          @click="handleEditCategory"
+                  >
+                    <font-awesome-icon icon="pencil" @click="handleEditCategory"/>
+                  </button>
+                </div>
+              </div>
             </td>
           </tr>
           </tbody>
@@ -91,14 +130,20 @@ export default {
       users: [],
       categories: [],
       userStore: useUserStore(),
+      headers: null
     }
   },
   mounted() {
+    this.headers = {
+      Authorization: `Bearer ${this.userStore.getTokens.token}`,
+      RefreshToken: `${this.userStore.getTokens.refreshToken}`
+    }
+
     this.getUsers();
     this.getCategories();
+
   },
   methods: {
-
     getUsers() {
       axios.get(`${this.host}/users`, {
         headers: {
@@ -135,13 +180,73 @@ export default {
             console.log(error);
           })
     },
+
+    checkIfCategoryExists(title, id) {
+      return this.categories.some(category => {
+        return category.id !== id && category.title === title;
+      });
+    },
+    handleIsFavToggleClicked(event) {
+      const catId = this.getCategoryIdFromTable(event);
+      const category = this.categories.find(category => {
+        if(category.id === catId) return category;
+      });
+      category.fav = !category.fav;
+      this.handleUpdateCategory(category)
+    },
+    handleCategoryTitleUpdate(event) {
+      console.log("handleCategoryTitleUpdate");
+      const catId = this.getCategoryIdFromTable(event);
+      const newValue = document.getElementById('cat_title_' + catId).value;
+      if (newValue === "") {
+        alert("Category title cannot be empty!");
+        return;
+      }
+      if(this.checkIfCategoryExists(newValue, catId)) {
+        alert("Category already exists!");
+        return;
+      }
+
+      const category = this.categories.find(category => {
+        if(category.id === catId) return category;
+      });
+
+      if(category.title !== newValue) {
+        category.title = newValue;
+        this.handleUpdateCategory(category);
+      }
+    },
+    handleUpdateCategory(category) {
+      axios.put(`${this.host}/categories/${category.id}`, {
+        title: category.title,
+        fav: category.fav
+      }, {
+        headers: this.headers
+      }).then(() => {
+        this.getCategories();
+      }).catch((error) => {
+        console.log(error);
+      });
+    },
+    handleUnsetEditClicked() {
+      this.categories.forEach(category => {
+        category.edit = false;
+      });
+    },
+    handleEditCategory(event) {
+      const catId = this.getCategoryIdFromTable(event);
+      for (const categoryItem of this.categories) {
+        categoryItem.edit = categoryItem.id === catId;
+      }
+    },
+    getCategoryIdFromTable(event) {
+      return Number(event.target.closest('tr').dataset.catId);
+    },
     handleDeleteUser(id) {
       let selection = confirm("Are you sure you want to delete this user?");
       if (selection) {
         axios.delete(`${this.host}/users/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
+          headers: this.headers
         })
             .then(() => {
               this.users = this.users.filter(user => user.id !== id)
@@ -151,13 +256,11 @@ export default {
             })
       }
     },
-    handleDeleteCategory(id){
+    handleDeleteCategory(id) {
       let selection = confirm("Are you sure you want to delete this category?");
       if (selection) {
         axios.delete(`${this.host}/categories/${id}`, {
-          headers: {
-            Authorization: `Bearer ${this.userStore.getTokens.token}`,
-          }
+          headers: this.headers
         })
             .then(() => {
               this.categories = this.categories.filter(category => category.id !== id)
@@ -167,23 +270,26 @@ export default {
             })
       }
     },
-    handleAddCategory(e){
+    handleAddCategory(e) {
       e.preventDefault();
       const inputField = document.getElementById('new_cat_title');
       let title = inputField.value;
       inputField.value = '';
 
-      if(this.categories.find(category => category.title === title)){
-        alert('Category already exists');
+      if (title === "") {
+        alert("Category title cannot be empty!");
+        return;
+      }
+
+      if(this.checkIfCategoryExists(title)) {
+        alert("Category already exists!");
         return;
       }
 
       axios.post(`${this.host}/categories/create`, {
         title: title
       }, {
-        headers: {
-          Authorization: `Bearer ${this.userStore.getTokens.token}`,
-        }
+        headers: this.headers
       })
           .then(response => {
             this.getCategories();
@@ -208,6 +314,17 @@ export default {
 
 .delete-btn-icon:hover {
   color: #700000;
+}
+
+.favorite-icon {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.1);
+}
+.favorite-icon:hover {
+  color: rgba(0, 0, 0, 0.5);
+}
+.favorite-icon.isFav{
+  color: gold;
 }
 
 </style>

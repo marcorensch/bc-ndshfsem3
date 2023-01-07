@@ -12,6 +12,7 @@ const errorCodes = {
     "u-341": "Refresh token is missing",
     "u-342": "Refresh token is invalid",
     "c-331": "Category not found",
+    "c-322": "Category already exists",
     "q-317": "Question text empty or too short",
     "q-318": "Category id is required",
     "q-331": "Question not found",

@@ -4,6 +4,7 @@ class Category {
     id;
     title;
     alias;
+    isFavorite;
     #createdExternalCheck = false;
     /**
      * @private
@@ -34,6 +35,10 @@ class Category {
 
     setId(id) {
         this.id = id;
+        return this;
+    }
+    setFavorite(fav) {
+        this.isFavorite = fav;
         return this;
     }
 }
