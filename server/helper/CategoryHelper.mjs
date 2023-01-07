@@ -66,11 +66,11 @@ class CategoryHelper {
         }
     }
 
-    async checkAliasExists(alias) {
-        const sql = "SELECT COUNT(*) AS count FROM categories WHERE alias = ?";
+    async doesAliasExists(alias) {
+        const sql = "SELECT count(id) as count FROM categories where alias = ?";
         try{
             const response = await this.databaseConnector.query(sql, [alias]);
-            return response.data[0].count;
+            return Number(response.data[0].count) > 0;
         }catch (error) {
             throw error;
         }

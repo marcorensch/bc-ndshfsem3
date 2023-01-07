@@ -139,6 +139,37 @@ describe('String Checker', function () {
         });
     });
 });
+
+describe('Category', function () {
+    describe('Category Check', function () {
+        beforeEach(async function () {
+            const categories = await categoryHelper.getAllCategories();
+            if(categories.data.length > 0) {
+                for (const category of categories.data) {
+                    await categoryHelper.deleteItemById(category.id);
+                }
+            }
+        });
+        it('should return "my-category" when generating a new category with title "My Category"', async function () {
+            const category = await Category.create("My Category", testDbConnectionData);
+            assert.equal(category.alias, "my-category");
+        });
+        it('should return "my-category-1" when generating a new category with title "My-Category" and there is already a category with such an alias', async function () {
+            const category1 = await Category.create("My Category", testDbConnectionData);
+            const response1 = await categoryHelper.storeCategory(category1);
+            const category2 = await Category.create("My-Category", testDbConnectionData);
+            assert.equal(category2.alias, "my-category-1");
+        });
+        after(async function () {
+            const categories = await categoryHelper.getAllCategories();
+            if(categories.data.length > 0) {
+                for (const category of categories.data) {
+                    await categoryHelper.deleteItemById(category.id);
+                }
+            }
+        });
+    })
+});
 describe('E-Mail Checker', function () {
 
     it('should return ApiError Code u-318 for invalid email "invalidemail"', async function () {
@@ -193,7 +224,6 @@ describe('E-Mail Checker', function () {
     });
 
 });
-
 describe('Registration Checker', function () {
     const userName = "proximate"
     const password = "12345678";

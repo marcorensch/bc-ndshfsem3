@@ -20,6 +20,8 @@ class DatabaseConnector {
 
     async createConnection(config = this.configureConnection(true)) {
         try {
+            config.bigIntAsNumber= true;
+            config.decimalAsNumber= true;
             return mariadb.createConnection(config);
         } catch (err) {
             throw err;

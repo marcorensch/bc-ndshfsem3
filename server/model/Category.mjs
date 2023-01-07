@@ -4,33 +4,29 @@ class Category {
     id;
     title;
     alias;
-    static #isInternalConstructing = false;
-    constructor(title, alias) {
-        if (!Category.#isInternalConstructing) {
-            throw new TypeError("Category is not constructable, call static create() instead");
-        }
+    #createdExternalCheck = false;
+    /**
+     * @private
+     */
+    constructor(title) {
         this.title = title;
-        this.alias = alias;
+        this.alias = null;
     }
 
-    static async create(title, alias) {
-        Category.#isInternalConstructing = true;
-        if(!alias){
-            alias = title.toLowerCase().replace(/ /g, "-");
-        }
-        alias = await Category.standardizeAlias(alias);
-        const instance = new Category(title, alias);
-        Category.#isInternalConstructing = false;
+    static async create(title, connectionData) {
+        const instance = new Category(title);
+        instance.connectionData = connectionData;
+        instance.alias = instance.title.toLowerCase().replace(/ /g, "-");
+        instance.alias = await instance.standardizeAlias();
         return instance;
     }
 
-    static async standardizeAlias(alias){
-        const categoryHelper = new CategoryHelper();
-        console.log("Alias: " + alias);
-        alias = alias.replace(/[^a-z0-9\-]+/, "");
+    async standardizeAlias(){
+        const categoryHelper = new CategoryHelper(this.connectionData);
+        let alias = this.alias.replace(/[^a-z0-9\-]+/, "");
         let aliasIndex = 1;
-        while(await categoryHelper.checkAliasExists(alias)){
-            alias = alias.split("-")[0] + "-" + aliasIndex;
+        while( await categoryHelper.doesAliasExists(alias) && aliasIndex < 100){
+            alias = alias.split("-").filter(part => isNaN(part)).join("-") + "-" + aliasIndex;
             aliasIndex++;
         }
         return alias;
