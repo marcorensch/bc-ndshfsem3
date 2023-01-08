@@ -58,7 +58,7 @@
                 </div>
               </div>
             </td>
-            <td class="text-center">5</td>
+            <td class="text-center">{{ tag.articlesCount }}</td>
             <td class="align-middle">
               <div class="row">
                 <div class="col-md-auto">

@@ -119,6 +119,7 @@ class QuestionHelper {
 
     async _linkTagsToQuestion(createdQuestionId, tags) {
         const values = tags.map(tag => `((SELECT id FROM tags WHERE title='${tag}'),${createdQuestionId})`).join(",");
+        console.log(values);
         let sql = `INSERT IGNORE INTO question_tags (tag_id, question_id) VALUES ${values}`;
         try{
             await this.databaseConnector.query(sql);

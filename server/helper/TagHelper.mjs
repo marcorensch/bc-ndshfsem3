@@ -7,7 +7,11 @@ class TagHelper {
     }
 
     async getTags() {
-        let sql = "SELECT id, title FROM tags ORDER BY title ASC";
+        let sql = "SELECT t.id, t.title, COUNT(qt.id) as articlesCount " +
+            "FROM tags t " +
+            "LEFT JOIN question_tags qt ON qt.tag_id = t.id " +
+            "GROUP BY t.id " +
+            "ORDER BY title ASC";
         try{
             const response = await this.databaseConnector.query(sql, null);
             return response;

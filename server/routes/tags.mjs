@@ -71,18 +71,18 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
 router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, res) => {
     // Delete a Question from db
-    console.log("Delete Category");
+    console.log("Delete Tag");
     const id = req.params.id;
-    if (!id) res.status(400).json({message: "Category Id is required"});
-    const categoryHelper = new CategoryHelper();
-    // Unlink all questions from this category
-    const unlinkResult = await categoryHelper.unlinkQuestionsFromCategory(id);
-    const result = await categoryHelper.deleteItemById(id);
+    if (!id) res.status(400).json({message: "Tag Id is required"});
+    const tagHelper = new TagHelper();
+    // Unlink all questions from this tag
+    const unlinkResult = await tagHelper.unlinkQuestionsFromTag(id);
+    const result = await tagHelper.deleteItemById(id);
     console.log(result);
     if (result.success && result.data.affectedRows === 1) {
         res.status(200).json(result.success);
     } else if(result.success && result.data.affectedRows === 0) {
-        res.status(400).json({message: "Category not found"});
+        res.status(400).json({message: "Tag not found"});
     } else {
         console.log("Any Error")
         res.status(500).json(new ApiError('e-999').setData(result));
