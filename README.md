@@ -127,10 +127,7 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :white_check_mark: | GET    |         | `/:id`                                 | Gibt eine Kategorie zurück                                   | query.id   | response.data {id,title}        |
 | :white_check_mark: | POST   |         | `/create`                              | Erstellt eine neue Kategorie                                 | body.title |                                 |
 | :white_check_mark: | PUT    |         | `/:id`                                 | Aktualisiert eine Kategorie                                  | body.title | true oder DB Error              |
-| :x:                | DELETE |         | `/:id`                                 | Löscht eine Kategorie                                        |            |                                 |
-| :x:                | GET    |         | `/questions/`                          | Gibt eine Liste aller Fragen-Kategorien Verknüpfungen zurück |            |                                 |
-| :x:                | POST   |         | `/questions/`                          | Erstellt eine neue Fragen-Kategorien Verknüpfung             |            |                                 |
-| :x:                | DELETE |         | `/questions/:question_id/:category_id` | Löscht eine Fragen-Kategorien Verknüpfung                    |            |                                 |
+| :white_check_mark: | DELETE |         | `/:id`                                 | Löscht eine Kategorie                                        |            |                                 |
 
 #### Authentifizierung (/auth/...)
 

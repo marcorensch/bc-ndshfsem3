@@ -68,12 +68,7 @@ class UserHelper {
 
     async getUserIdByEmail(email) {
         const sql = "SELECT id FROM users WHERE email=?";
-        const result = await this.databaseConnector.query(sql, [email]);
-        if(result.data && result.data.length > 0) {
-            const user = await this._buildUserObject(result.data[0]);
-            return user.id;
-        }
-        return false;
+        return await this.databaseConnector.query(sql, [email]);
     }
 
     async _buildUserObject(data) {
