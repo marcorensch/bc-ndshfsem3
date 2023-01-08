@@ -38,7 +38,7 @@
           </li>
         </template>
 
-        <li v-for="category in favoriteCategories">
+        <li v-for="category in favCatsStore.getFavs">
           <router-link class="button" :to="{ name: 'CategoryQuestions', params: { id : category.id }}">
             <span class="menu-icons"><font-awesome-icon icon="boxes"/></span>
             <span class="title">{{category.title}}</span>
@@ -82,6 +82,7 @@
 import LoginModal from "@/components/LoginModal";
 import axios from "axios";
 import { useUserStore } from "@/stores/UserStore";
+import { useFavCatsStore } from "@/stores/FavCategoriesStore";
 
 export default {
   name: 'Sidebar',
@@ -96,7 +97,7 @@ export default {
       showLoginModal: false,
       userStore: useUserStore(),
       user: null,
-      favoriteCategories: []
+      favCatsStore: useFavCatsStore(),
     }
   },
   mounted() {
@@ -109,7 +110,7 @@ export default {
           onlyFavorites: true
         }
       }).then(response => {
-        this.favoriteCategories = response.data;
+        this.favCatsStore.setFavs(response.data)
       })
     },
     handleModalClose(){
@@ -120,7 +121,7 @@ export default {
       localStorage.setItem('is_expanded', this.is_expanded)
     },
     handleLogoutClicked(){
-      const {token, refreshToken} = this.userStore.getTokens;
+      const {refreshToken} = this.userStore.getTokens;
       this.userStore.logout();
 
       axios.delete(this.host + "/auth/logout", {

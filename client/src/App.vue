@@ -1,11 +1,11 @@
 <template>
   <div class="app">
-  <Header/>
-  <div class="app-content">
-    <Sidebar/>
-    <LoginModal />
-    <router-view/>
-  </div>
+    <Header/>
+    <div class="app-content">
+      <Sidebar/>
+      <LoginModal/>
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -22,9 +22,7 @@ export default {
     Header,
   },
   data() {
-    return {
-
-    }
+    return {}
   },
 }
 </script>
@@ -37,16 +35,12 @@ export default {
   --dark-alt: #334155;
   --light: #f1f5f9;
   --sidebar-width: 300px;
-
-
-
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
 }
 
 body {
@@ -60,7 +54,7 @@ button {
   outline: none;
   cursor: pointer;
 
-  &.default{
+  &.default {
     font-size: .8rem;
     background-color: var(--dark);
     border-radius: 2px;
@@ -83,6 +77,7 @@ button {
   main {
     flex: 1 1 0;
     padding: 2rem;
+    min-width: 0;
 
     @media (max-width: 768px) {
       padding-left: 6rem;

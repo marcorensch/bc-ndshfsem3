@@ -3,17 +3,17 @@
     <div class="mt-5">
       <input class="w-100 form-control" type="text" id="search_user" placeholder="Search for Username, Name, Firstname" @keyup="filterUserList" />
     </div>
-    <div class="table-responsive">
+    <div class="mt-3 table-responsive">
       <table class="table table-striped table-hover">
         <thead>
         <tr>
-          <th>ID</th>
-          <th>Username</th>
-          <th>Firstname</th>
-          <th>Lastname</th>
-          <th>Role</th>
-          <th>Registered</th>
-          <th>Actions</th>
+          <th class="col-1">ID</th>
+          <th class="col-1">Username</th>
+          <th class="col-1">Firstname</th>
+          <th class="col-1">Lastname</th>
+          <th class="col-1">Role</th>
+          <th class="col-1">Registered</th>
+          <th class="col-1">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -70,11 +70,7 @@ export default {
         const search = document.getElementById("search_user").value;
         if(search.length > 0) {
           for (const user of this.users) {
-            if (user.username.toLowerCase().includes(search.toLowerCase()) || user.firstname.toLowerCase().includes(search.toLowerCase()) || user.lastname.toLowerCase().includes(search.toLowerCase())) {
-              user.visible = true;
-            } else {
-              user.visible = false;
-            }
+            user.visible = user.username.toLowerCase().includes(search.toLowerCase()) || user.firstname.toLowerCase().includes(search.toLowerCase()) || user.lastname.toLowerCase().includes(search.toLowerCase());
           }
         } else {
           for (const user of this.users) {
@@ -83,8 +79,6 @@ export default {
         }
       });
       processChange();
-
-
     },
     getUsers() {
       axios.get(`${this.host}/users`, {
