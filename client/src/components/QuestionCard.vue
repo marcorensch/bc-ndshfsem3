@@ -18,7 +18,7 @@
       </div>
 
     <div class="card-body">
-      <span>asked: {{item.created_at}}</span>
+      <span>asked: {{new Date(this.item.created_at).toLocaleString()}}</span>
       <span class="float-end">by
         {{item.anonymous || !item.username ? "Anonym" : item.username}}
       </span>
@@ -53,7 +53,7 @@ export default {
 
   },
   mounted() {
-    this.item.created_at = new Date(this.item.created_at).toLocaleString();
+
   },
   methods: {
 
