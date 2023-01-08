@@ -22,13 +22,13 @@
 
     <div class="tab-content mt-3" id="adminTabContent">
       <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-        <UsersList />
+        <AdminUsersList />
       </div>
       <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="categories-tab">
-        <CategoriesAdminList />
+        <AdminCategoriesList />
       </div>
       <div class="tab-pane fade" id="tags" role="tabpanel" aria-labelledby="tags-tab">
-
+        <AdminTagsList />
       </div>
     </div>
 
@@ -36,13 +36,14 @@
 </template>
 
 <script>
-import UsersList from "@/components/UsersList.vue";
-import CategoriesAdminList from "@/components/CategoriesAdminList.vue";
+import AdminUsersList from "@/components/AdminUsersList.vue";
+import AdminCategoriesList from "@/components/AdminCategoriesList.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import AdminTagsList from "@/components/AdminTagsList.vue";
 
 export default {
   name: "AdminCockpitOverview",
-  components: {FontAwesomeIcon, UsersList, CategoriesAdminList},
+  components: {AdminTagsList, FontAwesomeIcon, AdminUsersList, AdminCategoriesList},
   inject: ["host"],
   data() {
     return {

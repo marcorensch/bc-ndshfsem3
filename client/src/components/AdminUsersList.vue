@@ -41,7 +41,7 @@ import axios from "axios";
 import { useUserStore } from "@/stores/UserStore";
 
 export default {
-  name: "UsersList",
+  name: "AdminUsersList",
   inject: ["host"],
   data() {
     return {
