@@ -1,5 +1,4 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
-import {re} from "@babel/core/lib/vendor/import-meta-resolve.js";
 
 class QuestionHelper {
     databaseConnector = null;
@@ -24,13 +23,30 @@ class QuestionHelper {
         if(queryParams.page) {
             const offset = (queryParams.page -1) * queryParams.count;
             sql += ` OFFSET ${offset}`
-        };
+        }
 
         try {
-            return await this.databaseConnector.query(sql);
+            let questions = await this.databaseConnector.query(sql);
+            for (let question of questions.data) {
+                question.tags = await this.getTagsByQuestionId(question.id);
+            }
+            return questions;
         } catch (error) {
             console.error(error);
             return error;
+        }
+    }
+
+    async getTagsByQuestionId(id){
+        const sql = "SELECT t.id, t.title, t.alias FROM question_tags qt"+
+            " JOIN tags t ON qt.tag_id = t.id"+
+            " WHERE qt.question_id=?";
+        try{
+            const response = await this.databaseConnector.query(sql, [id]);
+            return response.data;
+        }catch (error) {
+            console.log(error);
+            return [];
         }
     }
 
@@ -133,8 +149,7 @@ class QuestionHelper {
     async deleteItemBy(key, value){
         const sql = `DELETE FROM questions WHERE ${key}=?`;
         try{
-            const response = await this.databaseConnector.query(sql, [value]);
-            return response;
+            return await this.databaseConnector.query(sql, [value]);
         }catch (error) {
             console.log(error);
             return false;

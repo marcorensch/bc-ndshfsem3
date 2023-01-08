@@ -4,7 +4,10 @@
       {{item.id}} - {{item.categoryTitle}}
     </span>
     <div class="card-body">
-      <p class="card-title question-content">{{strippedContent}}</p>
+      <div class="question-content">{{strippedContent}}</div>
+      <div v-if="item.tags.length > 0" class="tags">
+        <div v-for="tag in item.tags" :key="tag.id" class="tag">{{tag.title}}</div>
+      </div>
       <div class="btn-section">
         <router-link :to="{name: 'New Answer', params:{id: item.id}}" class="btn btn-primary float-start col">
           I can answer this!
@@ -18,7 +21,7 @@
       </div>
 
     <div class="card-body">
-      <span>asked: {{new Date(this.item.created_at).toLocaleString()}}</span>
+      <span>asked: {{new Date(item.created_at).toLocaleString()}}</span>
       <span class="float-end">by
         {{item.anonymous || !item.username ? "Anonym" : item.username}}
       </span>
@@ -113,6 +116,22 @@ export default {
     width: 200px;
     font-size: 1rem;
     float: none !important;
+  }
+}
+
+.tags{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: end;
+  margin-bottom: .5rem;
+  .tag{
+    font-size: .8rem;
+    background-color: var(--dark);
+    color: var(--light);
+    padding: 0.2rem .4rem;
+    margin: 0.2rem;
+    border-radius: 4px;
   }
 }
 

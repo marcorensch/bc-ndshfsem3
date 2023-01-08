@@ -8,9 +8,11 @@ Marco Rensch.
 - Node Version 18.x
 - NPM Version 7.x
 - MariaDB min. Version 10.10.x oder MySQL min. Version 5.7.x
-- Eigenes Zertifikat für HTTPS (optional) - siehe [Self signed Zertifikat generieren](https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/)
-  - Hinweis: Unter MacOS muss das Zertifikat in den Keychain importiert werden und anschliessend als vertrauenswürdig markiert werden.
-  
+- Eigenes Zertifikat für HTTPS (optional) -
+  siehe [Self signed Zertifikat generieren](https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/)
+    - Hinweis: Unter MacOS muss das Zertifikat in den Keychain importiert werden und anschliessend als vertrauenswürdig
+      markiert werden.
+
 ## Installation Datenbank
 
 ### Windows
@@ -107,6 +109,15 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :x:                | DELETE | `/:id`    | Löscht eine Antwort        | Ja                                                              |                                    |
 
 *: Nur wenn neuer Token generiert wurde
+
+#### Tags (/tags/...)
+
+| Status             | Type   | Secured | Route     | Beschreibung                      | Request    | Response                        |
+|--------------------|--------|---------|-----------|-----------------------------------|------------|---------------------------------|
+| :white_check_mark: | GET    |         | `/`       | Gibt eine Liste aller Tags zurück | -          | response.data [{id,title}, ...] |
+| :white_check_mark: | POST   |         | `/create` | Erstellt eine neuen Tag           | body.title |                                 |
+| :white_check_mark: | PUT    |         | `/:id`    | Aktualisiert einen Tag            | body.title | true oder DB Error              |
+| :white_check_mark: | DELETE |         | `/:id`    | Löscht einen Tag                  |            |                                 |
 
 #### Kategorien (/categories/...)
 

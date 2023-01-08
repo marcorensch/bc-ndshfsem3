@@ -61,6 +61,7 @@ export default {
                 response.data.payload.total / this.pagination.perPage
             );
             this.questionList = response.data.payload.questions;
+            console.log(this.questionList);
           })
           .catch((error) => {
             console.log(error);
