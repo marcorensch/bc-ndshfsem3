@@ -1,6 +1,8 @@
 import * as assert from "assert";
 import {expect} from "chai";
 import Homepage from "../pageobjects/homepage.mjs";
+import Registerpage from "../pageobjects/registerpage.mjs";
+import UserData from "../pageobjects/UserData.mjs";
 
 describe("Tests if website is reachable", function() {
 
@@ -15,6 +17,63 @@ describe("Tests if website is reachable", function() {
 
 
 
+});
+
+
+describe("Register Test for the signup form", function() {
+
+
+    it("Should not be a valid firstname", async () => {
+        let registerpage = new Registerpage();
+        let baseUrl = "https://localhost:8080/register";
+        let user = new UserData(
+            "Pipi!",
+            "Langstrumpf",
+            "pipi",
+            "pipi@gmail.com",
+            "12345678",
+            "12345678");
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getMainErrorMessage();
+        assert.equal(errormessage, "firstname Invalid / Forbidden characters");
+
+    });
+
+    it("Should not be a valid lastname", async () => {
+        let registerpage = new Registerpage();
+        let baseUrl = "https://localhost:8080/register";
+        let user = new UserData(
+            "Pipi",
+            "Langstrumpf!",
+            "pipi",
+            "pipi@gmail.com",
+            "12345678",
+            "12345678");
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getMainErrorMessage();
+        assert.equal(errormessage, "lastname Invalid / Forbidden characters");
+    });
+
+    it("Should not be same password", async () => {
+        let registerpage = new Registerpage();
+        let baseUrl = "https://localhost:8080/register";
+        let user = new UserData(
+            "Pipi",
+            "Langstrumpf!",
+            "pipi",
+            "pipi@gmail.com",
+            "12345678",
+            "12345678!");
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getErrorMessagePassword();
+        assert.equal(errormessage, "Not same password");
+    });
 
 
 
