@@ -12,10 +12,5 @@ export default {
   components: {
     ListOfQuestions,
   },
-  data() {
-    return {};
-  },
-  created() {},
-  methods: {}
-}
+};
 </script>
