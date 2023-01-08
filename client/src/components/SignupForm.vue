@@ -158,11 +158,11 @@ export default {
 
     },
       checkIfUsernameExist() {
-        axios.post(this.host + '/user/check', {
+        axios.post(this.host + '/users/check', {
           username: this.username
         })
         .then(response => {
-          if (response.data){
+          if (response.data.payload.exists){
             console.log("Username already exist")
             this.v$.username.$error = true;
             this.v$.username.required.$message = "Username already exist";
@@ -175,11 +175,11 @@ export default {
 
     },
     checkIfEmailExist(){
-        axios.post(this.host + '/user/check', {
+        axios.post(this.host + '/users/check', {
           email: this.email
         })
       .then(response => {
-        if (response.data){
+        if (response.data.payload.exists){
           console.log("Email already exist")
           this.v$.email.$error = true;
           this.v$.email.email.$message = "Email already exist";
