@@ -1,6 +1,21 @@
 <template>
-  <QuestionCard v-for="question in questionList" :item="question"/>
-  <Pagination :total="pagination.total" :page="pagination.page" @pageChange="handlePageChange"/>
+  <template v-if="questionList.length > 0">
+    <QuestionCard
+        v-for="question in questionList"
+        :item="question"
+    />
+    <Pagination
+        :total="pagination.total"
+        :page="pagination.page"
+        @pageChange="handlePageChange"
+    />
+  </template>
+  <template v-else>
+    <div class="w-100">
+      <p class="text-lg text-center">No questions found</p>
+      <p class="text-lg text-center">Let's start something new...</p>
+    </div>
+  </template>
 </template>
 
 <script>
@@ -34,11 +49,17 @@ export default {
       this.getQuestions();
     },
     getQuestions() {
-      axios.get(this.host + "/questions", {
-        params: {count: this.pagination.perPage, page: this.pagination.page}
-      })
+      axios
+          .get(this.host + "/questions", {
+            params: {
+              count: this.pagination.perPage,
+              page: this.pagination.page,
+            },
+          })
           .then((response) => {
-            this.pagination.total = Math.ceil(response.data.payload.total / this.pagination.perPage);
+            this.pagination.total = Math.ceil(
+                response.data.payload.total / this.pagination.perPage
+            );
             this.questionList = response.data.payload.questions;
           })
           .catch((error) => {
@@ -46,6 +67,6 @@ export default {
             this.questionList = [];
           });
     },
-  }
-}
+  },
+};
 </script>
