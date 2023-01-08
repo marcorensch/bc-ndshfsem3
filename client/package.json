@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "mocha --timeout 10000",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
@@ -19,9 +19,12 @@
     "@vuelidate/validators": "^2.0.0",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
+    "chai": "^4.3.7",
     "core-js": "^3.8.3",
+    "mocha": "^10.2.0",
     "pinia": "^2.0.28",
     "pinia-plugin-persist": "^1.0.0",
+    "selenium-webdriver": "^4.7.1",
     "tinymce": "^5.10.7",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
