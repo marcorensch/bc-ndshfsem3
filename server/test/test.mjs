@@ -171,7 +171,6 @@ describe('Category', function () {
     })
 });
 describe('E-Mail Checker', function () {
-
     it('should return ApiError Code u-318 for invalid email "invalidemail"', async function () {
         const check = await fieldChecker.isValidEmail("invalidemail");
         assert.equal(check.errorCode, "u-318");
@@ -187,6 +186,7 @@ describe('E-Mail Checker', function () {
 
     it('should return true for valid email "user@tld.com"', async function () {
         const check = await fieldChecker.isValidEmail("user@tld.com");
+        console.log(check);
         assert.equal(check, true);
     });
     it('should return true for valid email "user@tld.ch"', async function () {
