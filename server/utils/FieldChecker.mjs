@@ -94,7 +94,7 @@ export default class FieldChecker {
     async emailIsNew(email){
         const userHelper = new UserHelper(this.connectionData);
         const result = await userHelper.getUserIdByEmail(email);
-        return !result;
+        return !!!result.data[0]?.id
     }
 
     hasValidLength(string, min, max){

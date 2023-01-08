@@ -44,5 +44,22 @@ router.get('/:id', (req, res) => {
     res.json(user);
 });
 
+router.post('/check', async (req, res) => {
+    const {username, email} = req.body;
+    if(!username && !email) return res.status(422).json(new ApiError("u-317").relatedColumn("username or email"));
+    const userHelper = new UserHelper();
+    let exists = false;
+    if(username) {
+        const result = await userHelper.getUserIdByUsername(username);
+        exists = !!result.data[0]?.id;
+    }
+    if(email) {
+        const result = await userHelper.getUserIdByEmail(email);
+        exists = !!result.data[0]?.id;
+    }
+
+    return res.status(200).json(new TransportObject().setPayload({exists}))
+});
+
 export default router;
 

@@ -6,6 +6,7 @@ import express from 'express';
 import 'babel-polyfill';
 import cors from 'cors';
 import usersRoute from './routes/users.mjs';
+import tagsRoute from './routes/tags.mjs';
 import questionsRoute from './routes/questions.mjs';
 import authRoute from './routes/auth.mjs';
 import categoriesRoute from './routes/categories.mjs';
@@ -44,6 +45,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/users', usersRoute);
+app.use('/tags', tagsRoute);
 app.use('/questions', questionsRoute);
 app.use('/auth', authRoute);
 app.use('/categories', categoriesRoute);

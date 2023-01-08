@@ -22,6 +22,7 @@ class DatabaseConnector {
         try {
             config.bigIntAsNumber= true;
             config.decimalAsNumber= true;
+            config.metaAsArray= false;
             return mariadb.createConnection(config);
         } catch (err) {
             throw err;
@@ -46,6 +47,7 @@ class DatabaseConnector {
         let conn = await this.createConnection();
         try {
             const result = await conn.query(sql, values);
+            delete result.meta;
             return {success: true, data: result};
         } catch (err) {
             throw err;
