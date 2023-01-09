@@ -11,6 +11,8 @@ import questionsRoute from './routes/questions.mjs';
 import authRoute from './routes/auth.mjs';
 import categoriesRoute from './routes/categories.mjs';
 import * as fs from "fs";
+import QuestionHelper from "./helper/QuestionHelper.mjs";
+import chalk from "chalk";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -39,6 +41,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+try{
+    await new QuestionHelper().getItems({count: 2});
+}catch(e){
+    console.error(chalk.red.bold(`Database Error ${e.errno} ${e.code}`))
+    process.exit(1)
+}
+
 // Routes
 app.get('/', (req, res) => {
     res.send('Hello there! This isn\'t the page you\'re looking for. ⭐🧔⚔️');
@@ -50,7 +59,7 @@ app.use('/questions', questionsRoute);
 app.use('/auth', authRoute);
 app.use('/categories', categoriesRoute);
 
-app.use((req, res, next) => {
+app.use((req, res) => {
     res.status(404).send('Houston, we have a Problem! (Route not found)');
 });
 
