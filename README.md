@@ -12,6 +12,7 @@ Marco Rensch.
   siehe [Self signed Zertifikat generieren](https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/)
     - Hinweis: Unter MacOS muss das Zertifikat in den Keychain importiert werden und anschliessend als vertrauenswürdig
       markiert werden.
+    - Hinweis: Wenn der Client sich nicht mit dem Server verbinden kann muss du zunächst das Zertifikat im Browser akzeptieren. Öffne hierzu die Adresse https://localhost:3000 (wobei 3000 deinem Server Port entsprechen muss).
 
 ## Installation Datenbank
 
