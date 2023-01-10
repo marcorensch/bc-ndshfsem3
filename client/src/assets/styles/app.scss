@@ -16,6 +16,20 @@
 body {
   background-color: var(--light);
 }
+.btn{
+  font-size: .8rem;
+  background-color: var(--dark);
+  border-radius: 2px;
+  color: (var(--light));
+  padding: 7px 12px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-out;
+
+  &:hover {
+    background-color: var(--primary);
+  }
+}
 
 button {
   appearance: none;
@@ -23,18 +37,15 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
+  font-size: .8rem;
+  border-radius: 2px;
+  transition: all 0.2s ease-out;
+  min-width: 80px;
+  padding: 7px 12px;
 
   &.default {
-    font-size: .8rem;
     background-color: var(--dark);
-    border-radius: 2px;
     color: (var(--light));
-    padding: 7px 10px;
-    margin: 5px;
-    border: none;
-    cursor: pointer;
-    width: 100px;
-    transition: 0.2s ease-out;
 
     &:hover {
       background-color: var(--primary);
@@ -54,6 +65,53 @@ button {
     }
 
   }
+}
+/* Cards */
+.card {
+  margin: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: 0.3s ease-out;
+
+  .card-header {
+    background-color: var(--dark);
+    color: var(--light);
+    font-size: 1rem;
+  }
+  .card-body{
+    padding: .6rem;
+  }
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: 0.3s ease-out;
+  }
+}
+
+/* Tags */
+.tags{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: end;
+  margin-bottom: .5rem;
+  .tag{
+    font-size: .8rem;
+    background-color: var(--dark);
+    color: var(--light);
+    padding: 0.2rem .4rem;
+    margin: 0.2rem;
+    border-radius: 4px;
+  }
+}
+
+.tag {
+  background-color: var(--dark);
+  color: var(--light);
+  padding: 0.2rem .4rem;
+  border-radius: 0.25rem;
+  margin: 0.25rem;
+  font-size: .8rem;
+  font-weight: 100;
+  display: inline-block;
 }
 
 /* Editor */

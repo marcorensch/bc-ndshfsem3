@@ -213,47 +213,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card {
-  margin: 1rem 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: 0.3s ease-out;
-
-  .card-header {
-    background-color: var(--dark);
-    color: var(--light);
-    font-size: 1rem;
-  }
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: 0.3s ease-out;
-  }
-}
+@import "@/assets/styles/app.scss";
 
 .question-content {
   font-size: 1.2rem;
   font-weight: 500;
   margin-bottom: 3rem;
-}
-
-.btn {
-  font-size: 1.2rem;
-  background-color: var(--dark);
-  border-radius: 0.375rem;
-  color: (var(--light));
-  padding: 14px 20px;
-  border: none;
-  cursor: pointer;
-  width: 200px;
-  transition: 0.2s ease-out;
-
-  &:hover {
-    background-color: var(--primary);
-  }
-}
-
-.button-section {
-  margin-top: 20px;
 }
 
 .question-header {
@@ -280,17 +245,6 @@ export default {
     color: var(--light);
     font-size: 3rem;
   }
-}
-
-.tag {
-  background-color: var(--dark);
-  color: var(--light);
-  padding: 0.2rem .4rem;
-  border-radius: 0.25rem;
-  margin: 0.25rem;
-  font-size: .8rem;
-  font-weight: 100;
-  display: inline-block;
 }
 
 </style>
