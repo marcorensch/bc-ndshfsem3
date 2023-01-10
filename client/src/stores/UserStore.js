@@ -11,7 +11,8 @@ export const useUserStore = defineStore('userdata', {
             isadministrator: null,
             token: null,
             refreshToken: null,
-        }
+        },
+        answerText: null,
     }),
     getters: {
         isAdmin: (state) => {
@@ -25,6 +26,9 @@ export const useUserStore = defineStore('userdata', {
                 token: state.user.token,
                 refreshToken: state.user.refreshToken
             }
+        },
+        getAnswerText: (state) => {
+            return state.answerText;
         }
     },
     actions: {
@@ -48,6 +52,12 @@ export const useUserStore = defineStore('userdata', {
                 token: null,
                 refreshToken: null,
             }
+        },
+        setAnswerText(text) {
+            this.answerText = text;
+        },
+        clearAnswerText() {
+            this.answerText = null;
         }
     },
     persist: {
