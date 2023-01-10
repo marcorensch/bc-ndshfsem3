@@ -1,8 +1,12 @@
 import {By, Key} from 'selenium-webdriver';
-import Basepage from '../pageobjects/basepage.mjs';
 
 
-class Registerpage extends Basepage {
+
+class Registerpage  {
+
+    constructor(driver) {
+        this.driver = driver;
+    }
 
 
     async fillForm(user) {
@@ -17,51 +21,55 @@ class Registerpage extends Basepage {
 
     }
 
+    async goToUrl(url) {
+        this.driver.get(url);
+    }
+
 
 
     async getMainErrorMessage(){
-        return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/div/span')).getText();
+        return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/div/span')).getText();
     }
 
     async getErrorMessageConfirmPassword() {
-        return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[2]/span')).getText();
+        return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[2]/span')).getText();
     }
     async getErrorMessageNewPassword() {
-        return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[1]/span')).getText();
+        return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[1]/span')).getText();
     }
 
     async getErrorMessageEmail(){
-        return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[2]/div[1]/span')).getText();
+        return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[2]/div[1]/span')).getText();
     }
 
 
     getFirstNameField() {
-        return driver.findElement(By.xpath('//*[@id="firstname"]'));
+        return this.driver.findElement(By.xpath('//*[@id="firstname"]'));
     }
 
     getLastNameField() {
-        return driver.findElement(By.xpath('//*[@id="lastname"]'));
+        return this.driver.findElement(By.xpath('//*[@id="lastname"]'));
     }
 
     getUsernameField() {
-        return driver.findElement(By.xpath('//*[@id="username"]'));
+        return this.driver.findElement(By.xpath('//*[@id="username"]'));
     }
 
     getEmailField() {
-        return driver.findElement(By.xpath('//*[@id="email"]'));
+        return this.driver.findElement(By.xpath('//*[@id="email"]'));
     }
 
 
     getPasswordField() {
-        return driver.findElement(By.xpath('//*[@id="new-password"]'));
+        return this.driver.findElement(By.xpath('//*[@id="new-password"]'));
     }
 
     getConfirmPasswordField() {
-        return driver.findElement(By.xpath('//*[@id="confirm-password"]'));
+        return this.driver.findElement(By.xpath('//*[@id="confirm-password"]'));
     }
 
     getRegisterButton() {
-      return driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[2]/button'));
+      return this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[2]/button'));
     }
 
 

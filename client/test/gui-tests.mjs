@@ -3,16 +3,27 @@ import {expect} from "chai";
 import Homepage from "../pageobjects/homepage.mjs";
 import Registerpage from "../pageobjects/registerpage.mjs";
 import UserData from "../pageobjects/UserData.mjs";
+import Loginpage from "../pageobjects/loginpage.mjs";
+import {Builder} from "selenium-webdriver";
+import firefox from "selenium-webdriver/firefox.js";
 
 describe("Tests if website is reachable", function() {
+    let driver = null;
+
+    beforeEach(async function() {
+        driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
+            .forBrowser('firefox')
+            .setFirefoxOptions(new firefox.Options().headless())
+            .build();
+
+    });
 
     it("Homepage find project titel in header", async () => {
-        let homepage = new Homepage();
+        let homepage = new Homepage(driver);
         let baseUrl = "https://localhost:8080";
-        let textFromSite = "";
         await homepage.goToUrl(baseUrl);
-        textFromSite = await homepage.getText(".header > h1:nth-child(1)");
-        assert.equal(textFromSite, "Babylon Community");
+        let title = await homepage.getText(".header > h1:nth-child(1)")
+        assert.equal(title, "Babylon Community");
     });
 
 
@@ -21,10 +32,18 @@ describe("Tests if website is reachable", function() {
 
 
 describe("Register Test for the signup form", function() {
+    let driver = null;
 
+    beforeEach(async function() {
+        driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
+            .forBrowser('firefox')
+            .setFirefoxOptions(new firefox.Options().headless())
+            .build();
+
+    });
 
     it("Should not be a valid firstname", async () => {
-        let registerpage = new Registerpage();
+        let registerpage = new Registerpage(driver);
         let baseUrl = "https://localhost:8080/register";
         let user = new UserData(
             "Pipi!",
@@ -42,7 +61,7 @@ describe("Register Test for the signup form", function() {
     });
 
     it("Should not be a valid lastname", async () => {
-        let registerpage = new Registerpage();
+        let registerpage = new Registerpage(driver);
         let baseUrl = "https://localhost:8080/register";
         let user = new UserData(
             "Pipi",
@@ -59,7 +78,7 @@ describe("Register Test for the signup form", function() {
     });
 
     it("Should not be a valid email", async () => {
-        let registerpage = new Registerpage();
+        let registerpage = new Registerpage(driver);
         let baseUrl = "https://localhost:8080/register";
         let user = new UserData(
             "Pipi",
@@ -76,7 +95,7 @@ describe("Register Test for the signup form", function() {
     });
 
     it("Should not be same password", async () => {
-        let registerpage = new Registerpage();
+        let registerpage = new Registerpage(driver);
         let baseUrl = "https://localhost:8080/register";
         let user = new UserData(
             "Pipi",
@@ -93,7 +112,7 @@ describe("Register Test for the signup form", function() {
     });
 
     it("Should not have enough characters", async () => {
-        let registerpage = new Registerpage();
+        let registerpage = new Registerpage(driver);
         let baseUrl = "https://localhost:8080/register";
         let user = new UserData(
             "Pipi",
@@ -109,5 +128,50 @@ describe("Register Test for the signup form", function() {
         assert.equal(errormessage, "Min. 8 characters");
     });
 
+
+});
+
+describe("Login Test for the login form", function() {
+    let driver = null;
+
+
+    beforeEach(async () => {
+        driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
+            .forBrowser('firefox')
+            .setFirefoxOptions(new firefox.Options().headless())
+            .build();
+
+
+    });
+
+    afterEach(async () => {
+
+    });
+
+    it("should pop up the Loginmodal", async () => {
+        let loginpage = new Loginpage(driver);
+        await loginpage.openLoginModal();
+        let title = await loginpage.getLoginModalTitle();
+        assert.equal(title, "Login Form");
+
+    });
+
+    it("Login with wrong password", async () => {
+        let loginpage = new Loginpage(driver);
+        await loginpage.openLoginModal();
+        await loginpage.fillUsernameField("clodos");
+        await loginpage.clickLoginButton();
+        let errormessage = await loginpage.getErrorMessage();
+        assert.equal(errormessage, "Wrong Password");
+    });
+
+    it("Login with wrong Username", async () => {
+        let loginpage = new Loginpage(driver);
+        await loginpage.openLoginModal();
+        await loginpage.fillUsernameField("");
+        await loginpage.clickLoginButton();
+        let errormessage = await loginpage.getErrorMessage();
+        assert.equal(errormessage, "User not found");
+    });
 
 });
