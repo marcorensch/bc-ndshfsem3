@@ -67,6 +67,8 @@ export default {
 
 <style lang="scss" scoped>
 
+@import "@/assets/styles/app.scss";
+
 .card {
   margin: 1rem 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -89,35 +91,6 @@ export default {
   margin-bottom: 3rem;
 }
 
-.btn{
-  font-size: 1rem;
-  background-color: var(--dark);
-  border-radius: 2px;
-  color: (var(--light));
-  padding: 14px 20px;
-  margin: 10px 10px;
-  border: none;
-  cursor: pointer;
-  width: 200px;
-  transition: 0.2s ease-out;
-
-  &:hover {
-    background-color: var(--primary);
-  }
-}
-@media (max-width: 768px) {
- .btn-section{
-   display: flex;
-   flex-direction: column;
-   align-items: center;
- }
-
-  .btn {
-    width: 200px;
-    font-size: 1rem;
-    float: none !important;
-  }
-}
 
 .tags{
   display: flex;

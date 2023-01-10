@@ -32,8 +32,7 @@ class QuestionHelper {
             }
             return questions;
         } catch (error) {
-            console.error(error);
-            return error;
+            throw error;
         }
     }
 
@@ -76,8 +75,7 @@ class QuestionHelper {
         console.log(question);
         const sql = "UPDATE questions SET content=?, category_id=?, anonymous=? WHERE id=?";
         try{
-            const response = await this.databaseConnector.query(sql, [question.content, question.category_id, question.anonymous, question.id]);
-            return response;
+            return await this.databaseConnector.query(sql, [question.content, question.category_id, question.anonymous, question.id]);
         }catch (error) {
             console.log(error);
             return false;
@@ -95,6 +93,7 @@ class QuestionHelper {
             " WHERE question_id=?"
         try{
             const question = await this.databaseConnector.query(question_sql, [id]);
+            question.data[0].tags = await this.getTagsByQuestionId(question.data[0].id);
             const answers = await this.databaseConnector.query(answers_sql, [id]);
             return {question: question.data[0], answers: answers.data};
         }catch (error) {
