@@ -10,7 +10,7 @@ import firefox from "selenium-webdriver/firefox.js";
 describe("Tests if website is reachable", function() {
     let driver = null;
 
-    beforeEach(async function() {
+    before(async function() {
         driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
             .forBrowser('firefox')
             .setFirefoxOptions(new firefox.Options().headless())
@@ -26,6 +26,10 @@ describe("Tests if website is reachable", function() {
         assert.equal(title, "Babylon Community");
     });
 
+    after(async function() {
+        await driver.quit();
+    });
+
 
 
 });
@@ -34,13 +38,14 @@ describe("Tests if website is reachable", function() {
 describe("Register Test for the signup form", function() {
     let driver = null;
 
-    beforeEach(async function() {
+    before(async function() {
         driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
             .forBrowser('firefox')
             .setFirefoxOptions(new firefox.Options().headless())
             .build();
 
     });
+
 
     it("Should not be a valid firstname", async () => {
         let registerpage = new Registerpage(driver);
@@ -128,6 +133,10 @@ describe("Register Test for the signup form", function() {
         assert.equal(errormessage, "Min. 8 characters");
     });
 
+    after(async function() {
+        await driver.quit();
+    });
+
 
 });
 
@@ -135,7 +144,7 @@ describe("Login Test for the login form", function() {
     let driver = null;
 
 
-    beforeEach(async () => {
+    before(async () => {
         driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
             .forBrowser('firefox')
             .setFirefoxOptions(new firefox.Options().headless())
@@ -144,13 +153,12 @@ describe("Login Test for the login form", function() {
 
     });
 
-    afterEach(async () => {
 
-    });
 
     it("should pop up the Loginmodal", async () => {
         let loginpage = new Loginpage(driver);
         await loginpage.openLoginModal();
+        await loginpage.waitForModal();
         let title = await loginpage.getLoginModalTitle();
         assert.equal(title, "Login Form");
 
@@ -172,6 +180,10 @@ describe("Login Test for the login form", function() {
         await loginpage.clickLoginButton();
         let errormessage = await loginpage.getErrorMessage();
         assert.equal(errormessage, "User not found");
+    });
+
+    after(async function() {
+        await driver.quit();
     });
 
 });

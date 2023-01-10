@@ -1,4 +1,4 @@
-import {By, Key} from 'selenium-webdriver';
+import {By, Key, until, } from 'selenium-webdriver';
 
 
 class Loginpage{
@@ -12,6 +12,10 @@ class Loginpage{
         await this.clickLoginButtonSidebar();
 
 
+    }
+
+    async waitForModal(){
+       return  await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000);
     }
 
     async clickLoginButtonSidebar(){
