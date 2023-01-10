@@ -19,10 +19,5 @@ export const useFavCatsStore = defineStore('favoriteCategories', {
         removeFav(fav) {
             this.favs = this.favs.filter(f => f.id !== fav.id);
         }
-    },
-    // persist: {
-    //     enabled: true,
-    //     key: 'userdata',
-    //     storage: localStorage,
-    // }
+    }
 });
