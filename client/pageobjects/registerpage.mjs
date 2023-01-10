@@ -23,8 +23,15 @@ class Registerpage extends Basepage {
         return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/div/span')).getText();
     }
 
-    async getErrorMessagePassword() {
+    async getErrorMessageConfirmPassword() {
         return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[2]/span')).getText();
+    }
+    async getErrorMessageNewPassword() {
+        return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[1]/span')).getText();
+    }
+
+    async getErrorMessageEmail(){
+        return await driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[2]/div[1]/span')).getText();
     }
 
 

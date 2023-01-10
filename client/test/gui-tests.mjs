@@ -58,12 +58,29 @@ describe("Register Test for the signup form", function() {
         assert.equal(errormessage, "lastname Invalid / Forbidden characters");
     });
 
+    it("Should not be a valid email", async () => {
+        let registerpage = new Registerpage();
+        let baseUrl = "https://localhost:8080/register";
+        let user = new UserData(
+            "Pipi",
+            "Langstrumpf",
+            "pipi",
+            "pipi@gmail",
+            "12345678",
+            "12345678");
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getErrorMessageEmail();
+        assert.equal(errormessage, "Value is not a valid email address");
+    });
+
     it("Should not be same password", async () => {
         let registerpage = new Registerpage();
         let baseUrl = "https://localhost:8080/register";
         let user = new UserData(
             "Pipi",
-            "Langstrumpf!",
+            "Langstrumpf",
             "pipi",
             "pipi@gmail.com",
             "12345678",
@@ -71,10 +88,26 @@ describe("Register Test for the signup form", function() {
 
         await registerpage.goToUrl(baseUrl);
         await registerpage.fillForm(user);
-        let errormessage = await registerpage.getErrorMessagePassword();
+        let errormessage = await registerpage.getErrorMessageConfirmPassword();
         assert.equal(errormessage, "Not same password");
     });
 
+    it("Should not have enough characters", async () => {
+        let registerpage = new Registerpage();
+        let baseUrl = "https://localhost:8080/register";
+        let user = new UserData(
+            "Pipi",
+            "Langstrumpf",
+            "pipi",
+            "pipi@gmail.com",
+            "1234567",
+            "12345678");
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getErrorMessageNewPassword();
+        assert.equal(errormessage, "Min. 8 characters");
+    });
 
 
 });
