@@ -101,7 +101,7 @@ export default {
           console.log(response.data)
         }
       }).catch((error) => {
-        console.log(error)
+        this.errorMessage = error.response.data.message;
       })
     }
 
