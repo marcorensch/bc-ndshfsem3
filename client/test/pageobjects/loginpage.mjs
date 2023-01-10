@@ -8,6 +8,7 @@ class Loginpage{
     }
 
     async openLoginModal(){
+
         await this.driver.get("https://localhost:8080/");
         await this.clickLoginButtonSidebar();
 
@@ -15,7 +16,7 @@ class Loginpage{
     }
 
     async waitForModal(){
-       return  await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000);
+       return await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000);
     }
 
     async clickLoginButtonSidebar(){
@@ -28,7 +29,7 @@ class Loginpage{
     }
 
     async getLoginModalTitle(){
-        return await this.driver.findElement(By.xpath('/html/body/div[2]/div/div/div/h2')).getText();
+        return await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000).getText();
     }
 
     async fillUsernameField(username) {

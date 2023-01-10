@@ -1,9 +1,9 @@
 import * as assert from "assert";
 import {expect} from "chai";
-import Homepage from "../pageobjects/homepage.mjs";
-import Registerpage from "../pageobjects/registerpage.mjs";
-import UserData from "../pageobjects/UserData.mjs";
-import Loginpage from "../pageobjects/loginpage.mjs";
+import Homepage from "./pageobjects/homepage.mjs";
+import Registerpage from "./pageobjects/registerpage.mjs";
+import UserData from "./pageobjects/UserData.mjs";
+import Loginpage from "./pageobjects/loginpage.mjs";
 import {Builder} from "selenium-webdriver";
 import firefox from "selenium-webdriver/firefox.js";
 
