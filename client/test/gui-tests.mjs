@@ -6,6 +6,27 @@ import Loginpage from "./pageobjects/loginpage.mjs";
 import {Builder} from "selenium-webdriver";
 import firefox from "selenium-webdriver/firefox.js";
 
+import UserHelper from "../../server/helper/userHelper.mjs";
+import User from "../../server/model/user.mjs";
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: 'C:\\Users\\clodo\\Semesterarbeit\\Modularbeit3\\server\\.env' });
+
+
+
+const testDbConnectionData = {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.TEST_DB_NAME,
+}
+
+console.log(testDbConnectionData);
+
+const userHelper = new UserHelper(testDbConnectionData);
+
+
 describe("Tests if website is reachable", function () {
     let driver = null;
 
@@ -220,15 +241,21 @@ describe("Login Test for the login form", function () {
     });
 
     it("Login with wrong password", async () => {
+        await userHelper.deleteUserByUsername("test-user");
+        const user = new User("Test", "Test", "test-user", "testuser.test@gmail.com");
+        user.setPassword("12345678");
+        await userHelper.registerUser(user);
+
         let loginpage = new Loginpage(driver);
         try {
             await loginpage.openLoginModal();
             let modal = await loginpage.waitForModal();
             if (modal) {
-                await loginpage.fillUsernameField("clodos");
+                await loginpage.fillUsernameField("test-user");
                 await loginpage.clickLoginButton();
                 let errormessage = await loginpage.getErrorMessage();
                 assert.equal(errormessage, "Wrong Password");
+              //  await userHelper.deleteUserByUsername("test-user");
             }
         } catch (error) {
             console.log(error);
