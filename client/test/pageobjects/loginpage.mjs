@@ -9,18 +9,18 @@ class Loginpage{
 
     async openLoginModal(){
 
-        await this.driver.get("https://localhost:8080/");
-        await this.clickLoginButtonSidebar();
-
+            await this.driver.get("https://localhost:8080/");
+            let button = await this.getLoginButtonSidebar();
+            button.click();
 
     }
 
     async waitForModal(){
-       return await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000);
+       return await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000).isDisplayed();
     }
 
-    async clickLoginButtonSidebar(){
-        return await this.driver.findElement(By.xpath('//*[@id="show-login-modal"]')).click();
+    async getLoginButtonSidebar(){
+        return await this.driver.findElement(By.xpath('//*[@id="show-login-modal"]'));
     }
 
     async clickRegisterButton() {
@@ -33,7 +33,7 @@ class Loginpage{
     }
 
     async fillUsernameField(username) {
-        await this.driver.findElement(By.xpath('//*[@id="username"]')).sendKeys(username);
+       return await this.driver.findElement(By.xpath('//*[@id="username"]')).sendKeys(username);
     }
 
     async clickLoginButton() {

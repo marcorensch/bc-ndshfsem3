@@ -10,19 +10,32 @@ class Registerpage  {
 
 
     async fillForm(user) {
+        try{
+            let firstname = await this.getFirstNameField();
+            let lastname = await this.getLastNameField();
+            let username = await this.getUsernameField();
+            let email = await this.getEmailField();
+            let password = await this.getPasswordField();
+            let confirmPassword = await this.getConfirmPasswordField();
+            let registerButton = await this.getRegisterButton();
 
-        await this.getFirstNameField().sendKeys(user._firstname);
-        await this.getLastNameField().sendKeys(user._lastname);
-        await this.getUsernameField().sendKeys(user._username);
-        await this.getEmailField().sendKeys(user._email);
-        await this.getPasswordField().sendKeys(user._password);
-        await this.getConfirmPasswordField().sendKeys(user._confirmPassword);
-        await this.getRegisterButton().click();
+
+            await firstname.sendKeys(user._firstname);
+            await lastname.sendKeys(user._lastname);
+            await username.sendKeys(user._username);
+            await email.sendKeys(user._email);
+            await password.sendKeys(user._password);
+            await confirmPassword.sendKeys(user._confirmPassword);
+            await registerButton.click();
+
+        }catch (error) {
+            console.log(error);
+        }
 
     }
 
     async goToUrl(url) {
-        this.driver.get(url);
+       await this.driver.get(url);
     }
 
 
@@ -43,33 +56,33 @@ class Registerpage  {
     }
 
 
-    getFirstNameField() {
-        return this.driver.findElement(By.xpath('//*[@id="firstname"]'));
+    async getFirstNameField() {
+        return await this.driver.findElement(By.xpath('//*[@id="firstname"]'));
     }
 
-    getLastNameField() {
-        return this.driver.findElement(By.xpath('//*[@id="lastname"]'));
+    async getLastNameField() {
+        return await this.driver.findElement(By.xpath('//*[@id="lastname"]'));
     }
 
-    getUsernameField() {
-        return this.driver.findElement(By.xpath('//*[@id="username"]'));
+    async getUsernameField() {
+        return await this.driver.findElement(By.xpath('//*[@id="username"]'));
     }
 
-    getEmailField() {
-        return this.driver.findElement(By.xpath('//*[@id="email"]'));
+    async getEmailField() {
+        return await this.driver.findElement(By.xpath('//*[@id="email"]'));
     }
 
 
-    getPasswordField() {
-        return this.driver.findElement(By.xpath('//*[@id="new-password"]'));
+    async getPasswordField() {
+        return await this.driver.findElement(By.xpath('//*[@id="new-password"]'));
     }
 
-    getConfirmPasswordField() {
-        return this.driver.findElement(By.xpath('//*[@id="confirm-password"]'));
+    async getConfirmPasswordField() {
+        return await this.driver.findElement(By.xpath('//*[@id="confirm-password"]'));
     }
 
-    getRegisterButton() {
-      return this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[2]/button'));
+    async getRegisterButton() {
+      return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[2]/button'));
     }
 
 

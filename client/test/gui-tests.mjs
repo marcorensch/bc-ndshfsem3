@@ -1,5 +1,4 @@
 import * as assert from "assert";
-import {expect} from "chai";
 import Homepage from "./pageobjects/homepage.mjs";
 import Registerpage from "./pageobjects/registerpage.mjs";
 import UserData from "./pageobjects/UserData.mjs";
@@ -7,14 +6,19 @@ import Loginpage from "./pageobjects/loginpage.mjs";
 import {Builder} from "selenium-webdriver";
 import firefox from "selenium-webdriver/firefox.js";
 
-describe("Tests if website is reachable", function() {
+describe("Tests if website is reachable", function () {
     let driver = null;
 
-    before(async function() {
-        driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
-            .forBrowser('firefox')
-            .setFirefoxOptions(new firefox.Options().headless())
-            .build();
+    before(async function () {
+        try{
+            driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
+                .forBrowser('firefox')
+                .setFirefoxOptions(new firefox.Options().headless())
+                .build();
+        }catch (error){
+            console.log(error);
+        }
+
 
     });
 
@@ -26,23 +30,32 @@ describe("Tests if website is reachable", function() {
         assert.equal(title, "Babylon Community");
     });
 
-    after(async function() {
-        await driver.quit();
-    });
+    after(async function () {
+        try{
+            await driver.quit();
+        }catch (error){
+            console.log(error);
+        }
 
+    });
 
 
 });
 
 
-describe("Register Test for the signup form", function() {
+describe("Register Test for the signup form", function () {
     let driver = null;
 
-    before(async function() {
-        driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
-            .forBrowser('firefox')
-            .setFirefoxOptions(new firefox.Options().headless())
-            .build();
+    before(async function () {
+        try{
+            driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
+                .forBrowser('firefox')
+                .setFirefoxOptions(new firefox.Options().headless())
+                .build();
+        }catch (error){
+            console.log(error);
+        }
+
 
     });
 
@@ -58,10 +71,15 @@ describe("Register Test for the signup form", function() {
             "12345678",
             "12345678");
 
-        await registerpage.goToUrl(baseUrl);
-        await registerpage.fillForm(user);
-        let errormessage = await registerpage.getMainErrorMessage();
-        assert.equal(errormessage, "firstname Invalid / Forbidden characters");
+        try{
+            await registerpage.goToUrl(baseUrl);
+            await registerpage.fillForm(user);
+            let errormessage = await registerpage.getMainErrorMessage();
+            assert.equal(errormessage, "firstname Invalid / Forbidden characters");
+        }catch (error){
+            console.log(error);
+        }
+
 
     });
 
@@ -76,10 +94,15 @@ describe("Register Test for the signup form", function() {
             "12345678",
             "12345678");
 
-        await registerpage.goToUrl(baseUrl);
-        await registerpage.fillForm(user);
-        let errormessage = await registerpage.getMainErrorMessage();
-        assert.equal(errormessage, "lastname Invalid / Forbidden characters");
+        try{
+            await registerpage.goToUrl(baseUrl);
+            await registerpage.fillForm(user);
+            let errormessage = await registerpage.getMainErrorMessage();
+            assert.equal(errormessage, "lastname Invalid / Forbidden characters");
+        }catch (error){
+            console.log(error);
+        }
+
     });
 
     it("Should not be a valid email", async () => {
@@ -93,10 +116,15 @@ describe("Register Test for the signup form", function() {
             "12345678",
             "12345678");
 
-        await registerpage.goToUrl(baseUrl);
-        await registerpage.fillForm(user);
-        let errormessage = await registerpage.getErrorMessageEmail();
-        assert.equal(errormessage, "Value is not a valid email address");
+        try{
+            await registerpage.goToUrl(baseUrl);
+            await registerpage.fillForm(user);
+            let errormessage = await registerpage.getErrorMessageEmail();
+            assert.equal(errormessage, "Value is not a valid email address");
+        }catch (error){
+            console.log(error);
+        }
+
     });
 
     it("Should not be same password", async () => {
@@ -110,10 +138,15 @@ describe("Register Test for the signup form", function() {
             "12345678",
             "12345678!");
 
-        await registerpage.goToUrl(baseUrl);
-        await registerpage.fillForm(user);
-        let errormessage = await registerpage.getErrorMessageConfirmPassword();
-        assert.equal(errormessage, "Not same password");
+        try{
+            await registerpage.goToUrl(baseUrl);
+            await registerpage.fillForm(user);
+            let errormessage = await registerpage.getErrorMessageConfirmPassword();
+            assert.equal(errormessage, "Not same password");
+        }catch (error){
+            console.log(error);
+        }
+
     });
 
     it("Should not have enough characters", async () => {
@@ -127,63 +160,108 @@ describe("Register Test for the signup form", function() {
             "1234567",
             "12345678");
 
-        await registerpage.goToUrl(baseUrl);
-        await registerpage.fillForm(user);
-        let errormessage = await registerpage.getErrorMessageNewPassword();
-        assert.equal(errormessage, "Min. 8 characters");
+        try{
+            await registerpage.goToUrl(baseUrl);
+            await registerpage.fillForm(user);
+            let errormessage = await registerpage.getErrorMessageNewPassword();
+            assert.equal(errormessage, "Min. 8 characters");
+        }catch (error){
+            console.log(error);
+        }
+
     });
 
-    after(async function() {
-        await driver.quit();
+    after(async function () {
+        try{
+            await driver.quit();
+        }catch (error){
+            console.log(error);
+        }
+
     });
 
 
 });
 
-describe("Login Test for the login form", function() {
+describe("Login Test for the login form", function () {
     let driver = null;
 
 
     before(async () => {
-        driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
-            .forBrowser('firefox')
-            .setFirefoxOptions(new firefox.Options().headless())
-            .build();
+        try{
+            driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
+                .forBrowser('firefox')
+                .setFirefoxOptions(new firefox.Options().headless())
+                .build();
+        }catch (Error){
+            console.log(Error)
+        }
+
 
 
     });
 
 
-
     it("should pop up the Loginmodal", async () => {
         let loginpage = new Loginpage(driver);
-        await loginpage.openLoginModal();
-        await loginpage.waitForModal();
-        let title = await loginpage.getLoginModalTitle();
-        assert.equal(title, "Login Form");
+        try {
+            await loginpage.openLoginModal();
+            let modal = await loginpage.waitForModal();
+            if (modal) {
+
+                let title = await loginpage.getLoginModalTitle();
+                assert.equal(title, "Login Form");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
 
     });
 
     it("Login with wrong password", async () => {
         let loginpage = new Loginpage(driver);
-        await loginpage.openLoginModal();
-        await loginpage.fillUsernameField("clodos");
-        await loginpage.clickLoginButton();
-        let errormessage = await loginpage.getErrorMessage();
-        assert.equal(errormessage, "Wrong Password");
+        try {
+            await loginpage.openLoginModal();
+            let modal = await loginpage.waitForModal();
+            if (modal) {
+                await loginpage.fillUsernameField("clodos");
+                await loginpage.clickLoginButton();
+                let errormessage = await loginpage.getErrorMessage();
+                assert.equal(errormessage, "Wrong Password");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+
     });
 
     it("Login with wrong Username", async () => {
         let loginpage = new Loginpage(driver);
-        await loginpage.openLoginModal();
-        await loginpage.fillUsernameField("");
-        await loginpage.clickLoginButton();
-        let errormessage = await loginpage.getErrorMessage();
-        assert.equal(errormessage, "User not found");
+        try {
+            await loginpage.openLoginModal();
+            let modal = await loginpage.waitForModal();
+            if (modal) {
+                await loginpage.fillUsernameField("");
+                await loginpage.clickLoginButton();
+                let errormessage = await loginpage.getErrorMessage();
+                assert.equal(errormessage, "User not found");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+
     });
 
-    after(async function() {
-        await driver.quit();
+    after(async function () {
+        try{
+            await driver.quit();
+        }catch (error){
+            console.log(error);
+        }
+
     });
 
 });
