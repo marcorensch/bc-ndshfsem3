@@ -67,46 +67,6 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "@/assets/styles/app.scss";
-
-.card {
-  margin: 1rem 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: 0.3s ease-out;
-
-  .card-header {
-    background-color: var(--dark);
-    color: var(--light);
-    font-size: 1rem;
-  }
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: 0.3s ease-out;
-  }
-}
-
-.question-content{
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 3rem;
-}
-
-
-.tags{
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  justify-content: end;
-  margin-bottom: .5rem;
-  .tag{
-    font-size: .8rem;
-    background-color: var(--dark);
-    color: var(--light);
-    padding: 0.2rem .4rem;
-    margin: 0.2rem;
-    border-radius: 4px;
-  }
-}
 
 
 

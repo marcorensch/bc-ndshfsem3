@@ -128,8 +128,4 @@ export default {
 
 <style scoped>
 
-.hidden{
-  display: none;
-}
-
 </style>

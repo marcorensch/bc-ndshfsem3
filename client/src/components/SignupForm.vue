@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h3>Signup form</h3>
-    <ErrorMessageContainer :string="errorMessage" />
+    <ErrorMessageContainer :string="errorMessage"/>
     <form ref="form" @submit.prevent="handleSubmit">
       <div class="form-group ">
 
@@ -40,23 +40,28 @@
             <label for="new-password">New password:</label>
             <input type="password" class="form-control" id="new-password" v-model="password.newPassword">
             <span v-if="v$.password.newPassword.$error"
-                  :class="`${v$.password.newPassword.$error ? 'error-message' : ''}`">{{ "Min. " + v$.password.newPassword.minLength.$params.min + " characters" }}</span>
+                  :class="`${v$.password.newPassword.$error ? 'error-message' : ''}`">{{
+                "Min. " + v$.password.newPassword.minLength.$params.min + " characters"
+              }}</span>
           </div>
           <div class="col-sm-6">
             <label for="confirm-password">Confirm password:</label>
             <input type="password" class="form-control" id="confirm-password" v-model="password.confirmPassword">
             <span v-if="v$.password.confirmPassword.$error"
-                  :class="`${v$.password.confirmPassword.$error ? 'error-message' : ''}`">{{ "Not same password" }}</span>
+                  :class="`${v$.password.confirmPassword.$error ? 'error-message' : ''}`">{{
+                "Not same password"
+              }}</span>
           </div>
         </div>
       </div>
-      <div class="pl-4 p-2  row justify-content-center">
-        <button type="submit" class="btn  text-center pl-4 pr-4">Sign up</button>
+      <div class="p-4 align-center text-center">
+        <button type="submit" class="btn form-button">Sign up</button>
       </div>
     </form>
   </div>
   <Teleport to="body">
-    <NotificationModal :show="showNotificationModal" :message=confirmMessage @confirm="handleConfirm"></NotificationModal>
+    <NotificationModal :show="showNotificationModal" :message=confirmMessage
+                       @confirm="handleConfirm"></NotificationModal>
   </Teleport>
 
 </template>
@@ -66,19 +71,17 @@ import {useVuelidate} from "@vuelidate/core";
 import {required, minLength, sameAs, email} from "@vuelidate/validators";
 import ErrorMessageContainer from "@/components/ErrorMessageContainer";
 import NotificationModal from "@/components/NotificationModal";
+import {useUserStore} from "@/stores/UserStore";
 
 import axios from "axios";
 
 export default {
-  inject:['host'],
-
+  inject: ['host'],
   setup() {
     return {v$: useVuelidate()}
-
   },
-
   name: "SignupForm",
-  components:{
+  components: {
     ErrorMessageContainer,
     NotificationModal
   },
@@ -97,7 +100,7 @@ export default {
         confirmPassword: '',
       },
       submitConfirmText: "Thank you for signing up!",
-
+      userStore: useUserStore(),
     }
   },
   validations() {
@@ -129,12 +132,21 @@ export default {
       },
     }
   },
+  computed: {
+    isLoggedIn() {
+      return this.userStore.getTokens.token !== null || '';
+    }
+  },
+  mounted() {
+    if(this.isLoggedIn) {
+      this.$router.push({name: 'Home'})
+    }
+  },
   methods: {
-    handleConfirm(){
+    handleConfirm() {
       this.showNotificationModal = false;
       this.$router.push('/');
     },
-
     async handleSubmit() {
       try {
         const valid = await this.v$.$validate();
@@ -142,7 +154,7 @@ export default {
         if (valid) {
           console.log("Form is valid => Submitted");
           // Submit form
-         this.submitForm();
+          this.submitForm();
 
           this.$refs.form.reset();
           //todo show message if success
@@ -157,41 +169,41 @@ export default {
       }
 
     },
-      checkIfUsernameExist() {
-        axios.post(this.host + '/users/check', {
-          username: this.username
-        })
-        .then(response => {
-          if (response.data.payload.exists){
-            console.log("Username already exist")
-            this.v$.username.$error = true;
-            this.v$.username.required.$message = "Username already exist";
-          }
-          console.log("Username is available")
-        })
-        .catch(error => {
-          console.log(error)
-        })
+    checkIfUsernameExist() {
+      axios.post(this.host + '/users/check', {
+        username: this.username
+      })
+          .then(response => {
+            if (response.data.payload.exists) {
+              console.log("Username already exist")
+              this.v$.username.$error = true;
+              this.v$.username.required.$message = "Username already exist";
+            }
+            console.log("Username is available")
+          })
+          .catch(error => {
+            console.log(error)
+          })
 
     },
-    checkIfEmailExist(){
-        axios.post(this.host + '/users/check', {
-          email: this.email
-        })
-      .then(response => {
-        if (response.data.payload.exists){
-          console.log("Email already exist")
-          this.v$.email.$error = true;
-          this.v$.email.email.$message = "Email already exist";
-        }
-        console.log("Email is available")
+    checkIfEmailExist() {
+      axios.post(this.host + '/users/check', {
+        email: this.email
       })
-      .catch(error => {
-        console.log(error)
-      })
+          .then(response => {
+            if (response.data.payload.exists) {
+              console.log("Email already exist")
+              this.v$.email.$error = true;
+              this.v$.email.email.$message = "Email already exist";
+            }
+            console.log("Email is available")
+          })
+          .catch(error => {
+            console.log(error)
+          })
 
     },
-     submitForm() {
+    submitForm() {
       axios.post(this.host + '/auth/register', {
         firstname: this.firstname,
         lastname: this.lastname,
@@ -199,22 +211,21 @@ export default {
         username: this.username,
         password: this.password.newPassword,
       })
-        .then((response) =>  {
+          .then((response) => {
 
-          if (response.status === 201) {
-            this.showNotificationModal = true;
-            this.confirmMessage = response.data.message;
-          }
+            if (response.status === 201) {
+              this.showNotificationModal = true;
+              this.confirmMessage = response.data.message;
+            }
 
-        })
-        .catch((error) => {
-          console.log(error.response.data);
-          console.log(error.response.data.relatedColumn);
-          console.log(error.response.data.message);
-          this.errorMessage = error.response.data.relatedColumn + " " + error.response.data.message;
-        });
-     }
-
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+            console.log(error.response.data.relatedColumn);
+            console.log(error.response.data.message);
+            this.errorMessage = error.response.data.relatedColumn + " " + error.response.data.message;
+          });
+    }
   },
 
 }
@@ -222,57 +233,4 @@ export default {
 
 <style lang="scss" scoped>
 
-
-.form-group {
-  margin: 0 auto;
-}
-
-.btn {
-  font-size: 1.5rem;
-  background-color: var(--dark);
-  border-radius: 2px;
-  color: (var(--light));
-  padding: 14px 20px;
-  border: none;
-  cursor: pointer;
-  width: 50%;
-  transition: 0.2s ease-out;
-
-
-  &:hover {
-    background-color: var(--primary);
-  }
-}
-
-label {
-  font-weight: bold;
-}
-
-input[type=text], input[type=password], input[type=email] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  border-radius: 2px;
-
-  &:focus {
-    border: 1px solid var(--primary);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-  }
-}
-
-.error-message {
-  color: red;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-@media (max-width: 768px) {
-  .btn {
-    font-size: 1rem
-  }
-}
 </style>

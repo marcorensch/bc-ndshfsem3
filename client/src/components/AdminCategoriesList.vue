@@ -4,13 +4,13 @@
       <div class="card-body">
         <h4>Add Category</h4>
         <div class="form-group">
-          <div class="row">
+          <div class="row g-0">
             <div class="col">
               <input type="text" class="form-control" id="new_cat_title" placeholder="Enter new Category Title"
                      @keyup="handleAddCategoryByEnter">
             </div>
-            <div class="col-md-auto">
-              <button class="btn btn-primary" @click="handleAddCategory">Add Category</button>
+            <div class="col-auto align-self-center">
+              <button class="btn btn-primary btn-large" @click="handleAddCategory">Add Category</button>
             </div>
           </div>
         </div>
@@ -24,9 +24,9 @@
         <thead>
         <tr>
           <th class="sortable col-1" @click="handleSortById"><font-awesome-icon icon="sort" /> ID</th>
-          <th class="sortable col-auto" @click="handleSortByFav"><font-awesome-icon icon="sort" /> Favorite</th>
-          <th class="sortable col-sm-1 col-md-8" @click="handleSortByTitle"><font-awesome-icon icon="sort" /> Title</th>
-          <th class="col-auto">Actions</th>
+          <th class="sortable col-2" @click="handleSortByFav"><font-awesome-icon icon="sort" /> Favorite</th>
+          <th class="sortable col-sm-8" @click="handleSortByTitle"><font-awesome-icon icon="sort" /> Title</th>
+          <th class="col-3 text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -38,7 +38,7 @@
               <font-awesome-icon icon="star" class="favorite-icon" :class="{isFav : category.fav}"/>
             </td>
             <td data-toggle="tooltip" data-placement="top" title="Title" class="align-middle">
-              <span :id="'category-'+category.id+'-title'" :data-cat-id="category.id" :data-cat-title="category.title"
+              <span class="editable-title" :id="'category-'+category.id+'-title'" :data-cat-id="category.id" :data-cat-title="category.title"
                     @click="handleEditCategory" v-if="!category.edit">{{
                   category.title
                 }}</span>
@@ -47,7 +47,7 @@
                   <div class="col">
                     <input type="text" class="form-control" :id="'cat_title_' + category.id" :value="category.title">
                   </div>
-                  <div class="col-md-auto">
+                  <div class="col-auto align-self-center">
                     <div class="btn-group" role="group" aria-label="Category Title Actions">
                       <button title="Cancel Changes" type="button" class="btn btn-warning"
                               @click="handleUnsetEditClicked">
@@ -62,18 +62,18 @@
                 </div>
               </div>
             </td>
-            <td class="align-middle">
-              <div class="row">
-                <div class="col-md-auto">
+            <td class="align-middle text-center">
+              <div class="row gx-0">
+                <div class="col-6">
                   <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + category.title"
-                          class="delete-btn-icon"
+                          class="action-button delete-btn-icon"
                           @click="handleDeleteCategoryClicked">
                     <font-awesome-icon icon="trash"/>
                   </button>
                 </div>
-                <div class="col-md-auto">
+                <div class="col-6">
                   <button :title="'Edit ' + category.title + ' Category'"
-                          class="edit-btn-icon"
+                          class="action-button edit-btn-icon"
                           @click="handleEditCategory"
                   >
                     <font-awesome-icon icon="pencil" @click="handleEditCategory"/>
@@ -313,27 +313,5 @@ export default {
 </script>
 
 <style scoped>
-.delete-btn-icon:hover {
-  color: #700000;
-}
 
-.favorite-icon {
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.1);
-}
-
-.favorite-icon:hover {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-.favorite-icon.isFav {
-  color: gold;
-}
-
-.sortable {
-  cursor: pointer;
-}
-.hidden {
-  display: none;
-}
 </style>

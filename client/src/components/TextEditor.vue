@@ -4,9 +4,6 @@
 </template>
 
 <script>
-
-
-
 export default {
   name: "TextEditor",
   components:{

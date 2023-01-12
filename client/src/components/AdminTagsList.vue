@@ -4,13 +4,13 @@
       <div class="card-body">
         <h4>Add Tag</h4>
         <div class="form-group">
-          <div class="row">
+          <div class="row g-0">
             <div class="col">
               <input type="text" class="form-control" id="new_tag_title" placeholder="Enter a new Tag"
                      @keyup="handleAddTagByEnter">
             </div>
-            <div class="col-md-auto">
-              <button class="btn btn-primary" @click="handleAddTag">Add Tag</button>
+            <div class="col-auto align-self-center">
+              <button class="btn btn-primary btn-large" @click="handleAddTag">Add Tag</button>
             </div>
           </div>
         </div>
@@ -24,9 +24,9 @@
         <thead>
         <tr>
           <th class="col-1">ID</th>
-          <th class="col-sm-1 col-md-8">Title</th>
-          <th class="text-center">Articles</th>
-          <th class="col-auto">Actions</th>
+          <th class="col-8">Title</th>
+          <th class="col-2 text-center">Articles</th>
+          <th class="col-2 text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -34,7 +34,7 @@
           <tr v-for="tag in tags" :key="tag.id" :data-tag-id="tag.id" :class="{hidden:!tag.visible}">
             <td data-toggle="tooltip" data-placement="top" title="Tag ID" class="align-middle">{{ tag.id }}</td>
             <td data-toggle="tooltip" data-placement="top" title="Title" class="align-middle">
-              <span :id="'tag-'+tag.id+'-title'" :data-tag-title="tag.title"
+              <span class="editable-title" :id="'tag-'+tag.id+'-title'" :data-tag-title="tag.title"
                     @click="handleEditTag" v-if="!tag.edit">{{
                   tag.title
                 }}</span>
@@ -43,7 +43,7 @@
                   <div class="col">
                     <input type="text" class="form-control" :id="'tag_title_' + tag.id" :value="tag.title">
                   </div>
-                  <div class="col-md-auto">
+                  <div class="col-auto align-self-center">
                     <div class="btn-group" role="group" aria-label="Tag Title Actions">
                       <button title="Cancel Changes" type="button" class="btn btn-warning"
                               @click="handleUnsetEditClicked">
@@ -58,19 +58,19 @@
                 </div>
               </div>
             </td>
-            <td class="text-center">{{ tag.articlesCount }}</td>
-            <td class="align-middle">
-              <div class="row">
-                <div class="col-md-auto">
+            <td class="text-center align-middle">{{ tag.articlesCount }}</td>
+            <td class="align-middle text-center">
+              <div class="row gx-0">
+                <div class="col-6">
                   <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + tag.title"
-                          class="delete-btn-icon"
+                          class="action-button  delete-btn-icon"
                           @click="handleDeleteTagClicked">
                     <font-awesome-icon icon="trash"/>
                   </button>
                 </div>
-                <div class="col-md-auto">
+                <div class="col-6">
                   <button :title="'Edit ' + tag.title + ' Tag'"
-                          class="edit-btn-icon"
+                          class="action-button  edit-btn-icon"
                           @click="handleEditTag"
                   >
                     <font-awesome-icon icon="pencil" @click="handleEditTag"/>
@@ -290,27 +290,5 @@ export default {
 </script>
 
 <style scoped>
-.delete-btn-icon:hover {
-  color: #700000;
-}
 
-.favorite-icon {
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.1);
-}
-
-.favorite-icon:hover {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-.favorite-icon.isFav {
-  color: gold;
-}
-
-.sortable {
-  cursor: pointer;
-}
-.hidden {
-  display: none;
-}
 </style>

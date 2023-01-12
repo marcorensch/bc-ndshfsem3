@@ -1,0 +1,134 @@
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+.message {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  width: 500px;
+  height: auto;
+  margin: 0 auto;
+  padding: 0;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+}
+
+.form-container {
+  padding: 16px
+}
+
+form {
+  border: 3px solid #f1f1f1;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+input[type=text], input[type=password] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  border-radius: 2px;
+
+  &:focus {
+    border: 1px solid var(--primary);
+    box-shadow: none;
+  }
+}
+
+.modal-header {
+  background-color: var(--dark);
+  color: var(--light);
+  font-size: 1rem;
+  padding: .2rem .8rem;
+
+  .modal-default-button.close-button {
+    font-size: 1.5rem;
+    transition: 0.2s ease-out;
+    color: var(--light);
+  }
+  .modal-default-button.close-button:hover {
+    color: var(--primary);
+  }
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.form-button {
+  font-size: 1rem;
+  background-color: var(--dark);
+  border-radius: var(--border-radius-sm);
+  color: var(--light);
+  padding: 14px 20px;
+  margin: 10px 10px;
+  border: none;
+  cursor: pointer;
+  width: 200px;
+  transition: 0.2s ease-out;
+
+  &:hover {
+    background-color: var(--primary);
+  }
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.modal-enter-from {
+  opacity: 0;
+}
+
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  transform: scale(1.1);
+
+}
+
+@media (max-width: 768px) {
+  .modal-container {
+    width: 80%;
+    height: 80%;
+  }
+
+  .form-button {
+    width: 50%;
+    font-size: 1rem;
+    transition: 0.2s ease-out;
+  }
+
+}
