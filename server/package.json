@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.mjs",
   "scripts": {
-    "ci-test": "mocha test/test.mjs",
-    "test": "cross-env NODE_ENV=test DB_NAME=babylon_test mocha test/test.mjs --exit",
+    "test": "mocha --exit",
     "start": "nodemon server.mjs"
   },
   "keywords": [],

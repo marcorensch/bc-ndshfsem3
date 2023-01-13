@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '../server/.env' });
 import * as assert from "assert";
 import Homepage from "./pageobjects/homepage.mjs";
 import Registerpage from "./pageobjects/registerpage.mjs";
@@ -8,24 +10,16 @@ import firefox from "selenium-webdriver/firefox.js";
 
 import UserHelper from "../../server/helper/userHelper.mjs";
 import User from "../../server/model/user.mjs";
-import * as dotenv from 'dotenv';
-
-dotenv.config({ path: 'C:\\Users\\clodo\\Semesterarbeit\\Modularbeit3\\server\\.env' });
-
-
 
 const testDbConnectionData = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.TEST_DB_NAME,
+    database: process.env.DB_NAME,
 }
 
-console.log(testDbConnectionData);
-
 const userHelper = new UserHelper(testDbConnectionData);
-
 
 describe("Tests if website is reachable", function () {
     let driver = null;
