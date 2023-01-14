@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "test": "cross-env DB_NAME=babylon_test mocha --timeout 10000",
-    "testStart": "cross-env DB_NAME=babylon_test vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"

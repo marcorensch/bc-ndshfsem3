@@ -1,5 +1,10 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
+if(process.env.NODE_ENV === 'test') {
+    process.env.DB_NAME = process.env.TEST_DB_NAME;
+}
+
+console.log(chalk.bold.blue("Using database: " + process.env.DB_NAME));
 
 import * as https from "https";
 import express from 'express';

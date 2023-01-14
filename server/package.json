@@ -5,6 +5,7 @@
   "main": "server.mjs",
   "scripts": {
     "test": "mocha --exit",
+    "start:e2etest": "cross-env NODE_ENV=test nodemon server.mjs",
     "start": "nodemon server.mjs"
   },
   "keywords": [],
