@@ -63,18 +63,26 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker, as
     res.status(201).json(transportObject);
 });
 
-router.put('/:id', identifyCurrentUser, authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
-    const { content, category_id, anonymous } = req.body;
+router.put('/:id/answer', authenticateToken, async (req, res) => {
+    let { accepted_id } = req.body;
     const question_id = req.params.id;
 
     const questionHelper = new QuestionHelper();
-    const oldQuestion = await questionHelper.getItemById(question_id)
-    if(!oldQuestion.question) return res.status(404).json(new ApiError('q-331'));
-    if (oldQuestion.created_by !== req.user.id && !req.user.isadministrator) return res.status(403).json(new ApiError('e-100'));
-    const question = new Question(content, oldQuestion.created_by).setAnonymous(anonymous).setCategoryId(category_id).setId(question_id);
-    await questionHelper.updateItem(question)
+    const item = await questionHelper.getItemById(question_id)
+    if(!item.question) return res.status(404).json(new ApiError('q-331'));
+    if (item.question.created_by !== req.user.id && !req.user.isadministrator) return res.status(403).json(new ApiError('e-100'));
 
-    res.status(200).json({ success: true, message: "Question updated successfully", userId: req.user.id, isAdmin: req.user.isadministrator, token: req.token });
+    accepted_id = accepted_id === item.question.accepted_id ? null : accepted_id;
+    await questionHelper.setAcceptedId(question_id, accepted_id)
+
+    const transportObject = new TransportObject()
+    .setSuccess(true)
+    .setMessage("Question updated successfully")
+    .setPayload({
+        userId: req.user.id, isAdmin: req.user.isadministrator, token: req.token
+    })
+
+    res.status(200).json(transportObject);
 });
 
 router.delete('/:id', (req, res) => {
@@ -94,6 +102,21 @@ router.get('/:id', identifyCurrentUser, async (req, res) => {
     if (!response.question) return res.status(404).json(new ApiError('q-331').setData({id, response}));
 
     res.status(200).json(response);
+});
+
+router.post('/:id/vote', authenticateToken, async (req, res) => {
+    const questionHelper = new QuestionHelper();
+    const response = await questionHelper.vote(req.params.id, req.user.id, req.body.vote);
+    if(!response.success) {
+        return res.status(500).json(new ApiError('e-999'));
+    }
+    const transportObject = new TransportObject()
+        .setSuccess(true)
+        .setMessage("Voting done")
+        .setPayload({
+            answer_id: Number(req.params.id), user_id: req.user.id, is_admin: req.user.isadministrator, token: req.token
+        })
+    return res.status(200).json(transportObject);
 });
 
 export default router;

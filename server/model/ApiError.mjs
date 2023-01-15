@@ -1,6 +1,7 @@
 const errorCodes = {
     "e-999": "Unknown Error",
     "e-100": "Not allowed",
+    "e-101": "Invalid Token",
     "u-317": "Field is required",
     "u-318": "Invalid email address",
     "u-319": "Invalid field length",

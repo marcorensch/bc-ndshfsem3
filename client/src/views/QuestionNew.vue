@@ -135,10 +135,7 @@ export default {
         tags: this.tags,
         anonymous: this.anonymous,
       },{
-        headers : {
-          'Authorization': `Bearer ${this.userStore.getTokens.token}`,
-          'RefreshToken': `${this.userStore.getTokens.refreshToken}`,
-        }
+        headers : this.userStore.getReqHeaders
       })
         .then(response => {
           if(response.data.payload.token){

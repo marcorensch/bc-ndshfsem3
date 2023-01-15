@@ -9,7 +9,7 @@
         <div v-for="tag in item.tags" :key="tag.id" class="tag">{{tag.title}}</div>
       </div>
       <div class="btn-section">
-        <router-link :to="{name: 'New Answer', params:{id: item.id}}" class="btn btn-primary float-start col">
+        <router-link :to="{name: 'Question View', params:{id: item.id}}" class="btn btn-primary float-start col">
           I can answer this!
         </router-link>
         <router-link to="/" v-if="item.answersCount">

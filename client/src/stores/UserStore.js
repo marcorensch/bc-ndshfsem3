@@ -27,8 +27,17 @@ export const useUserStore = defineStore('userdata', {
                 refreshToken: state.user.refreshToken
             }
         },
+        getUser: (state) => {
+            return state.user;
+        },
         getAnswerText: (state) => {
             return state.answerText;
+        },
+        getReqHeaders: (state) => {
+            return {
+                'Authorization': `Bearer ${state.user.token}`,
+                'RefreshToken': `${state.user.refreshToken}`,
+            }
         }
     },
     actions: {

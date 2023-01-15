@@ -3,7 +3,6 @@ dotenv.config();
 if(process.env.NODE_ENV === 'test') {
     process.env.DB_NAME = process.env.TEST_DB_NAME;
 }
-
 console.log(chalk.bold.blue("Using database: " + process.env.DB_NAME));
 
 import * as https from "https";
@@ -15,6 +14,7 @@ import tagsRoute from './routes/tags.mjs';
 import questionsRoute from './routes/questions.mjs';
 import authRoute from './routes/auth.mjs';
 import categoriesRoute from './routes/categories.mjs';
+import answersRoute from './routes/answers.mjs';
 import * as fs from "fs";
 import QuestionHelper from "./helper/QuestionHelper.mjs";
 import chalk from "chalk";
@@ -63,6 +63,7 @@ app.use('/tags', tagsRoute);
 app.use('/questions', questionsRoute);
 app.use('/auth', authRoute);
 app.use('/categories', categoriesRoute);
+app.use('/answers', answersRoute);
 
 app.use((req, res) => {
     res.status(404).send('Houston, we have a Problem! (Route not found)');

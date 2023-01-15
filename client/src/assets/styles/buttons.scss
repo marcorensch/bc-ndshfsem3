@@ -32,6 +32,15 @@ button {
       background-color: var(--primary);
     }
   }
+
+  &.btn-success {
+    background-color: var(--success);
+    color: (var(--success-light));
+
+    &:hover {
+      background-color: var(--success-alt);
+    }
+  }
 }
 
 .action-button {
@@ -44,4 +53,32 @@ button {
 
 .btn-large {
   height:50px;
+}
+
+.vote-action {
+  font-size: 2rem;
+  color: rgba(0,0,0, .5);
+  cursor: pointer;
+}
+
+.vote-action:hover {
+  color: rgba(0,0,0, .8);
+}
+
+.vote-action.voted{
+    color: var(--dark);
+}
+
+.vote-action.disabled {
+  color: rgba(0,0,0, .1);
+  cursor: default;
+}
+
+.vote-action.disabled:hover {
+  color: rgba(0,0,0, .1);
+}
+
+.actions-container {
+    display: flex;
+    gap: .5rem;
 }

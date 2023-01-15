@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import UserCockpitOverview from "@/views/UserCockpitOverview";
-import AnswerNew from "@/views/AnswerNew";
+import QuestionView from "@/views/QuestionView.vue";
 import QuestionNew from "@/views/QuestionNew";
 import UserCockpitEdit from "@/views/UserCockpitEdit";
 import AdminCockpitOverview from "@/views/AdminCockpit.vue";
@@ -16,7 +16,7 @@ const router = createRouter({
         {path: '/register', component: Register},
         {path: '/user/cockpit/overview', component: UserCockpitOverview},
         {path: '/question/new', component: QuestionNew},
-        {name: "New Answer", path: '/answer/new/:id', component: AnswerNew, props: true},
+        {name: "Question View", path: '/question/:id', component: QuestionView, props: true},
         {path: '/user/cockpit/edit', component: UserCockpitEdit},
         {name: 'CategoryQuestions', path: '/categories/:id', component: CategoryQuestions, props: true},
     ]
