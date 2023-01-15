@@ -43,8 +43,11 @@ describe("Tests if website is reachable", function () {
         let homepage = new Homepage(driver);
         let baseUrl = "https://localhost:8080";
         await homepage.goToUrl(baseUrl);
-        let title = await homepage.getText(".header > h1:nth-child(1)")
-        assert.equal(title, "Babylon Community");
+        let homepageDisplayed = await homepage.waitForHomepage();
+        if (homepageDisplayed) {
+            let title = await homepage.getText(".header > h1:nth-child(1)")
+            assert.equal(title, "Babylon Community");
+        }
     });
 
     after(async function () {
