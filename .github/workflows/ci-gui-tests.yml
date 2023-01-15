@@ -62,9 +62,10 @@ jobs:
           done
       - name: Install Dependencies
         run: npm install
-      - name: Start Application
+      - name: Start Server
         env:
           NODE_ENV: test
+          VUE_APP_HTTPS: true
           DB_HOST: ${{ matrix.database-host }}
           DB_PORT: ${{ matrix.host-port }}
           DB_USER: root
@@ -75,27 +76,39 @@ jobs:
           REFRESH_TOKEN_SECRET: "auch-test"
           JWT_TOKEN_VALIDITY: "5m"
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
-        run: npm run test:e2e &
-      - name: Run CI gui tests
-        env:
-          NODE_ENV: test
-          DB_HOST: ${{ matrix.database-host }}
-          DB_PORT: ${{ matrix.host-port }}
-          DB_USER: root
-          DB_PASSWORD: ${{ matrix.database-root-pwd }}
-          TEST_DB_NAME: ${{ matrix.database-name }}
-          DB_NAME: ${{ matrix.database-name }}
-          ACCESS_TOKEN_SECRET: "test"
-          REFRESH_TOKEN_SECRET: "auch-test"
-          JWT_TOKEN_VALIDITY: "5m"
-          JWT_REFRESH_TOKEN_VALIDITY: "1d"
-      - name: Wait for application to start
         run: |
-          until $(curl --output /dev/null --silent --head --fail https://localhost:8080); do
-          printf '.'
-          sleep 5
-          done
+          cd server && npm run start:e2etest &
+      - name: Start App
+        env:
+          NODE_ENV: test
+          VUE_APP_HTTPS: true
+          DB_HOST: ${{ matrix.database-host }}
+          DB_PORT: ${{ matrix.host-port }}
+          DB_USER: root
+          DB_PASSWORD: ${{ matrix.database-root-pwd }}
+          TEST_DB_NAME: ${{ matrix.database-name }}
+          DB_NAME: ${{ matrix.database-name }}
+          ACCESS_TOKEN_SECRET: "test"
+          REFRESH_TOKEN_SECRET: "auch-test"
+          JWT_TOKEN_VALIDITY: "5m"
+          JWT_REFRESH_TOKEN_VALIDITY: "1d"
+        run: |
+          cd client && npm run serve &
+
       - name: Run CI gui tests
+        env:
+          NODE_ENV: test
+          DB_HOST: ${{ matrix.database-host }}
+          DB_PORT: ${{ matrix.host-port }}
+          DB_USER: root
+          DB_PASSWORD: ${{ matrix.database-root-pwd }}
+          TEST_DB_NAME: ${{ matrix.database-name }}
+          DB_NAME: ${{ matrix.database-name }}
+          ACCESS_TOKEN_SECRET: "test"
+          REFRESH_TOKEN_SECRET: "auch-test"
+          JWT_TOKEN_VALIDITY: "5m"
+          JWT_REFRESH_TOKEN_VALIDITY: "1d"
         run: |
           cd client
+          sleep 20
           npm run test
