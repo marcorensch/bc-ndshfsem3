@@ -4,7 +4,9 @@
 @import "editor";
 
 :root {
-  --primary: #13930a;
+  --primary: #0CAFFF;
+  --success : #13930a;
+  --success-alt : #0a5205;
   --grey: #64748b;
   --dark: #292e40;
   --dark-alt: #334155;
@@ -270,17 +272,81 @@ aside {
 }
 
 .answer-box {
+  position: relative;
+  overflow: hidden;
   background: rgba(0,0,0, .02);
   border-radius: var(--border-radius);
     padding: 1rem;
   &:not(first-of-type){
     margin-top: 1rem;
   }
+
+  .answer-content{
+    min-height: 4rem;
+  }
+
+  .actions-container{
+
+    position: absolute;
+    top: 0;
+    right: -90px;
+    background: linear-gradient(-70deg, var(--dark) 0%, var(--dark) 90%);
+    color: var(--light);
+    padding: .2rem .5rem .2rem 1rem;
+    border-bottom-left-radius: var(--border-radius);
+    &:before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -.5rem;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 .5rem .5rem 0;
+      border-color: transparent var(--dark) transparent transparent;
+    }
+    &:after{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -1rem;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 1rem 1rem 0;
+      border-radius: var(--border-radius);
+      border-color: transparent #fafafa transparent transparent;
+    }
+
+    .action{
+      cursor: pointer;
+      &:hover{
+        color: var(--primary);
+      }
+    }
+  }
+
+  &:hover{
+    .actions-container{
+      transition-delay: .2s;
+      right: 0;
+    }
+  }
 }
 
 .answer-box.accepted {
-  background: rgba(196, 255, 147, 0.65);
-  border-left: 5px solid var(--primary);
+  background: #c6f69d;
+  border-left: 5px solid var(--success);
+  .actions-container {
+    background: var(--success);
+    box-shadow: inset -4px -6px 20px 0px var(--success-alt);
+    &:after {
+      border-color: transparent #c6f69d transparent transparent;
+    }
+    &:before {
+      border-color: transparent #0d7307 transparent transparent;
+    }
+  }
 }
 
 /* Tags */

@@ -42,11 +42,22 @@
           </div>
         </div>
         <hr>
-        <div class="question-content" v-html="question.content"></div>
-        <div v-if="answers" class="question-answers mt-5">
+        <div class="question-content p-2" v-html="question.content"></div>
+        <div v-if="answers" class="question-answers p-2 mt-5">
           <h4>{{ answers.length }} Answers</h4>
           <div class="answer" v-for="answer in answers" :key="answer.id">
             <div class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
+              <div class="actions-container" v-if="canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
+                <div v-if="canMarkSolved()" class="action" @click="handleMarkedAnswerClicked(answer.id)">
+                  <font-awesome-icon icon="check" />
+                </div>
+                <div v-if="canDeleteAnswer(answer.created_by)" class="action" @click="handleDeleteAnswerClicked(answer.id)">
+                  <font-awesome-icon icon="trash" />
+                </div>
+                <div v-if="canEditAnswer(answer.created_by)" class="action" @click="handleEditAnswerClicked(answer.id)">
+                  <font-awesome-icon icon="pencil" />
+                </div>
+              </div>
               <div class="row">
                 <div class="col-1 text-center">
                   <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)" :class="{voted: checkIfUserHasVoted(1, answer.id) }">
@@ -57,23 +68,24 @@
                     <font-awesome-icon icon="caret-down"/>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="answer-content" v-html="answer.content"></div>
-                  <div class="mt-3 text-small text-muted">
-                    <div>
-                      {{ new Date(answer.created_at).toLocaleString() }}
-                    </div>
-                    <div class="mt-1">
-                      by {{ answer.username ? answer.username : "Anonymous" }}
+                <div class="col align-middle">
+                  <div>
+                    <div class="answer-content" v-html="answer.content"></div>
+                    <div class="mt-3 text-small text-muted text-sm-end">
+                      <div>
+                        {{ new Date(answer.created_at).toLocaleString() }}
+                      </div>
+                      <div class="mt-1">
+                        by {{ answer.username ? answer.username : "Anonymous" }}
+                      </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div v-if="userStore.getTokens.token" class="question-answer mt-5">
+        <div v-if="userStore.getTokens.token" class="question-answer p-2 mt-5">
           <div class="editor-container">
             <h4>Your Answer</h4>
             <Editor v-model="answer" :init="init"/>
@@ -135,6 +147,9 @@ export default {
       userStore: useUserStore()
     }
   },
+  computed:{
+
+  },
   setup() {
     return {
       init: {
@@ -188,7 +203,6 @@ export default {
             console.log(err);
           });
     },
-
     handleSaveAnswerClicked() {
       console.log(this.answer);
       // Store answertext in store (backup)
@@ -196,7 +210,6 @@ export default {
       // Send answertext to server
       this.saveAnswer();
     },
-
     handleAnswerVoteClicked(vote, id){
       axios.post(`${this.host}/answers/${id}/vote`, {
         vote
@@ -232,6 +245,16 @@ export default {
             console.log(error);
           })
     },
+
+    canMarkSolved(){
+      return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by
+    },
+    canDeleteAnswer(createdUserId){
+      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId
+    },
+    canEditAnswer(createdUserId){
+      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId
+    }
   },
 }
 </script>
