@@ -1,4 +1,5 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
+import AnswerHelper from "./AnswerHelper.mjs";
 
 class QuestionHelper {
     databaseConnector = null;
@@ -83,19 +84,18 @@ class QuestionHelper {
     }
 
     async getItemById(id){
+        const answerHelper = new AnswerHelper(this.databaseConnector.connectionData);
         const question_sql = "SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q"+
             " JOIN categories c ON q.category_id = c.id"+
             " JOIN users u ON q.created_by = u.id"+
             " WHERE q.id=?";
-        const answers_sql = "SELECT qa.question_id, qa.answer_id, a.*, u.username, u.firstname, u.lastname FROM question_answers qa"+
-            " JOIN answers a ON qa.answer_id = a.id"+
-            " JOIN users u ON a.created_by = u.id"+
-            " WHERE question_id=?"
+
         try{
             const question = await this.databaseConnector.query(question_sql, [id]);
             question.data[0].tags = await this.getTagsByQuestionId(question.data[0].id);
-            const answers = await this.databaseConnector.query(answers_sql, [id]);
-            return {question: question.data[0], answers: answers.data};
+            const answers = await answerHelper.getItems(id);
+
+            return {question: question.data[0], answers};
         }catch (error) {
             console.log(error);
             return {};

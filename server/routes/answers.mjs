@@ -30,7 +30,13 @@ router.post('/create', authenticateToken, async (req, res) => {
 
 router.post('/:id/vote', authenticateToken, async (req, res) => {
     const answerHelper = new AnswerHelper();
-    answerHelper.vote(req.params.id, req.user.id, req.body.vote);
-    return res.status(200).json({message: "Vote created successfully"});
+    await answerHelper.vote(req.params.id, req.user.id, req.body.vote);
+    const transportObject = new TransportObject()
+        .setSuccess(true)
+        .setMessage("Voting done")
+        .setPayload({
+            answer_id: Number(req.params.id), user_id: req.user.id, is_admin: req.user.isadministrator, token: req.token
+        })
+    return res.status(200).json(transportObject);
 });
 export default router;

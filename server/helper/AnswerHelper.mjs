@@ -8,6 +8,34 @@ class AnswerHelper {
     }
 
     async getItems(question_id) {
+        let data = [];
+        const answers_sql = "SELECT qa.question_id, qa.answer_id, a.*, u.username, u.firstname, u.lastname FROM question_answers qa"+
+            " JOIN answers a ON qa.answer_id = a.id"+
+            " JOIN users u ON a.created_by = u.id"+
+            " WHERE question_id=?"
+        try {
+            const answers = await this.databaseConnector.query(answers_sql, [question_id]);
+            data = answers.data;
+        }   catch (error) {
+            console.log(error);
+        }
+        for (let answer of data) {
+            let votes = await this.getItemVotes(answer.id);
+            votes.total = votes.reduce((total, vote) => total + vote.vote, 0);
+            answer.votes = { data: votes, total: votes.total };
+        }
+        return data;
+    }
+
+    async getItemVotes(answer_id) {
+        const sql = "SELECT av.user_id, av.voting as vote FROM answer_votes av WHERE answer_id=?";
+        try {
+            const res = await this.databaseConnector.query(sql, [answer_id]);
+            return res.data;
+        } catch (error) {
+            console.log("Error while getting votes");
+            console.log(error);
+        }
 
     }
 
@@ -44,8 +72,11 @@ class AnswerHelper {
     }
 
     async vote(id, userId, voting) {
-        const idOfVote = await this._getIdOfVote(id, userId);
-        const res = idOfVote ? await this._updateVote(idOfVote, voting) : await this._createVote(id, userId, voting);
+        const vote = await this._getVote(id, userId);
+        if(vote?.voting === voting) {
+            return await this._removeVote(id, userId);
+        }
+        const res = vote ? await this._updateVote(vote.id, voting) : await this._createVote(id, userId, voting);
         return res;
     }
     async _updateVote(id, voting) {
@@ -68,8 +99,18 @@ class AnswerHelper {
             console.log(error);
         }
     }
-    async _getIdOfVote(answerId, userId) {
-        const sql = `SELECT id FROM answer_votes WHERE user_id=? AND answer_id=? LIMIT 1`;
+    async _removeVote(answerId, userId) {
+        const sql = `DELETE FROM answer_votes WHERE user_id=? AND answer_id=?`;
+        try {
+            const res = await this.databaseConnector.query(sql, [answerId, userId]);
+            return res;
+        }catch (error) {
+            console.log("Error while deleting vote");
+            console.log(error);
+        }
+    }
+    async _getVote(answerId, userId) {
+        const sql = `SELECT id, voting FROM answer_votes WHERE user_id=? AND answer_id=? LIMIT 1`;
         try {
             const res = await this.databaseConnector.query(sql, [userId, answerId]);
             console.log(res);

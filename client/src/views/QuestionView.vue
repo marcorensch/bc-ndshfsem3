@@ -49,11 +49,11 @@
             <div class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
               <div class="row">
                 <div class="col-1 text-center">
-                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)">
+                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)" :class="{voted: checkIfUserHasVoted(1, answer.id) }">
                     <font-awesome-icon icon="caret-up"/>
                   </div>
-                  <div class="vote-value">22</div>
-                  <div class="vote-action  vote-down" @click="handleAnswerVoteClicked(-1, answer.id)">
+                  <div class="vote-value">{{answer.votes.total}}</div>
+                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)" :class="{voted: checkIfUserHasVoted(-1, answer.id) }">
                     <font-awesome-icon icon="caret-down"/>
                   </div>
                 </div>
@@ -131,6 +131,7 @@ export default {
       answers: [],
       answer: "",
       editor: null,
+      user: null,
       userStore: useUserStore()
     }
   },
@@ -163,8 +164,17 @@ export default {
   },
   mounted() {
     this.getQuestionById(this.$route.params.id);
+    this.user = this.userStore.getUser;
   },
   methods: {
+    checkIfUserHasVoted(vote, answerId) {
+      if (this.user) {
+        const votes = this.answers.find(answer => answer.id === answerId).votes;
+        const voting = votes.data.find(vote => vote.user_id === this.user.id);
+        return voting?.vote === vote
+      }
+      return false;
+    },
     getQuestionById(id) {
       if (!id) return;
       axios.get(`${this.host}/questions/${id}`)
@@ -172,6 +182,7 @@ export default {
             this.question = response.data.question;
             this.answers = response.data.answers;
             console.log(this.question);
+            console.log(this.answers);
           })
           .catch((err) => {
             console.log(err);
@@ -193,7 +204,10 @@ export default {
         headers: this.userStore.getReqHeaders
       })
           .then((response) => {
-            console.log(response);
+            if(response.data?.payload?.token){
+              this.userStore.setToken(response.data.payload.token);
+            }
+            this.getQuestionById(this.$route.params.id);
           })
           .catch((err) => {
             console.log(err);

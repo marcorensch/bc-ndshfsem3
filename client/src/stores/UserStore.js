@@ -27,6 +27,9 @@ export const useUserStore = defineStore('userdata', {
                 refreshToken: state.user.refreshToken
             }
         },
+        getUser: (state) => {
+            return state.user;
+        },
         getAnswerText: (state) => {
             return state.answerText;
         },
