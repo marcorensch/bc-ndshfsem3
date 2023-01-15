@@ -102,7 +102,7 @@ class AnswerHelper {
     async _removeVote(answerId, userId) {
         const sql = `DELETE FROM answer_votes WHERE user_id=? AND answer_id=?`;
         try {
-            const res = await this.databaseConnector.query(sql, [answerId, userId]);
+            const res = await this.databaseConnector.query(sql, [userId, answerId]);
             return res;
         }catch (error) {
             console.log("Error while deleting vote");
