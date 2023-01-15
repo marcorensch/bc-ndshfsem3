@@ -12,7 +12,8 @@ Marco Rensch.
   siehe [Self signed Zertifikat generieren](https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/)
     - Hinweis: Unter MacOS muss das Zertifikat in den Keychain importiert werden und anschliessend als vertrauenswürdig
       markiert werden.
-    - Hinweis: Wenn der Client sich nicht mit dem Server verbinden kann muss du zunächst das Zertifikat im Browser akzeptieren. Öffne hierzu die Adresse https://localhost:3000 (wobei 3000 deinem Server Port entsprechen muss).
+    - Hinweis: Wenn der Client sich nicht mit dem Server verbinden kann muss du zunächst das Zertifikat im Browser
+      akzeptieren. Öffne hierzu die Adresse https://localhost:3000 (wobei 3000 deinem Server Port entsprechen muss).
 
 ## Installation Datenbank
 
@@ -91,13 +92,14 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 #### Fragen (/questions/...)
 
-| Status             | Type   | Route     | Beschreibung                        | Request                                                                               | Response                                                                      |
-|--------------------|--------|-----------|-------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| :white_check_mark: | GET    | `/`       | Gibt eine Liste aller Fragen zurück | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
-| :white_check_mark: | GET    | `/:id`    | Gibt eine Frage & Antworten zurück  | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
-| :white_check_mark: | POST   | `/create` | Erstellt eine neue Frage            | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
-| :warning:          | PUT    | `/:id`    | Aktualisiert eine Frage             | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
-| :x:                | DELETE | `/:id`    | Löscht eine Frage                   | ja                                                                                    |                                                                               |
+| Status             | Type   | Route       | Beschreibung                        | Request                                                                               | Response                                                                      |
+|--------------------|--------|-------------|-------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| :white_check_mark: | GET    | `/`         | Gibt eine Liste aller Fragen zurück | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
+| :white_check_mark: | GET    | `/:id`      | Gibt eine Frage & Antworten zurück  | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
+| :white_check_mark: | POST   | `/create`   | Erstellt eine neue Frage            | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
+| :warning:          | PUT    | `/:id`      | Aktualisiert eine Frage             | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
+| :x:                | DELETE | `/:id`      | Löscht eine Frage                   | ja                                                                                    |                                                                               |
+| :white_check_mark: | POST   | `/:id/vote` | Setzt ein Voting für eine Frage ab  | header.token, body.type (INT (1 / 0 / -1))                                            |                                                                               |
 
 *: Nur wenn Token vorhanden & valide ist sonst NULL
 
@@ -107,8 +109,8 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 |--------------------|--------|-------------|--------------------------------------|-----------------------------------------------------------------|------------------------------------|
 | :white_check_mark: | POST   | `/create`   | Erstellt eine neue Antwort           | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
 | :x:                | PUT    | `/:id`      | Aktualisiert eine Antwort            | Ja                                                              |                                    |
-| :x:                | DELETE | `/:id`      | Löscht eine Antwort                  | Ja                                                              |                                    |
-| :x:                | POST   | `/:id/vote` | Setzt ein Voting für eine Antwort ab | header.token, body.type (INT (1 / 0 / -1))                      |                                    |
+| :white_check_mark: | DELETE | `/:id`      | Löscht eine Antwort                  | Ja                                                              |                                    |
+| :white_check_mark: | POST   | `/:id/vote` | Setzt ein Voting für eine Antwort ab | header.token, body.type (INT (1 / 0 / -1))                      |                                    |
 
 *: Nur wenn neuer Token generiert wurde
 
@@ -123,13 +125,13 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 #### Kategorien (/categories/...)
 
-| Status             | Type   | Secured | Route                                  | Beschreibung                                                 | Request    | Response                        |
-|--------------------|--------|---------|----------------------------------------|--------------------------------------------------------------|------------|---------------------------------|
-| :white_check_mark: | GET    |         | `/`                                    | Gibt eine Liste aller Kategorien zurück                      | -          | response.data [{id,title}, ...] |
-| :white_check_mark: | GET    |         | `/:id`                                 | Gibt eine Kategorie zurück                                   | query.id   | response.data {id,title}        |
-| :white_check_mark: | POST   |         | `/create`                              | Erstellt eine neue Kategorie                                 | body.title |                                 |
-| :white_check_mark: | PUT    |         | `/:id`                                 | Aktualisiert eine Kategorie                                  | body.title | true oder DB Error              |
-| :white_check_mark: | DELETE |         | `/:id`                                 | Löscht eine Kategorie                                        |            |                                 |
+| Status             | Type   | Secured | Route     | Beschreibung                            | Request    | Response                        |
+|--------------------|--------|---------|-----------|-----------------------------------------|------------|---------------------------------|
+| :white_check_mark: | GET    |         | `/`       | Gibt eine Liste aller Kategorien zurück | -          | response.data [{id,title}, ...] |
+| :white_check_mark: | GET    |         | `/:id`    | Gibt eine Kategorie zurück              | query.id   | response.data {id,title}        |
+| :white_check_mark: | POST   |         | `/create` | Erstellt eine neue Kategorie            | body.title |                                 |
+| :white_check_mark: | PUT    |         | `/:id`    | Aktualisiert eine Kategorie             | body.title | true oder DB Error              |
+| :white_check_mark: | DELETE |         | `/:id`    | Löscht eine Kategorie                   |            |                                 |
 
 #### Authentifizierung (/auth/...)
 
