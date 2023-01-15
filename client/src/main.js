@@ -28,11 +28,11 @@ import {
     faBoxes,
     faTags,
     faSort,
-    faQuestion, faCalendar, faBox, faTag, faCaretUp, faCaretDown, faCheck
+    faQuestion, faCalendar, faBox, faTag, faCaretUp, faCaretDown, faCheck, faMinusSquare, faCheckSquare
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
-library.add(faCheck, faCaretUp, faCaretDown, faTag, faCalendar, faBox, faQuestion, faSort, faTags, faBoxes, faUsers, faChevronLeft, faTrash, faPencil, faSave, faStar, faChevronRight, faCogs, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
+library.add(faMinusSquare, faCheckSquare, faCheck, faCaretUp, faCaretDown, faTag, faCalendar, faBox, faQuestion, faSort, faTags, faBoxes, faUsers, faChevronLeft, faTrash, faPencil, faSave, faStar, faChevronRight, faCogs, faUpload, faAnglesRight, faUser, faCrown, faHouse, faKey, faXmark, faUserPlus, faComment, faRightFromBracket);
 const pinia = createPinia();
 pinia.use(piniaPersist);
 

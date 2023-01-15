@@ -61,7 +61,12 @@
               <div class="actions-container"
                    v-if="userStore.isAdmin || canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
                 <div v-if="canMarkSolved()" class="action" @click="handleMarkedAnswerClicked(answer.id)">
-                  <font-awesome-icon icon="check"/>
+                  <template v-if="answer.id !== question.accepted_id">
+                    <font-awesome-icon icon="check-square" title="Mark as solution"/>
+                  </template>
+                  <template v-else>
+                    <font-awesome-icon icon="minus-square" title="Remove solution marker"/>
+                  </template>
                 </div>
                 <div v-if="canDeleteAnswer(answer.created_by)" class="action"
                      @click="handleDeleteAnswerClicked(answer.id)">
@@ -196,6 +201,10 @@ export default {
   mounted() {
     this.getQuestionById(this.$route.params.id);
     this.user = this.userStore.getUser;
+
+    if(this.userStore.getAnswerText) {
+      this.answer = this.userStore.getAnswerText;
+    }
   },
   methods: {
     checkIfUserHasVotedForQuestion(vote) {
@@ -286,6 +295,28 @@ export default {
             this.getQuestionById(this.$route.params.id);
           }).catch((err) => {
             console.log(err);
+      });
+    },
+    handleMarkedAnswerClicked(id){
+      if(this.userStore.getUser.id !== this.question.created_by){
+        console.log("You can't mark an answer on a question you didn't create");
+        return;
+      }
+      axios.put(this.host + "/questions/" + this.question.id + "/answer", {
+        content: this.question.content,
+        category: this.question.category,
+        anonymous: this.question.anonymous,
+        accepted_id: id
+      }, {
+        headers: this.userStore.getReqHeaders
+      })
+          .then((response) => {
+            if (response.data?.payload?.token) {
+              this.userStore.setToken(response.data.payload.token);
+            }
+            this.getQuestionById(this.question.id)
+          }).catch((err) => {
+        console.log(err);
       });
     },
     saveAnswer() {

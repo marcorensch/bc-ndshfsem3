@@ -9,7 +9,6 @@ import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
 import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import TransportObject from "../model/TransportObject.mjs";
-import AnswerHelper from "../helper/AnswerHelper.mjs";
 
 router.get('/', identifyCurrentUser, async (req, res) => {
     const {count, page, user_id, category_id, direction} = req.query;
@@ -64,16 +63,17 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker, as
     res.status(201).json(transportObject);
 });
 
-router.put('/:id', identifyCurrentUser, authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
-    const { content, category_id, anonymous } = req.body;
+router.put('/:id/answer', authenticateToken, async (req, res) => {
+    let { accepted_id } = req.body;
     const question_id = req.params.id;
 
     const questionHelper = new QuestionHelper();
-    const oldQuestion = await questionHelper.getItemById(question_id)
-    if(!oldQuestion.question) return res.status(404).json(new ApiError('q-331'));
-    if (oldQuestion.created_by !== req.user.id && !req.user.isadministrator) return res.status(403).json(new ApiError('e-100'));
-    const question = new Question(content, oldQuestion.created_by).setAnonymous(anonymous).setCategoryId(category_id).setId(question_id);
-    await questionHelper.updateItem(question)
+    const item = await questionHelper.getItemById(question_id)
+    if(!item.question) return res.status(404).json(new ApiError('q-331'));
+    if (item.question.created_by !== req.user.id && !req.user.isadministrator) return res.status(403).json(new ApiError('e-100'));
+
+    accepted_id = accepted_id === item.question.accepted_id ? null : accepted_id;
+    await questionHelper.setAcceptedId(question_id, accepted_id)
 
     const transportObject = new TransportObject()
     .setSuccess(true)

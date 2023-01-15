@@ -4,6 +4,7 @@ class Question {
     category_id;
     created_by;
     anonymous;
+    acceptedId;
     accepted_id;
     created_at;
     modified_at;
@@ -25,6 +26,10 @@ class Question {
 
     setId(id){
         this.id = id;
+        return this;
+    }
+    setAcceptedId(accepted_id){
+        this.accepted_id = accepted_id;
         return this;
     }
 }

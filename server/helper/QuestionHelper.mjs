@@ -74,9 +74,9 @@ class QuestionHelper {
 
     async updateItem(question){
         console.log(question);
-        const sql = "UPDATE questions SET content=?, category_id=?, anonymous=? WHERE id=?";
+        const sql = "UPDATE questions SET content=?, category_id=?, anonymous=?, accepted_id=? WHERE id=?";
         try{
-            return await this.databaseConnector.query(sql, [question.content, question.category_id, question.anonymous, question.id]);
+            return await this.databaseConnector.query(sql, [question.content, question.category_id, question.anonymous,question.accepted_id, question.id]);
         }catch (error) {
             console.log(error);
             return false;
@@ -163,8 +163,7 @@ class QuestionHelper {
         if(vote?.voting === voting) {
             return await this._removeVote(id, userId);
         }
-        const res = vote ? await this._updateVote(vote.id, voting) : await this._createVote(id, userId, voting);
-        return res;
+        return vote ? await this._updateVote(vote.id, voting) : await this._createVote(id, userId, voting);
     }
 
     async getItemVotes(id) {
@@ -182,8 +181,7 @@ class QuestionHelper {
     async _updateVote(id, voting) {
         const sql = `UPDATE question_votes SET voting=? WHERE id=?`;
         try {
-            const res = await this.databaseConnector.query(sql, [voting, id]);
-            return res;
+            return  await this.databaseConnector.query(sql, [voting, id]);
         }catch (error) {
             console.log("Error while updating vote");
             console.log(error);
@@ -192,8 +190,7 @@ class QuestionHelper {
     async _createVote(questionId, userId, voting) {
         const sql = `INSERT INTO question_votes (question_id, user_id, voting) VALUES (?,?,?)`;
         try {
-            const res = await this.databaseConnector.query(sql, [questionId, userId, voting]);
-            return res;
+            return await this.databaseConnector.query(sql, [questionId, userId, voting]);
         }catch (error) {
             console.log("Error while creating vote");
             console.log(error);
@@ -202,8 +199,7 @@ class QuestionHelper {
     async _removeVote(questionId, userId) {
         const sql = `DELETE FROM question_votes WHERE user_id=? AND question_id=?`;
         try {
-            const res = await this.databaseConnector.query(sql, [userId, questionId]);
-            return res;
+            return await this.databaseConnector.query(sql, [userId, questionId]);
         }catch (error) {
             console.log("Error while deleting vote");
             console.log(error);
@@ -213,10 +209,19 @@ class QuestionHelper {
         const sql = `SELECT id, voting FROM question_votes WHERE user_id=? AND question_id=? LIMIT 1`;
         try {
             const res = await this.databaseConnector.query(sql, [userId, questionId]);
-            console.log(res);
             return res.data[0];
         }catch (error) {
             console.log("Error while getting id of vote");
+            console.log(error);
+        }
+    }
+
+    async setAcceptedId(id, accepted_id) {
+        const sql = `UPDATE questions SET accepted_id=? WHERE id=?`;
+        try {
+            return await this.databaseConnector.query(sql, [accepted_id, id]);
+        }catch (error) {
+            console.log("Error while updating accepted id");
             console.log(error);
         }
     }
