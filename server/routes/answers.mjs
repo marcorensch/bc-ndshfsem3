@@ -30,7 +30,10 @@ router.post('/create', authenticateToken, async (req, res) => {
 
 router.post('/:id/vote', authenticateToken, async (req, res) => {
     const answerHelper = new AnswerHelper();
-    await answerHelper.vote(req.params.id, req.user.id, req.body.vote);
+    const response = await answerHelper.vote(req.params.id, req.user.id, req.body.vote);
+    if(!response.success) {
+        return res.status(500).json(new ApiError('e-999'));
+    }
     const transportObject = new TransportObject()
         .setSuccess(true)
         .setMessage("Voting done")
