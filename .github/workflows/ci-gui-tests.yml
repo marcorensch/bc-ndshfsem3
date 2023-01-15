@@ -78,10 +78,14 @@ jobs:
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
         run: |
           npm run test:e2e &
+
+      - name: Wait for Application to start
+        run: |
           until $(nc -z localhost 8080); do
             echo "Waiting for application to start"
             sleep 5
           done
+
       - name: Run CI gui tests
         env:
           NODE_ENV: test
