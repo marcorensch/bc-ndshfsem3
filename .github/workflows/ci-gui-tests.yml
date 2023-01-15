@@ -75,7 +75,7 @@ jobs:
         REFRESH_TOKEN_SECRET: "auch-test"
         JWT_TOKEN_VALIDITY: "5m"
         JWT_REFRESH_TOKEN_VALIDITY: "1d"
-      run: npm run test:e2e
+      run: npm run test:e2e &
     - name: Run CI gui tests
       env:
         NODE_ENV: test
