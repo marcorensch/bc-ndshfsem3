@@ -58,9 +58,9 @@
           <div class="row justify-content-end">
             <div class="col-auto">
               <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-secondary" @click="scrollTo('#question-answer')"><font-awesome-icon icon="keyboard" /> Answer</button>
-                <button type="button" class="btn btn-secondary" @click="handleEditClicked"><font-awesome-icon icon="pencil" /> Edit</button>
-                <button type="button" class="btn btn-secondary" @click="handleDeleteClicked"><font-awesome-icon icon="trash" /> Delete</button>
+                <button v-if="userStore.getTokens.token" type="button" class="btn btn-secondary" @click="scrollTo('#question-answer')"><font-awesome-icon icon="keyboard" /> Answer</button>
+                <button v-if="canEditQuestion()" type="button" class="btn btn-secondary" @click="handleEditClicked"><font-awesome-icon icon="pencil" /> Edit</button>
+                <button v-if="canDeleteQuestion()" type="button" class="btn btn-secondary" @click="handleDeleteClicked"><font-awesome-icon icon="trash" /> Delete</button>
               </div>
             </div>
           </div>
@@ -384,6 +384,13 @@ export default {
       }).catch(error => {
         console.log(error);
       })
+    },
+
+    canDeleteQuestion() {
+      return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by || this.userStore.isAdmin
+    },
+    canEditQuestion() {
+      return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by || this.userStore.isAdmin
     },
 
     canMarkSolved() {
