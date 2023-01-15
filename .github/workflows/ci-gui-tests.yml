@@ -81,10 +81,7 @@ jobs:
 
       - name: Wait for Application to start
         run: |
-          until $(nc -z localhost 8080); do
-            echo "Waiting for application to start"
-            sleep 5
-          done
+         sleep 60
 
       - name: Run CI gui tests
         env:
