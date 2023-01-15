@@ -76,6 +76,12 @@ jobs:
           JWT_TOKEN_VALIDITY: "5m"
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
         run: npm run test:e2e &
+      - name: Wait for application to start
+        run: |
+          until $(curl --output /dev/null --silent --head --fail https://localhost:8080); do
+          printf '.'
+          sleep 5
+          done
       - name: Run CI gui tests
         env:
           NODE_ENV: test
@@ -89,13 +95,6 @@ jobs:
           REFRESH_TOKEN_SECRET: "auch-test"
           JWT_TOKEN_VALIDITY: "5m"
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
-      - name: Wait for application to start
-        run: |
-          until $(curl --output /dev/null --silent --head --fail https://localhost:8080); do
-          printf '.'
-          sleep 5
-          done
-      - name: Run CI gui tests
         run: |
           cd client
           npm run test
