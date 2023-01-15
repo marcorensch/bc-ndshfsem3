@@ -79,8 +79,8 @@ jobs:
         run: |
           npm run test:e2e &
           while true; do
-            SERVER_RESPONSE=$(curl --output /dev/null --silent --head --fail https://localhost:3000)
-            CLIENT_RESPONSE=$(curl --output /dev/null --silent --head --fail https://localhost:8080)
+            SERVER_RESPONSE=$(curl --output /dev/null --silent --head --fail http://localhost:3000)
+            CLIENT_RESPONSE=$(curl --output /dev/null --silent --head --fail http://localhost:8080)
             if [ $SERVER_RESPONSE -eq 0 ] && [ $CLIENT_RESPONSE -eq 0 ] ; then
               break
             fi
