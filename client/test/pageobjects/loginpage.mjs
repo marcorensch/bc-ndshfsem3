@@ -23,17 +23,33 @@ class Loginpage{
         return await this.driver.findElement(By.xpath('//*[@id="show-login-modal"]'));
     }
 
-    async clickRegisterButton() {
-        return await this.driver.findElement(By.xpath('/html/body/div[2]/div/div/form/div[2]/a')).click();
-
+    async getLogoutButtonSidebar(){
+        return await this.driver.wait(until.elementLocated(By.xpath('/html/body/div/div/div[2]/aside/div[5]/a')), 30000).isDisplayed();
     }
+
 
     async getLoginModalTitle(){
         return await this.driver.wait(until.elementLocated(By.xpath('/html/body/div[2]/div/div/div/h2')), 30000).getText();
     }
 
+    async getUsernameField() {
+        return await this.driver.findElement(By.xpath('//*[@id="username"]'));
+    }
+
+    async getPasswordField(){
+        return await this.driver.findElement(By.xpath('//*[@id="password"]'));
+    }
+
     async fillUsernameField(username) {
-       return await this.driver.findElement(By.xpath('//*[@id="username"]')).sendKeys(username);
+        let usernameField = await this.getUsernameField();
+        usernameField.clear();
+        return await usernameField.sendKeys(username);
+    }
+
+    async fillPasswordField(password) {
+        let passwordField = await this.getPasswordField();
+        passwordField.clear();
+        return await passwordField.sendKeys(password);
     }
 
     async clickLoginButton() {

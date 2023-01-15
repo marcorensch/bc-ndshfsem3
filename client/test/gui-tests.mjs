@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
-dotenv.config({ path: '../server/.env' });
+
+dotenv.config({path: '../server/.env'});
 import * as assert from "assert";
 import Homepage from "./pageobjects/homepage.mjs";
 import Registerpage from "./pageobjects/registerpage.mjs";
@@ -7,6 +8,7 @@ import UserData from "./pageobjects/UserData.mjs";
 import Loginpage from "./pageobjects/loginpage.mjs";
 import {Builder} from "selenium-webdriver";
 import firefox from "selenium-webdriver/firefox.js";
+
 
 import UserHelper from "../../server/helper/userHelper.mjs";
 import User from "../../server/model/user.mjs";
@@ -25,19 +27,19 @@ describe("Tests if website is reachable", function () {
     let driver = null;
 
     before(async function () {
-        try{
+        try {
             driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
                 .forBrowser('firefox')
                 .setFirefoxOptions(new firefox.Options().headless())
                 .build();
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
 
     });
 
-    it("Homepage find project titel in header", async () => {
+    it("On homepage find project titel in header", async () => {
         let homepage = new Homepage(driver);
         let baseUrl = "https://localhost:8080";
         await homepage.goToUrl(baseUrl);
@@ -46,9 +48,9 @@ describe("Tests if website is reachable", function () {
     });
 
     after(async function () {
-        try{
+        try {
             await driver.quit();
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -58,16 +60,16 @@ describe("Tests if website is reachable", function () {
 });
 
 
-describe("Register Test for the signup form", function () {
+describe("Register test for the signup form", function () {
     let driver = null;
 
     before(async function () {
-        try{
+        try {
             driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
                 .forBrowser('firefox')
                 .setFirefoxOptions(new firefox.Options().headless())
                 .build();
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -86,12 +88,12 @@ describe("Register Test for the signup form", function () {
             "12345678",
             "12345678");
 
-        try{
+        try {
             await registerpage.goToUrl(baseUrl);
             await registerpage.fillForm(user);
             let errormessage = await registerpage.getMainErrorMessage();
             assert.equal(errormessage, "firstname Invalid / Forbidden characters");
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -109,12 +111,12 @@ describe("Register Test for the signup form", function () {
             "12345678",
             "12345678");
 
-        try{
+        try {
             await registerpage.goToUrl(baseUrl);
             await registerpage.fillForm(user);
             let errormessage = await registerpage.getMainErrorMessage();
             assert.equal(errormessage, "lastname Invalid / Forbidden characters");
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -131,12 +133,12 @@ describe("Register Test for the signup form", function () {
             "12345678",
             "12345678");
 
-        try{
+        try {
             await registerpage.goToUrl(baseUrl);
             await registerpage.fillForm(user);
             let errormessage = await registerpage.getErrorMessageEmail();
             assert.equal(errormessage, "Value is not a valid email address");
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -153,12 +155,12 @@ describe("Register Test for the signup form", function () {
             "12345678",
             "12345678!");
 
-        try{
+        try {
             await registerpage.goToUrl(baseUrl);
             await registerpage.fillForm(user);
             let errormessage = await registerpage.getErrorMessageConfirmPassword();
             assert.equal(errormessage, "Not same password");
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -175,21 +177,21 @@ describe("Register Test for the signup form", function () {
             "1234567",
             "12345678");
 
-        try{
+        try {
             await registerpage.goToUrl(baseUrl);
             await registerpage.fillForm(user);
             let errormessage = await registerpage.getErrorMessageNewPassword();
             assert.equal(errormessage, "Min. 8 characters");
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
     });
 
     after(async function () {
-        try{
+        try {
             await driver.quit();
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
@@ -198,26 +200,25 @@ describe("Register Test for the signup form", function () {
 
 });
 
-describe("Login Test for the login form", function () {
+describe("Login test for the login form", function () {
     let driver = null;
 
 
     before(async () => {
-        try{
+        try {
             driver = await new Builder().withCapabilities({acceptInsecureCerts: true})
                 .forBrowser('firefox')
                 .setFirefoxOptions(new firefox.Options().headless())
                 .build();
-        }catch (Error){
+        } catch (Error) {
             console.log(Error)
         }
-
 
 
     });
 
 
-    it("should pop up the Loginmodal", async () => {
+    it("should pop up the loginmodal", async () => {
         let loginpage = new Loginpage(driver);
         try {
             await loginpage.openLoginModal();
@@ -234,7 +235,7 @@ describe("Login Test for the login form", function () {
 
     });
 
-    it("Login with wrong password", async () => {
+    it("Existing user login with wrong password", async () => {
         await userHelper.deleteUserByUsername("test-user");
         const user = new User("Test", "Test", "test-user", "testuser.test@gmail.com");
         user.setPassword("12345678");
@@ -249,7 +250,7 @@ describe("Login Test for the login form", function () {
                 await loginpage.clickLoginButton();
                 let errormessage = await loginpage.getErrorMessage();
                 assert.equal(errormessage, "Wrong Password");
-              //  await userHelper.deleteUserByUsername("test-user");
+                await userHelper.deleteUserByUsername("test-user");
             }
         } catch (error) {
             console.log(error);
@@ -264,7 +265,7 @@ describe("Login Test for the login form", function () {
             await loginpage.openLoginModal();
             let modal = await loginpage.waitForModal();
             if (modal) {
-                await loginpage.fillUsernameField("");
+                await loginpage.fillUsernameField("no-user");
                 await loginpage.clickLoginButton();
                 let errormessage = await loginpage.getErrorMessage();
                 assert.equal(errormessage, "User not found");
@@ -276,10 +277,34 @@ describe("Login Test for the login form", function () {
 
     });
 
+    it("Login with correct username and password", async () => {
+        await userHelper.deleteUserByUsername("Ferdi");
+        const user = new User("Ferdinand", "Maier", "Ferdi", "Ferdi.test@gmail.com");
+        user.setPassword("12345678");
+        await userHelper.registerUser(user);
+
+        let loginpage = new Loginpage(driver);
+        try {
+            await loginpage.openLoginModal();
+            let modal = await loginpage.waitForModal();
+            if (modal) {
+                await loginpage.fillUsernameField("Ferdi");
+                await loginpage.fillPasswordField("12345678");
+                await loginpage.clickLoginButton();
+                let logoutBtnDisplayed = await loginpage.getLogoutButtonSidebar();
+                assert.equal(logoutBtnDisplayed, true);
+
+                await userHelper.deleteUserByUsername("Ferdi");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+
     after(async function () {
-        try{
+        try {
             await driver.quit();
-        }catch (error){
+        } catch (error) {
             console.log(error);
         }
 
