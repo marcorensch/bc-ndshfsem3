@@ -65,6 +65,7 @@ jobs:
       - name: Start Application
         env:
           NODE_ENV: test
+          HTTPS: true
           DB_HOST: ${{ matrix.database-host }}
           DB_PORT: ${{ matrix.host-port }}
           DB_USER: root
