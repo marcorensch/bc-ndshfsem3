@@ -1,4 +1,5 @@
 import TokenHelper from "../helper/TokenHelper.mjs";
+import ApiError from "../model/ApiError.mjs";
 
 async function identifyCurrentUser (req, res, next) {
     req.userId = null;
@@ -15,9 +16,13 @@ async function identifyCurrentUser (req, res, next) {
             req.userId = tokenContent.id;
             req.isAdmin = tokenContent.isAdmin;
         }catch(err) {
-
+            console.log(err);
+            return res.status(401).json(new ApiError('e-101'));
         }
     }
+
+    console.log(req.headers)
+
     next();
 }
 

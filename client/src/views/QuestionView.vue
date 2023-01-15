@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="card">
+    <div class="card question-detail">
       <div class="card-body">
         <div class="question-header">
           <div class="row align-middle">
@@ -40,8 +40,8 @@
               </table>
             </div>
           </div>
-          <hr>
         </div>
+        <hr>
         <div class="question-content" v-html="question.content"></div>
         <div v-if="question.answers" class="question-answers mt-5">
           <h3>{{ question.answers.length }} Answers</h3>
@@ -75,8 +75,11 @@
         </div>
         <div v-if="userStore.getTokens.token" class="question-answer mt-5">
           <div class="editor-container">
+            <h4>Your Answer</h4>
             <Editor v-model="answer" :init="init"/>
-            <button class="btn btn-primary" @click="handleSaveAnswerClicked">Post Answer</button>
+              <div class="mt-3">
+                <button class="btn btn-primary" @click="handleSaveAnswerClicked">Post Answer</button>
+              </div>
           </div>
         </div>
         <div v-else>
@@ -110,13 +113,12 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
   name: "Edit",
-  inject: ["host", 'headers'],
-  props: {
-    question_id: {
-      type: Number,
-      required: true,
-    },
-
+  inject: ["host"],
+  props: ['id'],
+  components: {
+    FontAwesomeIcon,
+    Editor,
+    ErrorMessageContainer,
   },
   data() {
     return {
@@ -129,7 +131,6 @@ export default {
       answer: "",
       editor: null,
       userStore: useUserStore()
-
     }
   },
   setup() {
@@ -159,13 +160,6 @@ export default {
       },
     }
   },
-  components: {
-    FontAwesomeIcon,
-    Editor,
-    ErrorMessageContainer,
-  },
-
-  computed: {},
   mounted() {
     this.getQuestionById(this.$route.params.id);
   },
@@ -181,70 +175,37 @@ export default {
             console.log(err);
           });
     },
+
     handleSaveAnswerClicked() {
+      console.log(this.answer);
       // Store answertext in store (backup)
       this.userStore.setAnswerText(this.answer);
       // Send answertext to server
       this.saveAnswer();
     },
     saveAnswer() {
-      console.log(this.text);
-      console.log(this.question_id);
-
+      console.log(this.answer);
       axios.post(this.host + "/answers/create", {
-        content: this.text,
-        question_id: this.question_id,
+        content: this.answer,
+        question_id: this.question.id,
       }, {
-        headers: this.headers
+        headers : this.userStore.getReqHeaders
       })
           .then(response => {
-            if (response.data.payload.token) {
+            if (response.data.payload?.token) {
               this.userStore.setToken(response.data.payload.token)
             }
             this.userStore.clearAnswerText();
             // this.$router.push({name: 'Home'})
           })
           .catch(error => {
-            this.errorMessage = error.response.data.message
+            console.log(error);
           })
     },
   },
 }
 </script>
 
-<style lang="scss" scoped>
-@import "@/assets/styles/app.scss";
-
-.question-content {
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin-bottom: 3rem;
-}
-
-.question-header {
-  color: var(--dark);
-
-  & table {
-
-  }
-}
-
-.userIcon {
-  width: 5rem;
-  height: 5rem;
-  border-radius: 0.375rem;
-  background-color: var(--dark);
-  margin: 0 auto;
-  position: relative;
-
-  & > svg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--light);
-    font-size: 3rem;
-  }
-}
+<style lang="scss" >
 
 </style>

@@ -6,8 +6,9 @@ import ApiError from "../model/ApiError.mjs";
 import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import Answer from "../model/Answer.mjs";
 import AnswerHelper from "../helper/AnswerHelper.mjs";
+import TransportObject from "../model/TransportObject.mjs";
 
-router.post('/create', identifyCurrentUser, authenticateToken, async (req, res) => {
+router.post('/create', authenticateToken, async (req, res) => {
     const {question_id, content} = req.body;
     const user = req.user;
     const answerHelper = new AnswerHelper();
@@ -18,6 +19,12 @@ router.post('/create', identifyCurrentUser, authenticateToken, async (req, res) 
         console.log(result);
         return res.status(500).json(new ApiError('e-999'));
     }
-    res.status(201).json({message: "Answer created successfully", user_id: user.id, is_admin: user.isadministrator, token: req.token});
+    const transportObject = new TransportObject()
+        .setSuccess(true)
+        .setMessage("Answer created successfully")
+        .setPayload({
+            user_id: user.id, is_admin: user.isadministrator, token: req.token
+        })
+    res.status(201).json(transportObject);
 });
 export default router;

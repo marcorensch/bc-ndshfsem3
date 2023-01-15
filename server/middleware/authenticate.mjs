@@ -9,6 +9,7 @@ async function authenticateToken (req, res, next) {
     const refreshToken = req.headers['RefreshToken'] || req.headers['refreshtoken'] || req.headers['refreshToken'] || req.body['refreshToken'] || req.body['RefreshToken'] || req.body['refreshtoken'];
     const token = authHeader && authHeader.split(' ')[1];
 
+    console.log(req.headers);
     if (token == null) return res.sendStatus(401);
 
     const tokenHelper = new TokenHelper();

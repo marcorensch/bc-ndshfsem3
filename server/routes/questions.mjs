@@ -74,7 +74,14 @@ router.put('/:id', identifyCurrentUser, authenticateToken, questionSanitizer, qu
     const question = new Question(content, oldQuestion.created_by).setAnonymous(anonymous).setCategoryId(category_id).setId(question_id);
     await questionHelper.updateItem(question)
 
-    res.status(200).json({ success: true, message: "Question updated successfully", userId: req.user.id, isAdmin: req.user.isadministrator, token: req.token });
+    const transportObject = new TransportObject()
+    .setSuccess(true)
+    .setMessage("Question updated successfully")
+    .setPayload({
+        userId: req.user.id, isAdmin: req.user.isadministrator, token: req.token
+    })
+
+    res.status(200).json(transportObject);
 });
 
 router.delete('/:id', (req, res) => {
