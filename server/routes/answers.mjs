@@ -27,4 +27,10 @@ router.post('/create', authenticateToken, async (req, res) => {
         })
     res.status(201).json(transportObject);
 });
+
+router.post('/:id/vote', authenticateToken, async (req, res) => {
+    const answerHelper = new AnswerHelper();
+    answerHelper.vote(req.params.id, req.user.id, req.body.vote);
+    return res.status(200).json({message: "Vote created successfully"});
+});
 export default router;

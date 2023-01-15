@@ -43,43 +43,43 @@
         </div>
         <hr>
         <div class="question-content" v-html="question.content"></div>
-        <div v-if="question.answers" class="question-answers mt-5">
-          <h3>{{ question.answers.length }} Answers</h3>
-          <div class="answer" v-for="answer in question.answers" :key="answer.id">
-            <div class="row align-middle">
-              <div class="col-auto">
-                <div class="userIcon">
-                  <font-awesome-icon icon="user"/>
+        <div v-if="answers" class="question-answers mt-5">
+          <h4>{{ answers.length }} Answers</h4>
+          <div class="answer" v-for="answer in answers" :key="answer.id">
+            <div class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
+              <div class="row">
+                <div class="col-1 text-center">
+                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)">
+                    <font-awesome-icon icon="caret-up"/>
+                  </div>
+                  <div class="vote-value">22</div>
+                  <div class="vote-action  vote-down" @click="handleAnswerVoteClicked(-1, answer.id)">
+                    <font-awesome-icon icon="caret-down"/>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="answer-content" v-html="answer.content"></div>
+                  <div class="mt-3 text-small text-muted">
+                    <div>
+                      {{ new Date(answer.created_at).toLocaleString() }}
+                    </div>
+                    <div class="mt-1">
+                      by {{ answer.username ? answer.username : "Anonymous" }}
+                    </div>
+                  </div>
+
                 </div>
               </div>
-              <div class="col-md-8 align-self-center">
-                <table class="table mb-0 align-middle">
-                  <tr class="align-middle">
-                    <th>
-                      <font-awesome-icon icon="user"/>
-                    </th>
-                    <td>{{ answer.username ? answer.username : "Anonymous" }}</td>
-                  </tr>
-                  <tr>
-                    <th>
-                      <font-awesome-icon icon="calendar"/>
-                    </th>
-                    <td>{{ new Date(answer.created_at).toLocaleString() }}</td>
-                  </tr>
-                </table>
-              </div>
             </div>
-            <hr>
-            <div class="answer-content" v-html="answer.content"></div>
           </div>
         </div>
         <div v-if="userStore.getTokens.token" class="question-answer mt-5">
           <div class="editor-container">
             <h4>Your Answer</h4>
             <Editor v-model="answer" :init="init"/>
-              <div class="mt-3">
-                <button class="btn btn-primary" @click="handleSaveAnswerClicked">Post Answer</button>
-              </div>
+            <div class="mt-3">
+              <button class="btn btn-primary" @click="handleSaveAnswerClicked">Post Answer</button>
+            </div>
           </div>
         </div>
         <div v-else>
@@ -128,6 +128,7 @@ export default {
       created_at: "",
       username: "",
       anonymous: false,
+      answers: [],
       answer: "",
       editor: null,
       userStore: useUserStore()
@@ -168,8 +169,9 @@ export default {
       if (!id) return;
       axios.get(`${this.host}/questions/${id}`)
           .then((response) => {
-            console.log(response.data.question);
             this.question = response.data.question;
+            this.answers = response.data.answers;
+            console.log(this.question);
           })
           .catch((err) => {
             console.log(err);
@@ -183,13 +185,27 @@ export default {
       // Send answertext to server
       this.saveAnswer();
     },
+
+    handleAnswerVoteClicked(vote, id){
+      axios.post(`${this.host}/answers/${id}/vote`, {
+        vote
+      }, {
+        headers: this.userStore.getReqHeaders
+      })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    },
     saveAnswer() {
       console.log(this.answer);
       axios.post(this.host + "/answers/create", {
         content: this.answer,
         question_id: this.question.id,
       }, {
-        headers : this.userStore.getReqHeaders
+        headers: this.userStore.getReqHeaders
       })
           .then(response => {
             if (response.data.payload?.token) {
@@ -206,6 +222,6 @@ export default {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 
 </style>

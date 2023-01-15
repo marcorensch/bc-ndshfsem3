@@ -103,11 +103,12 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 #### Antworten (/answers/...)
 
-| Status             | Type   | Route     | Beschreibung               | Request                                                         | Response                           |
-|--------------------|--------|-----------|----------------------------|-----------------------------------------------------------------|------------------------------------|
-| :white_check_mark: | POST   | `/create` | Erstellt eine neue Antwort | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
-| :x:                | PUT    | `/:id`    | Aktualisiert eine Antwort  | Ja                                                              |                                    |
-| :x:                | DELETE | `/:id`    | Löscht eine Antwort        | Ja                                                              |                                    |
+| Status             | Type   | Route       | Beschreibung                         | Request                                                         | Response                           |
+|--------------------|--------|-------------|--------------------------------------|-----------------------------------------------------------------|------------------------------------|
+| :white_check_mark: | POST   | `/create`   | Erstellt eine neue Antwort           | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
+| :x:                | PUT    | `/:id`      | Aktualisiert eine Antwort            | Ja                                                              |                                    |
+| :x:                | DELETE | `/:id`      | Löscht eine Antwort                  | Ja                                                              |                                    |
+| :x:                | POST   | `/:id/vote` | Setzt ein Voting für eine Antwort ab | header.token, body.type (INT (1 / 0 / -1))                      |                                    |
 
 *: Nur wenn neuer Token generiert wurde
 

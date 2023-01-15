@@ -4,7 +4,7 @@
 @import "editor";
 
 :root {
-  --primary: #0CAFFF;
+  --primary: #13930a;
   --grey: #64748b;
   --dark: #292e40;
   --dark-alt: #334155;
@@ -269,6 +269,20 @@ aside {
 
 }
 
+.answer-box {
+  background: rgba(0,0,0, .02);
+  border-radius: var(--border-radius);
+    padding: 1rem;
+  &:not(first-of-type){
+    margin-top: 1rem;
+  }
+}
+
+.answer-box.accepted {
+  background: rgba(196, 255, 147, 0.65);
+  border-left: 5px solid var(--primary);
+}
+
 /* Tags */
 .tags{
   display: flex;
@@ -329,6 +343,10 @@ aside {
 
 .hidden {
   display: none;
+}
+
+.text-small{
+    font-size: .75rem;
 }
 
 

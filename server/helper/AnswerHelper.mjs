@@ -18,17 +18,17 @@ class AnswerHelper {
             const answer_id = await this.getLastItemIdCreatedByUserId(answer.user_id);
             await this._linkAnswerToQuestion(answer_id, answer.question_id);
             return response;
-        }catch (error) {
+        } catch (error) {
             throw error;
         }
     }
 
-    async getLastItemIdCreatedByUserId(userId){
+    async getLastItemIdCreatedByUserId(userId) {
         const sql = "SELECT id FROM answers WHERE created_by=? ORDER BY id DESC LIMIT 1";
-        try{
+        try {
             const response = await this.databaseConnector.query(sql, [userId]);
             return response.data[0].id;
-        }catch (error) {
+        } catch (error) {
             throw error;
         }
     }
@@ -38,8 +38,45 @@ class AnswerHelper {
         try {
             const response = await this.databaseConnector.query(sql, [question_id, answer_id]);
             return response;
-        }catch (error) {
+        } catch (error) {
             throw error;
+        }
+    }
+
+    async vote(id, userId, voting) {
+        const idOfVote = await this._getIdOfVote(id, userId);
+        const res = idOfVote ? await this._updateVote(idOfVote, voting) : await this._createVote(id, userId, voting);
+        return res;
+    }
+    async _updateVote(id, voting) {
+        const sql = `UPDATE answer_votes SET voting=? WHERE id=?`;
+        try {
+            const res = await this.databaseConnector.query(sql, [voting, id]);
+            return res;
+        }catch (error) {
+            console.log("Error while updating vote");
+            console.log(error);
+        }
+    }
+    async _createVote(answerId, userId, voting) {
+        const sql = `INSERT INTO answer_votes (answer_id, user_id, voting) VALUES (?,?,?)`;
+        try {
+            const res = await this.databaseConnector.query(sql, [answerId, userId, voting]);
+            return res;
+        }catch (error) {
+            console.log("Error while creating vote");
+            console.log(error);
+        }
+    }
+    async _getIdOfVote(answerId, userId) {
+        const sql = `SELECT id FROM answer_votes WHERE user_id=? AND answer_id=? LIMIT 1`;
+        try {
+            const res = await this.databaseConnector.query(sql, [userId, answerId]);
+            console.log(res);
+            return res.data[0];
+        }catch (error) {
+            console.log("Error while getting id of vote");
+            console.log(error);
         }
     }
 }
