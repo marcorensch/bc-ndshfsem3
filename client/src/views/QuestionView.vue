@@ -54,10 +54,38 @@
         </div>
         <hr>
         <div class="question-content p-2" v-html="question.content"></div>
+        <div class="question-actions position-relative pt-3">
+          <div class="row justify-content-end">
+            <div class="col-auto">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary" @click="scrollTo('#question-answer')"><font-awesome-icon icon="keyboard" /> Answer</button>
+                <button type="button" class="btn btn-secondary" @click="handleEditClicked"><font-awesome-icon icon="pencil" /> Edit</button>
+                <button type="button" class="btn btn-secondary" @click="handleDeleteClicked"><font-awesome-icon icon="trash" /> Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div v-if="answers" class="question-answers p-2 mt-5">
           <h4>{{ answers.length }} Answers</h4>
+          <div class="row pt-3 pb-3">
+            <div class="col-3">
+              <select name="sortAnswersBy" id="sortAnswersBy" class="form-select" @change="sortAnswerList">
+                <option value="votes">Votes</option>
+                <option selected value="created_at">Date</option>
+              </select>
+            </div>
+            <div class="col-3">
+              <select name="sortAnswersDir" id="sortAnswersDir" class="form-select" @change="sortAnswerList">
+                <option selected value="asc">ASC</option>
+                <option value="desc">DESC</option>
+              </select>
+            </div>
+            <div v-if="question.accepted_id" class="col-3 d-flex">
+              <button @click="scrollTo('#answer-'+question.accepted_id)" class="btn btn-success"><font-awesome-icon icon="chevron-down" /> Jump to Solution</button>
+            </div>
+          </div>
           <div class="answer" v-for="answer in answers" :key="answer.id">
-            <div class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
+            <div :id="'answer-'+answer.id" class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
               <div class="actions-container"
                    v-if="userStore.isAdmin || canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
                 <div v-if="canMarkSolved()" class="action" @click="handleMarkedAnswerClicked(answer.id)">
@@ -105,7 +133,7 @@
             </div>
           </div>
         </div>
-        <div v-if="userStore.getTokens.token" class="question-answer p-2 mt-5">
+        <div id="question-answer" v-if="userStore.getTokens.token" class="question-answer p-2 mt-5">
           <div class="editor-container">
             <h4>Your Answer</h4>
             <Editor v-model="answer" :init="init"/>
@@ -207,6 +235,27 @@ export default {
     }
   },
   methods: {
+    scrollTo(target){
+      document.querySelector(target).scrollIntoView({behavior: 'smooth'});
+    },
+    sortAnswerList() {
+      const by = document.getElementById("sortAnswersBy").value;
+      const direction = document.getElementById("sortAnswersDir").value;
+      console.log(by, direction);
+      if(by === "votes") {
+        if(direction === "asc") {
+          this.answers.sort((a, b) => a.votes.total - b.votes.total);
+        } else {
+          this.answers.sort((a, b) => b.votes.total - a.votes.total);
+        }
+      } else {
+        if(direction === "asc") {
+          this.answers.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else {
+          this.answers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        }
+      }
+    },
     checkIfUserHasVotedForQuestion(vote) {
       if (this.user) {
         const votes = this.question.votes.data;

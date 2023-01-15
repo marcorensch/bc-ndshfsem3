@@ -32,6 +32,15 @@ button {
       background-color: var(--primary);
     }
   }
+
+  &.btn-success {
+    background-color: var(--success);
+    color: (var(--success-light));
+
+    &:hover {
+      background-color: var(--success-alt);
+    }
+  }
 }
 
 .action-button {
