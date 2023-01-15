@@ -75,11 +75,14 @@ jobs:
           REFRESH_TOKEN_SECRET: "auch-test"
           JWT_TOKEN_VALIDITY: "5m"
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
-        run: npm run test:e2e &
-      - name: Wait for application to start
         run: |
-          until $(curl --output /dev/null --silent --head --fail https://localhost:8080); do
-          printf '.'
+          npm run test:e2e &
+          while true; do
+          SERVER_RESPONSE=$(curl --output /dev/null --silent --head --fail https://localhost:3000)
+          CLIENT_RESPONSE=$(curl --output /dev/null --silent --head --fail https://localhost:8080)
+          if [ $SERVER_RESPONSE -eq 0 ] && [ $CLIENT_RESPONSE -eq 0 ] ; then
+          break
+          fi
           sleep 5
           done
       - name: Run CI gui tests
