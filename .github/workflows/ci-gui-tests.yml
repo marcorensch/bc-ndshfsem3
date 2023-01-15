@@ -93,7 +93,7 @@ jobs:
           JWT_TOKEN_VALIDITY: "5m"
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
         run: |
-          cd client && npm run serve &
+          cd client && npm run serve
       - name: Run CI gui tests
         env:
           NODE_ENV: test
