@@ -40,11 +40,13 @@
               </table>
             </div>
             <div class="col-1 text-center">
-              <div class="vote-action vote-up" @click="handleQuestionVoteClicked(1)" :class="{voted: checkIfUserHasVotedForQuestion(1), disabled : !canVote() }">
+              <div class="vote-action vote-up" @click="handleQuestionVoteClicked(1)"
+                   :class="{voted: checkIfUserHasVotedForQuestion(1), disabled : !canVote() }">
                 <font-awesome-icon icon="caret-up"/>
               </div>
               <div class="vote-value-question">{{ question.votes.total }}</div>
-              <div class="vote-action vote-down" @click="handleQuestionVoteClicked(-1)" :class="{voted: checkIfUserHasVotedForQuestion(-1), disabled : !canVote() }">
+              <div class="vote-action vote-down" @click="handleQuestionVoteClicked(-1)"
+                   :class="{voted: checkIfUserHasVotedForQuestion(-1), disabled : !canVote() }">
                 <font-awesome-icon icon="caret-down"/>
               </div>
             </div>
@@ -56,24 +58,28 @@
           <h4>{{ answers.length }} Answers</h4>
           <div class="answer" v-for="answer in answers" :key="answer.id">
             <div class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
-              <div class="actions-container" v-if="userStore.isAdmin || canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
+              <div class="actions-container"
+                   v-if="userStore.isAdmin || canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
                 <div v-if="canMarkSolved()" class="action" @click="handleMarkedAnswerClicked(answer.id)">
-                  <font-awesome-icon icon="check" />
+                  <font-awesome-icon icon="check"/>
                 </div>
-                <div v-if="canDeleteAnswer(answer.created_by)" class="action" @click="handleDeleteAnswerClicked(answer.id)">
-                  <font-awesome-icon icon="trash" />
+                <div v-if="canDeleteAnswer(answer.created_by)" class="action"
+                     @click="handleDeleteAnswerClicked(answer.id)">
+                  <font-awesome-icon icon="trash"/>
                 </div>
                 <div v-if="canEditAnswer(answer.created_by)" class="action" @click="handleEditAnswerClicked(answer.id)">
-                  <font-awesome-icon icon="pencil" />
+                  <font-awesome-icon icon="pencil"/>
                 </div>
               </div>
               <div class="row">
                 <div class="col-1 text-center">
-                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)" :class="{voted: checkIfUserHasVotedForAnswer(1, answer.id), disabled : !canVote()  }">
+                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)"
+                       :class="{voted: checkIfUserHasVotedForAnswer(1, answer.id), disabled : !canVote()  }">
                     <font-awesome-icon icon="caret-up"/>
                   </div>
-                  <div class="vote-value">{{answer.votes.total}}</div>
-                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)" :class="{voted: checkIfUserHasVotedForAnswer(-1, answer.id), disabled : !canVote()  }">
+                  <div class="vote-value">{{ answer.votes.total }}</div>
+                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)"
+                       :class="{voted: checkIfUserHasVotedForAnswer(-1, answer.id), disabled : !canVote()  }">
                     <font-awesome-icon icon="caret-down"/>
                   </div>
                 </div>
@@ -120,6 +126,7 @@ import 'tinymce/themes/silver/theme'
 import 'tinymce/skins/ui/oxide/skin.css'
 import 'tinymce/plugins/lists/plugin'
 import 'tinymce/plugins/link/plugin'
+import 'tinymce/plugins/codesample/plugin'
 import 'tinymce/plugins/image/plugin'
 import 'tinymce/plugins/table/plugin'
 import 'tinymce/plugins/code/plugin'
@@ -158,9 +165,7 @@ export default {
       userStore: useUserStore()
     }
   },
-  computed:{
-
-  },
+  computed: {},
   setup() {
     return {
       init: {
@@ -170,7 +175,7 @@ export default {
         menubar: false,
         contextmenu: false,
         resize: false,
-        toolbar: 'undo redo | bold italic underline code | link image',
+        toolbar: 'undo redo | bold italic underline codesample | link image',
         font_formats: "Arial=arial,helvetica,sans-serif;",
 
         formats: {
@@ -181,7 +186,7 @@ export default {
           // Adds the h1 format defined above to style_formats
           {title: 'Paragraph', format: 'p'}
         ],
-        plugins: 'lists link image code help wordcount',
+        plugins: 'lists link image codesample help wordcount',
         content_css: false,
         content_style: "body { font-family: Arial; }",
 
@@ -228,9 +233,9 @@ export default {
       // Send answertext to server
       this.saveAnswer();
     },
-    handleQuestionVoteClicked(vote){
-      if(!this.canVote()) return;
-      if(this.userStore.getUser.id === this.question.created_by){
+    handleQuestionVoteClicked(vote) {
+      if (!this.canVote()) return;
+      if (this.userStore.getUser.id === this.question.created_by) {
         alert("You can't vote on your own question");
         return;
       }
@@ -240,7 +245,7 @@ export default {
         headers: this.userStore.getReqHeaders
       })
           .then((response) => {
-            if(response.data?.payload?.token){
+            if (response.data?.payload?.token) {
               this.userStore.setToken(response.data.payload.token);
             }
             this.getQuestionById(this.$route.params.id);
@@ -249,9 +254,9 @@ export default {
             console.log(err);
           });
     },
-    handleAnswerVoteClicked(vote, id){
-      if(!this.canVote()) return;
-      if(this.userStore.getUser.id === this.answers.find(answer => answer.id === id).created_by){
+    handleAnswerVoteClicked(vote, id) {
+      if (!this.canVote()) return;
+      if (this.userStore.getUser.id === this.answers.find(answer => answer.id === id).created_by) {
         alert("You can't vote on your own answer");
         return;
       }
@@ -261,7 +266,7 @@ export default {
         headers: this.userStore.getReqHeaders
       })
           .then((response) => {
-            if(response.data?.payload?.token){
+            if (response.data?.payload?.token) {
               this.userStore.setToken(response.data.payload.token);
             }
             this.getQuestionById(this.$route.params.id);
@@ -270,6 +275,19 @@ export default {
             console.log(err);
           });
     },
+    handleDeleteAnswerClicked(id) {
+      axios.delete(`${this.host}/answers/${id}`, {
+        headers: this.userStore.getReqHeaders
+      })
+          .then((response) => {
+            if (response.data?.payload?.token) {
+              this.userStore.setToken(response.data.payload.token);
+            }
+            this.getQuestionById(this.$route.params.id);
+          }).catch((err) => {
+            console.log(err);
+      });
+    },
     saveAnswer() {
       axios.post(this.host + "/answers/create", {
         content: this.answer,
@@ -277,27 +295,27 @@ export default {
       }, {
         headers: this.userStore.getReqHeaders
       }).then(response => {
-          if (response.data.payload?.token) {
-            this.userStore.setToken(response.data.payload.token)
-          }
-          this.userStore.clearAnswerText();
-          this.answer = "";
-          this.getQuestionById(this.$route.params.id);
+        if (response.data.payload?.token) {
+          this.userStore.setToken(response.data.payload.token)
+        }
+        this.userStore.clearAnswerText();
+        this.answer = "";
+        this.getQuestionById(this.$route.params.id);
       }).catch(error => {
-          console.log(error);
+        console.log(error);
       })
     },
 
-    canMarkSolved(){
+    canMarkSolved() {
       return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by
     },
-    canDeleteAnswer(createdUserId){
+    canDeleteAnswer(createdUserId) {
       return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId || this.userStore.isAdmin
     },
-    canEditAnswer(createdUserId){
+    canEditAnswer(createdUserId) {
       return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId || this.userStore.isAdmin
     },
-    canVote(){
+    canVote() {
       return this.userStore.getTokens.token
     },
   },
