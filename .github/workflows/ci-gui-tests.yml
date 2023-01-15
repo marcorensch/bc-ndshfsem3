@@ -16,79 +16,86 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [18.x] # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        host-port: [3800]
-        database-host: [127.0.0.1]
-        database-name: [babylon_test]
-        database-root-pwd: [root]
-        database-user: [developer]
-        database-pwd: [developer]
+        node-version: [ 18.x ] # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        host-port: [ 3800 ]
+        database-host: [ 127.0.0.1 ]
+        database-name: [ babylon_test ]
+        database-root-pwd: [ root ]
+        database-user: [ developer ]
+        database-pwd: [ developer ]
 
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: getong/mariadb-action@v1.1
-      with:
-        host port: ${{ matrix.host-port }} # Optional, default value is 3306. The port of host
-        container port: 3307 # Optional, default value is 3306. The port of container
-        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        #mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
-        mysql database: ${{ matrix.database-name }} # Optional, default value is "test". The specified database which will be create
-        mysql root password: ${{ matrix.database-root-pwd }} # Required if "mysql user" is empty, default is empty. The root superuser password
-        mysql user: ${{ matrix.database-user }} # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-        mysql password: ${{ matrix.database-pwd }} # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Verify MariaDB connection
-      run: |
+      - uses: actions/checkout@v3
+      - uses: getong/mariadb-action@v1.1
+        with:
+          host port: ${{ matrix.host-port }} # Optional, default value is 3306. The port of host
+          container port: 3307 # Optional, default value is 3306. The port of container
+          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          #mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+          mysql database: ${{ matrix.database-name }} # Optional, default value is "test". The specified database which will be create
+          mysql root password: ${{ matrix.database-root-pwd }} # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql user: ${{ matrix.database-user }} # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: ${{ matrix.database-pwd }} # Required if "mysql user" exists. The password for the "mysql user"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Verify MariaDB connection
+        run: |
           while ! mysqladmin ping -h${{ matrix.database-host }} -P${{ matrix.host-port }} --silent; do
             sleep 1
           done
-    - name: Run SQL files to install database tables
-      env:
-        NODE_ENV: citest
-        DB_HOST: ${{ matrix.database-host }}
-        DB_PORT: ${{ matrix.host-port }}
-        DB_USER: root
-        DB_PASSWORD: ${{ matrix.database-root-pwd }}
-        TEST_DB_NAME: ${{ matrix.database-name }}
-      run: |
-        for file in sql/tables/*.sql; do
-        mysql -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASSWORD -D$TEST_DB_NAME < "$file"
-        done
-    - name: Install Dependencies
-      run: npm install
-    - name: Start Application
-      env:
-        NODE_ENV: test
-        DB_HOST: ${{ matrix.database-host }}
-        DB_PORT: ${{ matrix.host-port }}
-        DB_USER: root
-        DB_PASSWORD: ${{ matrix.database-root-pwd }}
-        TEST_DB_NAME: ${{ matrix.database-name }}
-        DB_NAME: ${{ matrix.database-name }}
-        ACCESS_TOKEN_SECRET: "test"
-        REFRESH_TOKEN_SECRET: "auch-test"
-        JWT_TOKEN_VALIDITY: "5m"
-        JWT_REFRESH_TOKEN_VALIDITY: "1d"
-      run: npm run test:e2e &
-    - name: Run CI gui tests
-      env:
-        NODE_ENV: test
-        DB_HOST: ${{ matrix.database-host }}
-        DB_PORT: ${{ matrix.host-port }}
-        DB_USER: root
-        DB_PASSWORD: ${{ matrix.database-root-pwd }}
-        TEST_DB_NAME: ${{ matrix.database-name }}
-        DB_NAME: ${{ matrix.database-name }}
-        ACCESS_TOKEN_SECRET: "test"
-        REFRESH_TOKEN_SECRET: "auch-test"
-        JWT_TOKEN_VALIDITY: "5m"
-        JWT_REFRESH_TOKEN_VALIDITY: "1d"
-      run: |
+      - name: Run SQL files to install database tables
+        env:
+          NODE_ENV: citest
+          DB_HOST: ${{ matrix.database-host }}
+          DB_PORT: ${{ matrix.host-port }}
+          DB_USER: root
+          DB_PASSWORD: ${{ matrix.database-root-pwd }}
+          TEST_DB_NAME: ${{ matrix.database-name }}
+        run: |
+          for file in sql/tables/*.sql; do
+          mysql -h$DB_HOST -P$DB_PORT -u$DB_USER -p$DB_PASSWORD -D$TEST_DB_NAME < "$file"
+          done
+      - name: Install Dependencies
+        run: npm install
+      - name: Start Application
+        env:
+          NODE_ENV: test
+          DB_HOST: ${{ matrix.database-host }}
+          DB_PORT: ${{ matrix.host-port }}
+          DB_USER: root
+          DB_PASSWORD: ${{ matrix.database-root-pwd }}
+          TEST_DB_NAME: ${{ matrix.database-name }}
+          DB_NAME: ${{ matrix.database-name }}
+          ACCESS_TOKEN_SECRET: "test"
+          REFRESH_TOKEN_SECRET: "auch-test"
+          JWT_TOKEN_VALIDITY: "5m"
+          JWT_REFRESH_TOKEN_VALIDITY: "1d"
+        run: npm run test:e2e &
+      - name: Run CI gui tests
+        env:
+          NODE_ENV: test
+          DB_HOST: ${{ matrix.database-host }}
+          DB_PORT: ${{ matrix.host-port }}
+          DB_USER: root
+          DB_PASSWORD: ${{ matrix.database-root-pwd }}
+          TEST_DB_NAME: ${{ matrix.database-name }}
+          DB_NAME: ${{ matrix.database-name }}
+          ACCESS_TOKEN_SECRET: "test"
+          REFRESH_TOKEN_SECRET: "auch-test"
+          JWT_TOKEN_VALIDITY: "5m"
+          JWT_REFRESH_TOKEN_VALIDITY: "1d"
+      - name: Wait for application to start
+        run: |
+          until $(curl --output /dev/null --silent --head --fail https://localhost:8080); do
+          printf '.'
+          sleep 5
+          done
+      - name: Run CI gui tests
+        run: |
           cd client
           npm run test
