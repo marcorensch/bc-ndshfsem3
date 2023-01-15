@@ -77,7 +77,7 @@ jobs:
           JWT_TOKEN_VALIDITY: "5m"
           JWT_REFRESH_TOKEN_VALIDITY: "1d"
         run: |
-          cd server && npm run start:e2e &
+          cd server && npm run start:e2etest &
       - name: Start App
         env:
           NODE_ENV: test
