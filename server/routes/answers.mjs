@@ -25,7 +25,7 @@ router.post('/create', authenticateToken, async (req, res) => {
         .setPayload({
             user_id: user.id, is_admin: user.isadministrator, token: req.token
         })
-    res.status(201).json(transportObject);
+    return res.status(201).json(transportObject);
 });
 
 router.post('/:id/vote', authenticateToken, async (req, res) => {

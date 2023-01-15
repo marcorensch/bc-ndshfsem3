@@ -93,6 +93,9 @@ class QuestionHelper {
         try{
             const question = await this.databaseConnector.query(question_sql, [id]);
             question.data[0].tags = await this.getTagsByQuestionId(question.data[0].id);
+            let votes = await this.getItemVotes(id);
+            votes.total = votes.reduce((total, vote) => total + vote.vote, 0);
+            question.data[0].votes = { data: votes, total: votes.total };
             const answers = await answerHelper.getItems(id);
 
             return {question: question.data[0], answers};
@@ -152,6 +155,69 @@ class QuestionHelper {
         }catch (error) {
             console.log(error);
             return false;
+        }
+    }
+
+    async vote(id, userId, voting) {
+        const vote = await this._getVote(id, userId);
+        if(vote?.voting === voting) {
+            return await this._removeVote(id, userId);
+        }
+        const res = vote ? await this._updateVote(vote.id, voting) : await this._createVote(id, userId, voting);
+        return res;
+    }
+
+    async getItemVotes(id) {
+        const sql = "SELECT user_id, voting as vote FROM question_votes av WHERE question_id=?";
+        try {
+            const res = await this.databaseConnector.query(sql, [id]);
+            return res.data;
+        } catch (error) {
+            console.log("Error while getting votes");
+            console.log(error);
+        }
+
+    }
+
+    async _updateVote(id, voting) {
+        const sql = `UPDATE question_votes SET voting=? WHERE id=?`;
+        try {
+            const res = await this.databaseConnector.query(sql, [voting, id]);
+            return res;
+        }catch (error) {
+            console.log("Error while updating vote");
+            console.log(error);
+        }
+    }
+    async _createVote(questionId, userId, voting) {
+        const sql = `INSERT INTO question_votes (question_id, user_id, voting) VALUES (?,?,?)`;
+        try {
+            const res = await this.databaseConnector.query(sql, [questionId, userId, voting]);
+            return res;
+        }catch (error) {
+            console.log("Error while creating vote");
+            console.log(error);
+        }
+    }
+    async _removeVote(questionId, userId) {
+        const sql = `DELETE FROM question_votes WHERE user_id=? AND question_id=?`;
+        try {
+            const res = await this.databaseConnector.query(sql, [userId, questionId]);
+            return res;
+        }catch (error) {
+            console.log("Error while deleting vote");
+            console.log(error);
+        }
+    }
+    async _getVote(questionId, userId) {
+        const sql = `SELECT id, voting FROM question_votes WHERE user_id=? AND question_id=? LIMIT 1`;
+        try {
+            const res = await this.databaseConnector.query(sql, [userId, questionId]);
+            console.log(res);
+            return res.data[0];
+        }catch (error) {
+            console.log("Error while getting id of vote");
+            console.log(error);
         }
     }
 }

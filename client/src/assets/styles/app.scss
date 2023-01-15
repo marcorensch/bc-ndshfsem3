@@ -240,10 +240,11 @@ aside {
   .userIcon {
     width: 5rem;
     height: 5rem;
-    border-radius: 0.375rem;
+    border-radius: var(--border-radius);
     background-color: var(--dark);
     margin: 0 auto;
     position: relative;
+    display: block;
 
     & > svg {
       position: absolute;
@@ -263,6 +264,12 @@ aside {
 
   .question-header {
     color: var(--dark);
+
+    .vote-value-question {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
   }
 
   &:hover {

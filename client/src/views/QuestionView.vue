@@ -1,15 +1,15 @@
 <template>
   <main>
-    <div class="card question-detail">
+    <div v-if="question" class="card question-detail">
       <div class="card-body">
         <div class="question-header">
           <div class="row align-middle">
-            <div class="col-auto">
+            <div class="col-auto align-middle">
               <div class="userIcon">
                 <font-awesome-icon icon="question"/>
               </div>
             </div>
-            <div class="col-md-8 align-self-center">
+            <div class="col-md-9 align-self-center">
               <table class="table mb-0 align-middle">
                 <tr class="align-middle">
                   <th>
@@ -39,6 +39,15 @@
                 </tr>
               </table>
             </div>
+            <div class="col-1 text-center">
+              <div class="vote-action vote-up" @click="handleQuestionVoteClicked(1)" :class="{voted: checkIfUserHasVotedForQuestion(1), disabled : !canVote() }">
+                <font-awesome-icon icon="caret-up"/>
+              </div>
+              <div class="vote-value-question">{{ question.votes.total }}</div>
+              <div class="vote-action vote-down" @click="handleQuestionVoteClicked(-1)" :class="{voted: checkIfUserHasVotedForQuestion(-1), disabled : !canVote() }">
+                <font-awesome-icon icon="caret-down"/>
+              </div>
+            </div>
           </div>
         </div>
         <hr>
@@ -47,7 +56,7 @@
           <h4>{{ answers.length }} Answers</h4>
           <div class="answer" v-for="answer in answers" :key="answer.id">
             <div class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
-              <div class="actions-container" v-if="canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
+              <div class="actions-container" v-if="userStore.isAdmin || canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
                 <div v-if="canMarkSolved()" class="action" @click="handleMarkedAnswerClicked(answer.id)">
                   <font-awesome-icon icon="check" />
                 </div>
@@ -60,11 +69,11 @@
               </div>
               <div class="row">
                 <div class="col-1 text-center">
-                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)" :class="{voted: checkIfUserHasVoted(1, answer.id) }">
+                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)" :class="{voted: checkIfUserHasVotedForAnswer(1, answer.id), disabled : !canVote()  }">
                     <font-awesome-icon icon="caret-up"/>
                   </div>
                   <div class="vote-value">{{answer.votes.total}}</div>
-                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)" :class="{voted: checkIfUserHasVoted(-1, answer.id) }">
+                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)" :class="{voted: checkIfUserHasVotedForAnswer(-1, answer.id), disabled : !canVote()  }">
                     <font-awesome-icon icon="caret-down"/>
                   </div>
                 </div>
@@ -95,7 +104,9 @@
           </div>
         </div>
         <div v-else>
-          You need to be logged in to answer this question.
+          <div class="text-center">
+            <h4 class="p-5">You need to be logged in to answer questions</h4>
+          </div>
         </div>
       </div>
     </div>
@@ -134,7 +145,7 @@ export default {
   },
   data() {
     return {
-      question: {},
+      question: null,
       errorMessage: "",
       category: "",
       created_at: "",
@@ -182,7 +193,15 @@ export default {
     this.user = this.userStore.getUser;
   },
   methods: {
-    checkIfUserHasVoted(vote, answerId) {
+    checkIfUserHasVotedForQuestion(vote) {
+      if (this.user) {
+        const votes = this.question.votes.data;
+        const voting = votes.find(vote => vote.user_id === this.user.id);
+        return voting?.vote === vote
+      }
+      return false;
+    },
+    checkIfUserHasVotedForAnswer(vote, answerId) {
       if (this.user) {
         const votes = this.answers.find(answer => answer.id === answerId).votes;
         const voting = votes.data.find(vote => vote.user_id === this.user.id);
@@ -204,13 +223,38 @@ export default {
           });
     },
     handleSaveAnswerClicked() {
-      console.log(this.answer);
       // Store answertext in store (backup)
       this.userStore.setAnswerText(this.answer);
       // Send answertext to server
       this.saveAnswer();
     },
+    handleQuestionVoteClicked(vote){
+      if(!this.canVote()) return;
+      if(this.userStore.getUser.id === this.question.created_by){
+        alert("You can't vote on your own question");
+        return;
+      }
+      axios.post(`${this.host}/questions/${this.question.id}/vote`, {
+        vote
+      }, {
+        headers: this.userStore.getReqHeaders
+      })
+          .then((response) => {
+            if(response.data?.payload?.token){
+              this.userStore.setToken(response.data.payload.token);
+            }
+            this.getQuestionById(this.$route.params.id);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    },
     handleAnswerVoteClicked(vote, id){
+      if(!this.canVote()) return;
+      if(this.userStore.getUser.id === this.answers.find(answer => answer.id === id).created_by){
+        alert("You can't vote on your own answer");
+        return;
+      }
       axios.post(`${this.host}/answers/${id}/vote`, {
         vote
       }, {
@@ -227,34 +271,35 @@ export default {
           });
     },
     saveAnswer() {
-      console.log(this.answer);
       axios.post(this.host + "/answers/create", {
         content: this.answer,
         question_id: this.question.id,
       }, {
         headers: this.userStore.getReqHeaders
+      }).then(response => {
+          if (response.data.payload?.token) {
+            this.userStore.setToken(response.data.payload.token)
+          }
+          this.userStore.clearAnswerText();
+          this.answer = "";
+          this.getQuestionById(this.$route.params.id);
+      }).catch(error => {
+          console.log(error);
       })
-          .then(response => {
-            if (response.data.payload?.token) {
-              this.userStore.setToken(response.data.payload.token)
-            }
-            this.userStore.clearAnswerText();
-            // this.$router.push({name: 'Home'})
-          })
-          .catch(error => {
-            console.log(error);
-          })
     },
 
     canMarkSolved(){
       return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by
     },
     canDeleteAnswer(createdUserId){
-      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId
+      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId || this.userStore.isAdmin
     },
     canEditAnswer(createdUserId){
-      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId
-    }
+      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId || this.userStore.isAdmin
+    },
+    canVote(){
+      return this.userStore.getTokens.token
+    },
   },
 }
 </script>

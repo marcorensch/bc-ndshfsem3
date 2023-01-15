@@ -9,6 +9,7 @@ import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
 import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import TransportObject from "../model/TransportObject.mjs";
+import AnswerHelper from "../helper/AnswerHelper.mjs";
 
 router.get('/', identifyCurrentUser, async (req, res) => {
     const {count, page, user_id, category_id, direction} = req.query;
@@ -101,6 +102,21 @@ router.get('/:id', identifyCurrentUser, async (req, res) => {
     if (!response.question) return res.status(404).json(new ApiError('q-331').setData({id, response}));
 
     res.status(200).json(response);
+});
+
+router.post('/:id/vote', authenticateToken, async (req, res) => {
+    const questionHelper = new QuestionHelper();
+    const response = await questionHelper.vote(req.params.id, req.user.id, req.body.vote);
+    if(!response.success) {
+        return res.status(500).json(new ApiError('e-999'));
+    }
+    const transportObject = new TransportObject()
+        .setSuccess(true)
+        .setMessage("Voting done")
+        .setPayload({
+            answer_id: Number(req.params.id), user_id: req.user.id, is_admin: req.user.isadministrator, token: req.token
+        })
+    return res.status(200).json(transportObject);
 });
 
 export default router;

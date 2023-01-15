@@ -60,6 +60,15 @@ button {
     color: var(--dark);
 }
 
+.vote-action.disabled {
+  color: rgba(0,0,0, .1);
+  cursor: default;
+}
+
+.vote-action.disabled:hover {
+  color: rgba(0,0,0, .1);
+}
+
 .actions-container {
     display: flex;
     gap: .5rem;
