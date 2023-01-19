@@ -4,7 +4,7 @@
       {{item.id}} - {{item.categoryTitle}}
     </span>
     <div class="card-body">
-      <div class="question-content">{{strippedContent}}</div>
+      <div class="question-content" v-html="item.content"></div>
       <div v-if="item.tags.length > 0" class="tags">
         <div v-for="tag in item.tags" :key="tag.id" class="tag">{{tag.title}}</div>
       </div>

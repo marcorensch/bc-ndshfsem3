@@ -148,16 +148,6 @@ class QuestionHelper {
         return true;
     }
 
-    async deleteItemBy(key, value){
-        const sql = `DELETE FROM questions WHERE ${key}=?`;
-        try{
-            return await this.databaseConnector.query(sql, [value]);
-        }catch (error) {
-            console.log(error);
-            return false;
-        }
-    }
-
     async vote(id, userId, voting) {
         const vote = await this._getVote(id, userId);
         if(vote?.voting === voting) {
@@ -223,6 +213,74 @@ class QuestionHelper {
         }catch (error) {
             console.log("Error while updating accepted id");
             console.log(error);
+        }
+    }
+
+    async getKeyValue(itemId, key) {
+        const sql = `SELECT ${key} FROM questions WHERE id=? LIMIT 1`;
+        try {
+            const res = await this.databaseConnector.query(sql, [itemId]);
+            return res.data[0][key]
+        }catch (error) {
+            console.log(`Error while getting value for key ${key} of question ${itemId}`);
+            console.log(error);
+        }
+    }
+
+    async deleteItem(id, user) {
+        const answerHelper = new AnswerHelper(this.databaseConnector.connectionData);
+        const answers = await answerHelper.getItems(id);
+        try {
+            await this._removeAcceptedId(id);
+            for (const answer of answers) {
+                await answerHelper.deleteItem(answer.id, user);
+            }
+            await this._deleteQuestionVotes(id);
+            await this._deleteQuestionTags(id);
+            await this.deleteItemBy('id', id);
+        }catch (error) {
+            console.log("Error while deleting question");
+            console.log(error);
+            return false
+        }
+
+        return true;
+    }
+
+    async deleteItemBy(key, value){
+        // Delete Answers
+        const sql = `DELETE FROM questions WHERE ${key}=?`;
+        try{
+            return await this.databaseConnector.query(sql, [value]);
+        }catch (error) {
+            throw error;
+        }
+    }
+
+    async _deleteQuestionVotes(id) {
+        const sql = `DELETE FROM question_votes WHERE question_id=?`;
+        try{
+            return await this.databaseConnector.query(sql, [id]);
+        }catch (error) {
+            throw error;
+        }
+    }
+
+    async _deleteQuestionTags(id) {
+        const sql = `DELETE FROM question_tags WHERE question_id=?`;
+        try{
+            return await this.databaseConnector.query(sql, [id]);
+        }catch (error) {
+            throw error;
+        }
+    }
+
+    async _removeAcceptedId(id) {
+        const sql = `UPDATE questions SET accepted_id=NULL WHERE id=?`;
+        try{
+            return await this.databaseConnector.query(sql, [id]);
+        }catch (error) {
+            throw error;
         }
     }
 }

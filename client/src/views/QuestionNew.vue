@@ -28,7 +28,7 @@
               <vue3-tags-input  :tags="tags"
                                 placeholder="enter some tags"
                                 @on-tags-changed="handleChangeTag"
-                                :validate="customValidate"
+                                :validate="customValidateTags"
                                 :allow-duplicates="false"
                                 :add-tag-on-keys="[13]">
               </vue3-tags-input>
@@ -79,7 +79,7 @@ import { useUserStore } from "@/stores/UserStore";
 
 export default {
   name: "QuestionNew",
-  inject: ['host'],
+  inject: ['host', 'editorInit'],
 
   data(){
     return {
@@ -90,27 +90,8 @@ export default {
       text:"",
       editor: null,
       tags:[],
-      userStore: useUserStore()
-    }
-  },
-  setup () {
-    return {
-      init: {
-        skin: false,
-        branding: false,
-        height: "300",
-        formats: {
-          // Changes the default format for h1 to have a class of heading
-          p: { block: 'p' }
-        },
-        style_formats: [
-          // Adds the h1 format defined above to style_formats
-          { title: 'Paragraph', format: 'p' }
-        ],
-        plugins: 'lists link image code help wordcount',
-        content_css: false,
-        content_style: "body { font-family: Arial; }"
-      },
+      userStore: useUserStore(),
+      init: this.editorInit
     }
   },
   components: {
@@ -149,16 +130,10 @@ export default {
     },
     handleChangeTag(tags) {
       this.tags = tags;
-      console.log(this.tags)
     },
 
-    customValidate(value) {
-      if(swearWords().includes(value)){
-        return false
-      }
-      //todo Regex für erlaubte Tags definieren
-      const regex = new RegExp(/^[a-zA-Z]+$/);
-      return true //regex.test(value)
+    customValidateTags(value) {
+      return !swearWords().includes(value)
     }
   },
 

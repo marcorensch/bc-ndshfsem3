@@ -2,10 +2,7 @@ import sanitizeHtml from 'sanitize-html';
 import FieldChecker from "../utils/FieldChecker.mjs";
 
 function questionSanitizer(req, res, next) {
-    const fieldChecker = new FieldChecker();
-
     const { content, tags } = req.body;
-
     const allowedTags = [ 'p','span','br','b', 'i', 'em', 'strong', 'a', 'img' ];
     const allowedAttributes = {
         a: [ 'href', 'title' ],

@@ -77,7 +77,7 @@ class AnswerHelper {
         }
     }
     async _canDelete(id, user) {
-        if(user.isadministrator) return true;
+        if(user.isadministrator || user.isQuestionOwner) return true;
         const sql = `SELECT created_by FROM answers WHERE id=? LIMIT 1`;
         try {
             const res = await this.databaseConnector.query(sql, [id]);

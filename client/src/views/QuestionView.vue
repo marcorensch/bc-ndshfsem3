@@ -3,42 +3,57 @@
     <div v-if="question" class="card question-detail">
       <div class="card-body">
         <div class="question-header">
-          <div class="row align-middle">
-            <div class="col-auto align-middle">
+          <div class="row d-flex align-items-center">
+
+            <div class="col-auto">
               <div class="userIcon">
                 <font-awesome-icon icon="question"/>
               </div>
             </div>
-            <div class="col-md-9 align-self-center">
-              <table class="table mb-0 align-middle">
-                <tr class="align-middle">
-                  <th>
-                    <font-awesome-icon icon="user"/>
-                  </th>
-                  <td>{{ question.username ? question.username : "Anonymous" }}</td>
-                  <th>
-                    <font-awesome-icon icon="box"/>
-                  </th>
-                  <td>{{ question.categoryTitle }}</td>
-                </tr>
-                <tr>
-                  <th>
-                    <font-awesome-icon icon="calendar"/>
-                  </th>
-                  <td>{{ new Date(question.created_at).toLocaleString() }}</td>
-                  <template v-if="question.tags">
-                    <th>
-                      <font-awesome-icon icon="tags"/>
-                    </th>
-                    <td>
-                      <span class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon
-                          icon="tag"/> {{ tag.title }}</span>
-                    </td>
-                  </template>
 
-                </tr>
-              </table>
+            <div class="col-9">
+              <div class="row align-items-center">
+                <div class="col-1">
+                  <font-awesome-icon icon="user"/>
+                </div>
+                <div class="col-4">
+                  <div class="row g-3">
+                    <div class="col-auto">{{ question.username ? question.username : "Anonymous" }}</div>
+                    <div class="col-auto text-small align-self-center" v-if="editingQuestion">
+                      <input name="ask-anonymous" id="ask-anonymous" type="checkbox" class="form-check-input" v-model="edited.anonymous" /> <label class="d-inline" for="ask-anonymous">Anonymous</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-1"><font-awesome-icon icon="box"/></div>
+                <div class="col-4"><div v-if="!editingQuestion">{{ question.categoryTitle }}</div>
+                  <div v-else>
+                    <select class="form-select" v-model="edited.category_id" >
+                      <option v-for="cat in categories" v-bind:value="cat.id">
+                        {{ cat.title }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1"><font-awesome-icon icon="calendar"/></div>
+                <div class="col-4">{{ new Date(question.created_at).toLocaleString() }}</div>
+                <div class="col-1"><font-awesome-icon icon="tags"/></div>
+                <div class="col-3">
+                  <span v-if="!editingQuestion" class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon
+                    icon="tag"/> {{ tag.title }}</span>
+                  <vue3-tags-input  v-else
+                                    :tags="edited.tags"
+                                    placeholder="enter some tags"
+                                    @on-tags-changed="handleChangeTag"
+                                    :validate="customValidateTags"
+                                    :allow-duplicates="false"
+                                    :add-tag-on-keys="[13]">
+                  </vue3-tags-input>
+                </div>
+              </div>
             </div>
+
             <div class="col-1 text-center">
               <div class="vote-action vote-up" @click="handleQuestionVoteClicked(1)"
                    :class="{voted: checkIfUserHasVotedForQuestion(1), disabled : !canVote() }">
@@ -53,14 +68,41 @@
           </div>
         </div>
         <hr>
-        <div class="question-content p-2" v-html="question.content"></div>
+
+        <div v-if="!editingQuestion" class="question-content p-2" v-html="question.content"></div>
+        <div v-else>
+          <Editor v-model="edited.content" :init="init"/>
+        </div>
         <div class="question-actions position-relative pt-3">
           <div class="row justify-content-end">
-            <div class="col-auto">
-              <div class="btn-group" role="group" aria-label="Basic example">
-                <button v-if="userStore.getTokens.token" type="button" class="btn btn-secondary" @click="scrollTo('#question-answer')"><font-awesome-icon icon="keyboard" /> Answer</button>
-                <button v-if="canEditQuestion()" type="button" class="btn btn-secondary" @click="handleEditClicked"><font-awesome-icon icon="pencil" /> Edit</button>
-                <button v-if="canDeleteQuestion()" type="button" class="btn btn-secondary" @click="handleDeleteClicked"><font-awesome-icon icon="trash" /> Delete</button>
+            <div v-if="!editingQuestion" class="col-auto">
+              <div class="btn-group" role="group" aria-label="Question Actions">
+                <button v-if="userStore.getTokens.token" type="button" class="btn btn-secondary"
+                        @click="scrollTo('#question-answer')">
+                  <font-awesome-icon icon="keyboard"/>
+                  Answer
+                </button>
+                <button v-if="canEditQuestion()" type="button" class="btn btn-secondary"
+                        @click="handleEditQuestionToggle">
+                  <font-awesome-icon icon="pencil"/>
+                  Edit
+                </button>
+                <button v-if="canDeleteQuestion()" type="button" class="btn btn-secondary" @click="handleDeleteClicked">
+                  <font-awesome-icon icon="trash"/>
+                  Delete
+                </button>
+              </div>
+            </div>
+            <div v-else class="col-auto">
+              <div class="btn-group" role="group" area-label="Question Edit Actions">
+                <button @click="handleUpdateQuestionClicked" type="button" class="btn btn-success">
+                  <font-awesome-icon icon="save"/>
+                  Save
+                </button>
+                <button @click="editingQuestion = false" type="button" class="btn btn-warning">
+                  <font-awesome-icon icon="trash"/>
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
@@ -81,7 +123,10 @@
               </select>
             </div>
             <div v-if="question.accepted_id" class="col-3 d-flex">
-              <button @click="scrollTo('#answer-'+question.accepted_id)" class="btn btn-success"><font-awesome-icon icon="chevron-down" /> Jump to Solution</button>
+              <button @click="scrollTo('#answer-'+question.accepted_id)" class="btn btn-success">
+                <font-awesome-icon icon="chevron-down"/>
+                Jump to Solution
+              </button>
             </div>
           </div>
           <div class="answer" v-for="answer in answers" :key="answer.id">
@@ -173,15 +218,21 @@ import {useUserStore} from "@/stores/UserStore";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
+import Vue3TagsInput from 'vue3-tags-input';
+import {swearWords} from '../utils/BadWords.mjs'
+
+import { useToast } from "vue-toastification";
+
 
 export default {
   name: "Edit",
-  inject: ["host"],
+  inject: ["host", "editorInit"],
   props: ['id'],
   components: {
     FontAwesomeIcon,
     Editor,
     ErrorMessageContainer,
+    Vue3TagsInput
   },
   data() {
     return {
@@ -195,61 +246,45 @@ export default {
       answer: "",
       editor: null,
       user: null,
-      userStore: useUserStore()
+      userStore: useUserStore(),
+      init: this.editorInit,
+      editingQuestion: false,
+      edited: {
+        content: "",
+        category_id: null,
+        anonymous: false,
+        tags: [],
+      },
+      categories: [],
+      toast: useToast()
     }
   },
   computed: {},
-  setup() {
-    return {
-      init: {
-        skin: false,
-        branding: false,
-        height: "300",
-        menubar: false,
-        contextmenu: false,
-        resize: false,
-        toolbar: 'undo redo | bold italic underline codesample | link image',
-        font_formats: "Arial=arial,helvetica,sans-serif;",
-
-        formats: {
-          // Changes the default format for h1 to have a class of heading
-          p: {block: 'p'}
-        },
-        style_formats: [
-          // Adds the h1 format defined above to style_formats
-          {title: 'Paragraph', format: 'p'}
-        ],
-        plugins: 'lists link image codesample help wordcount',
-        content_css: false,
-        content_style: "body { font-family: Arial; }",
-
-      },
-    }
-  },
   mounted() {
     this.getQuestionById(this.$route.params.id);
     this.user = this.userStore.getUser;
 
-    if(this.userStore.getAnswerText) {
+    if (this.userStore.getAnswerText) {
       this.answer = this.userStore.getAnswerText;
     }
-  },
+  }
+  ,
   methods: {
-    scrollTo(target){
+    scrollTo(target) {
       document.querySelector(target).scrollIntoView({behavior: 'smooth'});
     },
     sortAnswerList() {
       const by = document.getElementById("sortAnswersBy").value;
       const direction = document.getElementById("sortAnswersDir").value;
       console.log(by, direction);
-      if(by === "votes") {
-        if(direction === "asc") {
+      if (by === "votes") {
+        if (direction === "asc") {
           this.answers.sort((a, b) => a.votes.total - b.votes.total);
         } else {
           this.answers.sort((a, b) => b.votes.total - a.votes.total);
         }
       } else {
-        if(direction === "asc") {
+        if (direction === "asc") {
           this.answers.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         } else {
           this.answers.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -343,11 +378,11 @@ export default {
             }
             this.getQuestionById(this.$route.params.id);
           }).catch((err) => {
-            console.log(err);
+        console.log(err);
       });
     },
-    handleMarkedAnswerClicked(id){
-      if(this.userStore.getUser.id !== this.question.created_by){
+    handleMarkedAnswerClicked(id) {
+      if (this.userStore.getUser.id !== this.question.created_by) {
         console.log("You can't mark an answer on a question you didn't create");
         return;
       }
@@ -384,6 +419,66 @@ export default {
       }).catch(error => {
         console.log(error);
       })
+    },
+
+    handleEditQuestionToggle() {
+      this.editingQuestion = !this.editingQuestion;
+      if (this.editingQuestion) {
+        this.edited.content = this.question.content;
+        this.edited.category_id = this.question.category_id;
+        this.edited.anonymous = this.question.anonymous;
+        this.edited.tags = this.question.tags.map(tag => tag.title);
+
+        this.getCategories();
+      }
+
+    },
+
+    getCategories() {
+      axios.get(this.host + "/categories")
+          .then(response => {
+            this.categories = response.data;
+          }).catch(error => {
+        console.log(error);
+      })
+    },
+
+    handleUpdateQuestionClicked() {
+      console.log(this.edited);
+      axios.put(this.host + "/questions/" + this.question.id, this.edited, {
+        headers: this.userStore.getReqHeaders
+      }).then(response => {
+        if (response.data.payload?.token) {
+          this.userStore.setToken(response.data.payload.token)
+        }
+        this.getQuestionById(this.$route.params.id);
+        this.handleEditQuestionToggle();
+      }).catch(error => {
+        console.log(error);
+      })
+    },
+
+    handleDeleteClicked() {
+      axios.delete(this.host + "/questions/" + this.question.id, {
+        headers: this.userStore.getReqHeaders
+      }).then(response => {
+        if (response.data.payload?.token) {
+          this.userStore.setToken(response.data.payload.token)
+        }
+        this.toast.success("Question deleted");
+        this.$router.push({name: "Home"});
+      }).catch(error => {
+        console.log(error);
+        this.toast.error("Question could not be deleted");
+      })
+    },
+
+    handleChangeTag(tags) {
+      this.edited.tags = tags;
+    },
+
+    customValidateTags(value) {
+      return !swearWords().includes(value)
     },
 
     canDeleteQuestion() {
