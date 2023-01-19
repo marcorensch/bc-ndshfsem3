@@ -64,9 +64,13 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker, as
 });
 
 router.put("/:id", authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
-    console.log(req.body);
-    console.log("Update received");
-    res.status(200).json(new TransportObject().setSuccess(true).setMessage("Question updated successfully"));
+    const questionHelper = new QuestionHelper();
+    const updatedQuestion = new Question(req.body.content, req.user.id).setId(req.params.id).setAnonymous(req.body.anonymous).setCategoryId(req.body.category_id).setTags(req.body.tags).setAcceptedId(req.body.accepted_id);
+    console.log(req.body)
+    console.log(updatedQuestion);
+    const updated = await questionHelper.updateItem(updatedQuestion);
+    if(!updated) return res.status(500).json(new ApiError("e-999"));
+    return res.status(200).json(new TransportObject().setSuccess(true).setMessage("Question updated successfully"));
 });
 
 router.put('/:id/answer', authenticateToken, async (req, res) => {
@@ -95,8 +99,6 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const questionHelper = new QuestionHelper();
     const createdById = await questionHelper.getKeyValue(req.params.id, 'created_by');
     req.user.isQuestionOwner = createdById === req.user.id;
-    console.log(createdById)
-    console.log(req.user);
     if(!req.user.isadministrator && !req.user.isQuestionOwner) return res.status(403).json(new ApiError('e-100'));
     const deleted = await questionHelper.deleteItem(req.params.id, req.user);
 

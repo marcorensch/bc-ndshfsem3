@@ -254,6 +254,7 @@ export default {
         category_id: null,
         anonymous: false,
         tags: [],
+        accepted_id: null
       },
       categories: [],
       toast: useToast()
@@ -428,6 +429,7 @@ export default {
         this.edited.category_id = this.question.category_id;
         this.edited.anonymous = this.question.anonymous;
         this.edited.tags = this.question.tags.map(tag => tag.title);
+        this.accepted_id = this.question.accepted_id;
 
         this.getCategories();
       }
@@ -453,8 +455,10 @@ export default {
         }
         this.getQuestionById(this.$route.params.id);
         this.handleEditQuestionToggle();
+        this.toast.success("Question updated!");
       }).catch(error => {
         console.log(error);
+        this.toast.error("Question could not be updated");
       })
     },
 

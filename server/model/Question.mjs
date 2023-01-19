@@ -1,13 +1,13 @@
 class Question {
-    _id;
+    id;
     content;
     category_id;
     created_by;
     anonymous;
-    acceptedId;
     accepted_id;
     created_at;
     modified_at;
+    tags = [];
 
     constructor(content, created_by) {
         this.content = content;
@@ -24,12 +24,17 @@ class Question {
         return this;
     }
 
+    setTags(tags){
+        this.tags = tags;
+        return this;
+    }
+
     setId(id){
-        this.id = id;
+        this.id = parseInt(id);
         return this;
     }
     setAcceptedId(accepted_id){
-        this.accepted_id = accepted_id;
+        this.accepted_id = accepted_id ? parseInt(accepted_id) : null;
         return this;
     }
 }
