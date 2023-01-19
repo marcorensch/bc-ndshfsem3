@@ -77,7 +77,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const createdById = await questionHelper.getKeyValue(req.params.id, 'created_by');
     req.user.isQuestionOwner = createdById === req.user.id;
     if(!req.user.isadministrator && !req.user.isQuestionOwner) return res.status(403).json(new ApiError('e-100'));
-    const deleted = await questionHelper.deleteItem(req.params.id, req.user);
+    const deleted = await questionHelper.deleteItem(req.params.id);
 
     if(!deleted) return res.status(500).json(new ApiError('e-999'));
     return res.status(200).json(new TransportObject().setSuccess(true).setMessage("Question deleted successfully"));
