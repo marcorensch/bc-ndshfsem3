@@ -1,0 +1,146 @@
+<template>
+<main v-if="user">
+  <h3>Hi {{ user.firstname || user.username }}</h3>
+
+  <ul class="nav nav-tabs mt-5" id="adminTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="true">
+        <font-awesome-icon icon="chart-bar" /> Statistics
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="recent-tab" data-bs-toggle="tab" data-bs-target="#recent" type="button" role="tab" aria-controls="recent" aria-selected="false">
+        <font-awesome-icon icon="history" /> Recent Activities
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">
+        <font-awesome-icon icon="user" /> Your Account
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="userTabContent">
+    <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+      <h4>Your Statistics</h4>
+      <div class="container" v-if="statistics">
+        <div class="row">
+          <div class="col-6">
+            <div>
+              <Doughnut :data="doughnutChartData" :options="options" />
+            </div>
+            <div class="mt-3">
+              <h5>Questions</h5>
+              <div><b>Asked:</b> {{ statistics.questionsCount }}</div>
+              <div><b>Answered:</b> {{ statistics.answersCount }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="recent" role="tabpanel" aria-labelledby="recent-tab">
+      <h4>Your Recent Activities</h4>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Questions</h5>
+            <ul>
+              <li v-for="question of recent.questions" :key="question.id">
+                <router-link :to="{name: 'Question View', params:{id: question.id}}" class="">
+                  {{ question.content.replace(/<.+?>/g, '').slice(0, 100) }}
+                </router-link>
+                </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h5>Answers</h5>
+            <ul>
+              <li v-for="answer of recent.answers" :key="answer.id"> {{ answer.content.replace(/<.+?>/g, '').slice(0, 100) }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
+      <h4>Account</h4>
+    </div>
+  </div>
+</main>
+</template>
+
+<script>
+import {useUserStore} from "@/stores/UserStore";
+import axios from "axios";
+
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Doughnut } from 'vue-chartjs'
+
+ChartJS.register(ArcElement, Tooltip, Legend)
+
+export default {
+  name: "UserCockpitView",
+  inject: ["host"],
+  components: {
+    Doughnut
+  },
+  data() {
+    return {
+      user: null,
+      statistics: null,
+      recent: null,
+      userStore: useUserStore(),
+      doughnutChartData: {
+        labels: ['Questions', 'Answers'],
+        datasets: [
+          {
+            data: [0,0],
+            backgroundColor: [
+              '#0CAFFF',
+              '#292e40',
+            ],
+            hoverOffset: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Chart.js Doughnut Chart'
+          }
+        }
+      }
+    }
+  },
+  mounted() {
+    this.getUserData();
+  },
+  methods: {
+    getUserData() {
+      axios.get(this.host + "/users/me", {
+        headers: this.userStore.getReqHeaders
+      })
+        .then(response => {
+          console.log(response)
+          this.user = response.data.payload.user;
+          this.statistics = response.data.payload.statistics;
+          this.recent = response.data.payload.recent;
+          this.doughnutChartData.datasets[0].data = [this.statistics.questionsCount, this.statistics.answersCount]
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+
+
+</style>

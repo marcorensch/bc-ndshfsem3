@@ -46,7 +46,7 @@ class AnswerHelper {
 
     }
     async updateItem(id, data) {
-        const sql = `UPDATE answers SET content=? WHERE id=?`;
+        const sql = `UPDATE answers SET content=?, modified_at=NOW() WHERE id=?`;
         try {
             return await this.databaseConnector.query(sql, [data, id]);
         }catch (error) {

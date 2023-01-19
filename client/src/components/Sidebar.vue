@@ -10,13 +10,13 @@
     <div class="menu">
       <ul>
         <li>
-          <router-link class="button" to="/">
+          <router-link class="button" :to="{name: 'Home'}">
             <span class="menu-icons"><font-awesome-icon icon="house"/></span>
             <span class="title">Home</span>
           </router-link>
         </li>
         <li v-if="userStore.isLoggedIn">
-          <router-link  class="button" to="/question/new">
+          <router-link  class="button" :to="{name: 'Question New'}">
             <span class="menu-icons">
               <font-awesome-icon icon="comment"/> </span>
             <span class="title">Ask</span>
@@ -31,7 +31,7 @@
             </a>
           </li>
           <li>
-            <router-link class="button" to="/register">
+            <router-link class="button" :to="{name: 'Registration'}">
               <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
               <span class="title">Signup</span>
             </router-link>
@@ -39,18 +39,16 @@
         </template>
 
         <li v-for="category in favCatsStore.getFavs">
-          <router-link class="button" :to="{ name: 'CategoryQuestions', params: { id : category.id }}">
+          <router-link class="button" :to="{ name: 'Category Questions', params: { id : category.id }}">
             <span class="menu-icons"><font-awesome-icon icon="boxes"/></span>
             <span class="title">{{category.title}}</span>
           </router-link>
         </li>
-<!-- Test Views -->
-        <router-link to="user/cockpit/overview"></router-link>
       </ul>
     </div>
     <div class="flex"></div>
     <div class="menu" v-if="userStore.isLoggedIn">
-      <router-link class="button" to="/user/cockpit/overview">
+      <router-link class="button" :to="{name: 'User Cockpit'}">
         <span class="menu-icons"><font-awesome-icon icon="key"/></span>
         <span class="title">User Settings</span>
       </router-link>

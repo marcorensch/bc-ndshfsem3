@@ -50,7 +50,7 @@ aside {
   display: flex;
   flex-direction: column;
   width: calc(2rem + 32px);
-  min-height: calc(100vh - 88px);
+  min-height: 90vh;
   overflow: hidden;
   padding: 1rem;
 
@@ -200,12 +200,23 @@ aside {
     padding: 2rem;
     min-width: 0;
     height: 90vh;
-    overflow: scroll;
+    overflow-y: auto;
 
     @media (max-width: 768px) {
-      padding-left: 6rem;
+      padding-left: 5rem;
     }
+  }
 
+  .tab-content {
+    padding: 1.5rem 1rem;
+    min-height: 50vh;
+    margin-top:0;
+    background-color: #fff;
+    border-color: #dee2e6;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
   }
 }
 
@@ -289,7 +300,7 @@ aside {
   background: rgba(0,0,0, .02);
   border-radius: var(--border-radius);
     padding: 1rem;
-  &:not(first-of-type){
+  &:not(:first-of-type){
     margin-top: 1rem;
   }
 

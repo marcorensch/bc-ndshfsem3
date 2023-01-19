@@ -1,5 +1,4 @@
 import express from "express";
-import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import {authenticateToken, authenticateUser} from "../middleware/authenticate.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
 import TransportObject from "../model/TransportObject.mjs";
@@ -38,10 +37,18 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
-router.get('/:id', (req, res) => {
-    console.log("Get Data of User with ID: ", req.params.id);
-    const user = users.find(user => user.id === parseInt(req.params.id));
-    res.json(user);
+router.get('/me', authenticateToken, async (req, res) => {
+    const userHelper = new UserHelper();
+    console.log("Get Data of User with ID: ", req.user.id);
+    const statistics = await userHelper.getStatistics(req.user.id);
+    const recent = await userHelper.getRecentActivities(req.user.id, 20);
+    if(!statistics) return res.status(500).json(new ApiError('e-999'));
+    const transportObject = new TransportObject().setSuccess(true).setMessage("User Data loaded!").setPayload({
+        user: req.user,
+        statistics,
+        recent
+    });
+    res.status(200).json(transportObject);
 });
 
 router.post('/check', async (req, res) => {

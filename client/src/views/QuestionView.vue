@@ -243,7 +243,6 @@ import 'tinymce/plugins/wordcount/plugin'
 
 import Editor from '@tinymce/tinymce-vue'
 
-import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
 import {useUserStore} from "@/stores/UserStore";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -261,13 +260,11 @@ export default {
   components: {
     FontAwesomeIcon,
     Editor,
-    ErrorMessageContainer,
     Vue3TagsInput
   },
   data() {
     return {
       question: null,
-      errorMessage: "",
       category: "",
       created_at: "",
       username: "",
@@ -344,6 +341,7 @@ export default {
       if (!id) return;
       axios.get(`${this.host}/questions/${id}`)
           .then((response) => {
+            console.log(response)
             this.question = response.data;
             this.answers = response.data.answers;
             console.log(this.question);

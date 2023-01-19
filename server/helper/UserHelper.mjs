@@ -60,8 +60,7 @@ class UserHelper {
         const sql = "SELECT id,username,firstname,lastname,email,password,usergroup FROM users WHERE username=?";
         const result = await this.databaseConnector.query(sql, [username]);
         if(result.data.length > 0) {
-            const user = await this._buildUserObject(result.data[0]);
-            return user;
+            return await this._buildUserObject(result.data[0]);
         }
         return false;
     }
@@ -94,8 +93,7 @@ class UserHelper {
     async getUserById(id) {
         const sql = "SELECT id,firstname,lastname,username,email,status,usergroup FROM users WHERE id=?";
         const result = await this.databaseConnector.query(sql, [id]);
-        const user = await this._buildUserObject(result.data[0]);
-        return user;
+        return await this._buildUserObject(result.data[0]);
     }
 
     async isAdministrator(user) {
@@ -116,6 +114,49 @@ class UserHelper {
             return await this.databaseConnector.query(sql, [usergroup.id, user.id]);
         }
         return false;
+    }
+
+    async getRecentActivities(userId, limit){
+        const sql = "SELECT * FROM (SELECT id, content, created_at, 'question' as type FROM questions WHERE created_by=? UNION SELECT id, content, created_at, 'answer' as type FROM answers WHERE created_by=?) as activities ORDER BY created_at DESC LIMIT ? ";
+        try{
+            const data = await this.databaseConnector.query(sql, [userId, userId, limit]);
+            const questions = data.data.filter(activity => activity.type === "question");
+            const answers = data.data.filter(activity => activity.type === "answer");
+            return {questions, answers};
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+    async getStatistics(userId){
+        try {
+            const questionsCount = await this._getQuestionsCount(userId);
+            const answersCount = await this._getAnswersCount(userId);
+            return {questionsCount, answersCount};
+        }catch (error) {
+            console.log(error);
+            return false
+        }
+    }
+
+    async _getQuestionsCount(userId){
+        const sql = "SELECT COUNT(*) as count FROM questions WHERE created_by=?";
+        try{
+        const data = await this.databaseConnector.query(sql, [userId]);
+        return data.data[0].count;
+        }catch (error) {
+            throw error;
+        }
+    }
+
+    async _getAnswersCount(userId){
+        const sql = "SELECT COUNT(*) as count FROM answers WHERE created_by=?";
+        try{
+        const data = await this.databaseConnector.query(sql, [userId]);
+        return data.data[0].count;
+        }catch (error) {
+            throw error;
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mt-5">
+    <div class="">
       <input class="w-100 form-control" type="text" id="search_user" placeholder="Search for Username, Name, Firstname" @keyup="filterUserList" />
     </div>
     <div class="mt-3 table-responsive">

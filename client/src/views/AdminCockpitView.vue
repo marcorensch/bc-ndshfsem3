@@ -20,7 +20,7 @@
       </li>
     </ul>
 
-    <div class="tab-content mt-3" id="adminTabContent">
+    <div class="tab-content" id="adminTabContent">
       <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
         <AdminUsersList />
       </div>

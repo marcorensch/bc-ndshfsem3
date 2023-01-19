@@ -77,7 +77,7 @@ class QuestionHelper {
 
     async _updateQuestion(question) {
         console.log(question);
-        const sql = "UPDATE questions SET content=?, category_id=?, anonymous=?, accepted_id=? WHERE id=?";
+        const sql = "UPDATE questions SET content=?, category_id=?, anonymous=?, accepted_id=?, modified_at=NOW() WHERE id=?";
         try {
             await this.databaseConnector.query(sql, [question.content, question.category_id, question.anonymous, question.accepted_id, question.id]);
         } catch (error) {
@@ -89,18 +89,20 @@ class QuestionHelper {
     async getItemById(id) {
         const answerHelper = new AnswerHelper(this.databaseConnector.connectionData);
         const question_sql = "SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q" +
-            " JOIN categories c ON q.category_id = c.id" +
-            " JOIN users u ON q.created_by = u.id" +
+            " LEFT OUTER JOIN categories c ON q.category_id = c.id" +
+            " LEFT OUTER JOIN users u ON q.created_by = u.id" +
             " WHERE q.id=?";
         try {
-            const question = await this.databaseConnector.query(question_sql, [id]);
-            question.data[0].tags = await this.getTagsByQuestionId(question.data[0].id);
+            let question;
+            const questionData = await this.databaseConnector.query(question_sql, [id]);
+            question = questionData.data[0];
+            question.tags = await this.getTagsByQuestionId(id);
             let votes = await this.getItemVotes(id);
             votes.total = votes.reduce((total, vote) => total + vote.vote, 0);
-            question.data[0].votes = {data: votes, total: votes.total};
-            question.data[0].answers = await answerHelper.getItems(id);
+            question.votes = {data: votes, total: votes.total};
+            question.answers = await answerHelper.getItems(id);
 
-            return question.data[0];
+            return question;
         } catch (error) {
             console.log(error);
             return {};
@@ -216,7 +218,7 @@ class QuestionHelper {
         }
     }
 
-    async deleteItem(questionId, user) {
+    async deleteItem(questionId) {
         const answerHelper = new AnswerHelper(this.databaseConnector.connectionData);
         const answers = await answerHelper.getItems(questionId);
         try {
@@ -282,8 +284,6 @@ class QuestionHelper {
         } catch (error) {
             throw error;
         }
-
-        return false;
     }
 
     async _deleteQuestionTags(questionId) {
