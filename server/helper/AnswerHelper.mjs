@@ -37,17 +37,23 @@ class AnswerHelper {
             throw error;
         }
     }
-    async deleteItem(id, user){
-        if(!await this._canDelete(id, user)) {
-            console.log("User is not allowed to delete this answer");
-            return false;
-        }
+    async deleteItem(id){
         await this._deleteAnswerVotes(id);
         await this._deleteFromQuestionAnswers(id);
         await this._deleteAnswer(id);
 
         return true;
 
+    }
+    async updateItem(id, data) {
+        const sql = `UPDATE answers SET content=? WHERE id=?`;
+        try {
+            return await this.databaseConnector.query(sql, [data, id]);
+        }catch (error) {
+            console.log("Error while updating answer");
+            console.log(error);
+        }
+        return false;
     }
     async _deleteFromQuestionAnswers(answerId) {
         const sql = `DELETE FROM question_answers WHERE answer_id=?`;
@@ -74,6 +80,16 @@ class AnswerHelper {
         }catch (error) {
             console.log("Error while deleting answer votes");
             console.log(error);
+        }
+    }
+
+    async getItemById(id) {
+        const sql = "SELECT * FROM answers WHERE id=?";
+        try {
+            const response = await this.databaseConnector.query(sql, [id]);
+            return response.data[0];
+        } catch (error) {
+            throw error;
         }
     }
     async _canDelete(id, user) {

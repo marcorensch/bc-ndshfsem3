@@ -71,12 +71,15 @@ npm run setup
 - `npm run devStart` im Projektverzeichnis ausführen
     - Startet den Server
     - Startet den Client
+
 ## E2E Test Ausführung
+
 - Applikation mit Testdatenbank starten
-  - `npm run test:e2e` im Projektverzeichnis ausführen
+    - `npm run test:e2e` im Projektverzeichnis ausführen
 - Start E2E Test
-  - cd client
-  - `npm run test` im Clientverzeichnis ausführen
+    - cd client
+    - `npm run test` im Clientverzeichnis ausführen
+
 ## Backend API Routen
 
 :white_check_mark: = fertig implementiert & getestet<br>
@@ -113,7 +116,7 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | Status             | Type   | Route       | Beschreibung                         | Request                                                         | Response                           |
 |--------------------|--------|-------------|--------------------------------------|-----------------------------------------------------------------|------------------------------------|
 | :white_check_mark: | POST   | `/create`   | Erstellt eine neue Antwort           | header.token, body.refreshToken, body.question_id, body.content | {message, userId, isAdmin, token*} |
-| :x:                | PUT    | `/:id`      | Aktualisiert eine Antwort            | Ja                                                              |                                    |
+| :white_check_mark: | PUT    | `/:id`      | Aktualisiert eine Antwort            | header.token, header.refreshToken, body.content                 | true / false                       |
 | :white_check_mark: | DELETE | `/:id`      | Löscht eine Antwort                  | Ja                                                              |                                    |
 | :white_check_mark: | POST   | `/:id/vote` | Setzt ein Voting für eine Antwort ab | header.token, body.type (INT (1 / 0 / -1))                      |                                    |
 

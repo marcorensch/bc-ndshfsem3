@@ -3,12 +3,13 @@ import express from "express";
 const router = express.Router();
 import {authenticateToken} from "../middleware/authenticate.mjs";
 import Question from "../model/Question.mjs";
-import questionSanitizer from "../middleware/questionSanitizer.mjs";
+import {questionSanitizer} from "../middleware/sanitizers.mjs";
 import QuestionHelper from "../helper/QuestionHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
 import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import TransportObject from "../model/TransportObject.mjs";
+import isAuthorized from "../middleware/authorizationChecker.mjs";
 
 router.get('/', identifyCurrentUser, async (req, res) => {
     const {count, page, user_id, category_id, direction} = req.query;
@@ -63,36 +64,12 @@ router.post('/create', authenticateToken, questionSanitizer, questionChecker, as
     res.status(201).json(transportObject);
 });
 
-router.put("/:id", authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
+router.put("/:id", authenticateToken, isAuthorized("question"), questionSanitizer, questionChecker, async (req, res) => {
     const questionHelper = new QuestionHelper();
     const updatedQuestion = new Question(req.body.content, req.user.id).setId(req.params.id).setAnonymous(req.body.anonymous).setCategoryId(req.body.category_id).setTags(req.body.tags).setAcceptedId(req.body.accepted_id);
-    console.log(req.body)
-    console.log(updatedQuestion);
     const updated = await questionHelper.updateItem(updatedQuestion);
     if(!updated) return res.status(500).json(new ApiError("e-999"));
     return res.status(200).json(new TransportObject().setSuccess(true).setMessage("Question updated successfully"));
-});
-
-router.put('/:id/answer', authenticateToken, async (req, res) => {
-    let { accepted_id } = req.body;
-    const question_id = req.params.id;
-
-    const questionHelper = new QuestionHelper();
-    const item = await questionHelper.getItemById(question_id)
-    if(!item.question) return res.status(404).json(new ApiError('q-331'));
-    if (item.question.created_by !== req.user.id && !req.user.isadministrator) return res.status(403).json(new ApiError('e-100'));
-
-    accepted_id = accepted_id === item.question.accepted_id ? null : accepted_id;
-    await questionHelper.setAcceptedId(question_id, accepted_id)
-
-    const transportObject = new TransportObject()
-    .setSuccess(true)
-    .setMessage("Question updated successfully")
-    .setPayload({
-        userId: req.user.id, isAdmin: req.user.isadministrator, token: req.token
-    })
-
-    res.status(200).json(transportObject);
 });
 
 router.delete('/:id', authenticateToken, async (req, res) => {
@@ -114,7 +91,7 @@ router.get('/:id', identifyCurrentUser, async (req, res) => {
     const response = await questionHelper.getItemById(id);
     response.userId = req.userId;
     response.isAdmin = req.isAdmin;
-    if (!response.question) return res.status(404).json(new ApiError('q-331').setData({id, response}));
+    if (!response) return res.status(404).json(new ApiError('q-331').setData({id, response}));
 
     res.status(200).json(response);
 });

@@ -92,16 +92,15 @@ class QuestionHelper {
             " JOIN categories c ON q.category_id = c.id" +
             " JOIN users u ON q.created_by = u.id" +
             " WHERE q.id=?";
-
         try {
             const question = await this.databaseConnector.query(question_sql, [id]);
             question.data[0].tags = await this.getTagsByQuestionId(question.data[0].id);
             let votes = await this.getItemVotes(id);
             votes.total = votes.reduce((total, vote) => total + vote.vote, 0);
             question.data[0].votes = {data: votes, total: votes.total};
-            const answers = await answerHelper.getItems(id);
+            question.data[0].answers = await answerHelper.getItems(id);
 
-            return {question: question.data[0], answers};
+            return question.data[0];
         } catch (error) {
             console.log(error);
             return {};
@@ -223,7 +222,7 @@ class QuestionHelper {
         try {
             await this._removeAcceptedId(questionId);
             for (const answer of answers) {
-                await answerHelper.deleteItem(answer.id, user);
+                await answerHelper.deleteItem(answer.id);
             }
             await this._deleteQuestionVotes(questionId);
             await this._deleteQuestionTags(questionId);

@@ -2,6 +2,7 @@ import UserHelper from "../helper/UserHelper.mjs";
 import UsergroupsHelper from "../helper/UsergroupsHelper.mjs";
 import CategoryHelper from "../helper/CategoryHelper.mjs";
 import QuestionHelper from "../helper/QuestionHelper.mjs";
+import AnswerHelper from "../helper/AnswerHelper.mjs";
 
 function isAdmin(usergroup, usergroups) {
     return usergroup === usergroups.filter((usergroup) => usergroup.alias === "administrator")[0].id;
@@ -18,18 +19,19 @@ function getHelper(target) {
         case "user": return UserHelper;
         case "category": return CategoryHelper;
         case "question": return QuestionHelper;
+        case "answer": return AnswerHelper;
         default: return false;
     }
 }
 
 const isAuthorized = (target) => {
-    const controller = getHelper(target);
+    const Helper = getHelper(target);
     return async (req, res, next) => {
         console.log("authorizationChecker called");
         req.isAuthorized = false;
         const user = req.user;
-        const ctrl = new controller();
-        const item = await ctrl.getItemById(req.params.id);
+        const helper = new Helper();
+        const item = await helper.getItemById(req.params.id);
         console.log("User: ", user);
         if (user.id) {
             const userHelper = new UserHelper();
@@ -38,10 +40,12 @@ const isAuthorized = (target) => {
             const usergroups = await usergroupsHelper.getAllUsergroups();
             const isAdminUser = isAdmin(userData.usergroup, usergroups);
             const isOwnerOf = isOwner(user.id, item, target);
+            console.log(item)
             if ( isAdminUser || isOwnerOf) {
                 req.isAuthorized = true;
                 req.isAdmin = isAdminUser;
                 req.isOwner = isOwnerOf;
+                req.item = item;
                 next();
             } else {
                 console.log("User is not Authorized to do this task");

@@ -301,7 +301,7 @@ aside {
 
     position: absolute;
     top: 0;
-    right: -90px;
+    right: 0;
     background: linear-gradient(-70deg, var(--dark) 0%, var(--dark) 90%);
     color: var(--light);
     padding: .2rem .5rem .2rem 1rem;
@@ -340,8 +340,7 @@ aside {
 
   &:hover{
     .actions-container{
-      transition-delay: .2s;
-      right: 0;
+
     }
   }
 }
