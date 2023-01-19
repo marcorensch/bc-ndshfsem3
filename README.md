@@ -71,7 +71,12 @@ npm run setup
 - `npm run devStart` im Projektverzeichnis ausführen
     - Startet den Server
     - Startet den Client
-
+## E2E Test Ausführung
+- Applikation mit Testdatenbank starten
+  - `npm run test:e2e` im Projektverzeichnis ausführen
+- Start E2E Test
+  - cd client
+  - `npm run test` im Clientverzeichnis ausführen
 ## Backend API Routen
 
 :white_check_mark: = fertig implementiert & getestet<br>
