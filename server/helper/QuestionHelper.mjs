@@ -86,6 +86,16 @@ class QuestionHelper {
         return true
     }
 
+    async getQuestionByAnswerId(id) {
+        const sql = "SELECT content, id FROM questions WHERE id=(SELECT question_id FROM question_answers WHERE answer_id=?)";
+        try {
+            const res = await this.databaseConnector.query(sql, [id]);
+            return res.data[0];
+        }catch (error) {
+            console.log(error);
+            return {};
+        }
+    }
     async getItemById(id) {
         const answerHelper = new AnswerHelper(this.databaseConnector.connectionData);
         const question_sql = "SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q" +

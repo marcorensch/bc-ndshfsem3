@@ -22,21 +22,6 @@
             <span class="title">Ask</span>
           </router-link>
         </li>
-        <template v-if="!userStore.isLoggedIn">
-          <li>
-            <a href="#" id="show-login-modal" @click="showLoginModal=true" class="button">
-            <span class="menu-icons">
-              <font-awesome-icon icon="user"/> </span>
-              <span class="title">Login</span>
-            </a>
-          </li>
-          <li>
-            <router-link class="button" :to="{name: 'Registration'}">
-              <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
-              <span class="title">Signup</span>
-            </router-link>
-          </li>
-        </template>
 
         <li v-for="category in favCatsStore.getFavs">
           <router-link class="button" :to="{ name: 'Category Questions', params: { id : category.id }}">
@@ -46,7 +31,25 @@
         </li>
       </ul>
     </div>
+
     <div class="flex"></div>
+    <div class="menu">
+      <ul v-if="!userStore.isLoggedIn">
+      <li>
+        <a href="#" id="show-login-modal" @click="showLoginModal=true" class="button">
+            <span class="menu-icons">
+              <font-awesome-icon icon="user"/> </span>
+          <span class="title">Login</span>
+        </a>
+      </li>
+      <li>
+        <router-link class="button" :to="{name: 'Registration'}">
+          <span class="menu-icons"><font-awesome-icon icon="user-plus"/></span>
+          <span class="title">Signup</span>
+        </router-link>
+      </li>
+      </ul>
+    </div>
     <div class="menu" v-if="userStore.isLoggedIn">
       <router-link class="button" :to="{name: 'User Cockpit'}">
         <span class="menu-icons"><font-awesome-icon icon="key"/></span>

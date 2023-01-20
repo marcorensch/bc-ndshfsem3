@@ -1,6 +1,7 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 import UsergroupsHelper from "./UsergroupsHelper.mjs";
 import User from "../model/User.mjs";
+import QuestionHelper from "./QuestionHelper.mjs";
 
 
 class UserHelper {
@@ -135,11 +136,15 @@ class UserHelper {
     }
 
     async getRecentActivities(userId, limit){
+        const questionHelper = new QuestionHelper(this.connectionData);
         const sql = "SELECT * FROM (SELECT id, content, created_at, 'question' as type FROM questions WHERE created_by=? UNION SELECT id, content, created_at, 'answer' as type FROM answers WHERE created_by=?) as activities ORDER BY created_at DESC LIMIT ? ";
         try{
             const data = await this.databaseConnector.query(sql, [userId, userId, limit]);
             const questions = data.data.filter(activity => activity.type === "question");
-            const answers = data.data.filter(activity => activity.type === "answer");
+            let answers = data.data.filter(activity => activity.type === "answer");
+            for (const answer of answers) {
+                answer.question = await questionHelper.getQuestionByAnswerId(answer.id);
+            }
             return {questions, answers};
         }catch (error) {
             console.log(error);

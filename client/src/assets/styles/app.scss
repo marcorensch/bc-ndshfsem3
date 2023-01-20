@@ -399,6 +399,23 @@ aside {
   display: inline-block;
 }
 
+ul.user-activities {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  li{
+    border-bottom: 1px solid var(--light);
+    padding: .5rem 0;
+    a{
+        color: var(--dark);
+        text-decoration: none;
+        &:hover{
+            color: var(--primary);
+        }
+    }
+  }
+}
+
 /* Editor */
 .tox-tinymce{
   border-radius: var(--border-radius);
