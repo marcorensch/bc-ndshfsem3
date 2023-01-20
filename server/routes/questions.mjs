@@ -22,7 +22,7 @@ router.get('/', identifyCurrentUser, async (req, res) => {
     }
     const questionHelper = new QuestionHelper();
     const set = await questionHelper.getItems(queryParams);
-    const total = await questionHelper.getTotalCount();
+    const total = await questionHelper.getTotalCount(category_id);
     if (set.success) {
         const transportObject = new TransportObject().setSuccess(true).setPayload({
             questions: set.data,

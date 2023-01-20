@@ -36,7 +36,7 @@ export default {
       questions: [],
       pagination: {
         page: 1,
-        perPage: 10,
+        perPage: 2,
         total: 0,
       },
     };
@@ -63,6 +63,7 @@ export default {
           page: this.pagination.page
         }
       }).then(response => {
+        console.log(response.data.payload);
         this.pagination.total = Math.ceil(response.data.payload.total / this.pagination.perPage);
         this.questions = response.data.payload.questions;
       })

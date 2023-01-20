@@ -1,9 +1,9 @@
 <template>
   <div class="pagination">
-    <button class="btn default" @click="pageChange(page - 1)" :disabled="page === 1">
+    <button class="btn default" @click="pageChange(page - 1)" v-if="page > 1">
       <font-awesome-icon icon="chevron-left" />
     </button>
-    <button class="btn default" @click="pageChange(page + 1)" :disabled="page === total">
+    <button class="btn default" @click="pageChange(page + 1)" v-if="page < total">
       <font-awesome-icon icon="chevron-right" />
     </button>
   </div>

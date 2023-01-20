@@ -7,7 +7,6 @@ class QuestionHelper {
     constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
-
     async getItems(queryParams) {
         let sql = `SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username
                    FROM questions q`
