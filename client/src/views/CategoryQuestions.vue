@@ -36,7 +36,7 @@ export default {
       questions: [],
       pagination: {
         page: 1,
-        perPage: 2,
+        perPage: 25,
         total: 0,
       },
     };
