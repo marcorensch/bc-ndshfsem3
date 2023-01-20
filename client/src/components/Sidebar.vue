@@ -1,10 +1,8 @@
 <template>
   <aside :class="`${is_expanded ? 'is-expand' : ''}`">
-
     <div class="menu-toggle-wrap">
       <button class="menu-toggle" @click="toggleMenu">
         <span class="icon-angles"><font-awesome-icon icon="angles-right"/></span>
-
       </button>
     </div>
     <div class="menu">
@@ -17,12 +15,10 @@
         </li>
         <li v-if="userStore.isLoggedIn">
           <router-link  class="button" :to="{name: 'Question New'}">
-            <span class="menu-icons">
-              <font-awesome-icon icon="comment"/> </span>
+            <span class="menu-icons"><font-awesome-icon icon="comment"/></span>
             <span class="title">Ask</span>
           </router-link>
         </li>
-
         <li v-for="category in favCatsStore.getFavs">
           <router-link class="button" :to="{ name: 'Category Questions', params: { id : category.id }}">
             <span class="menu-icons"><font-awesome-icon icon="boxes"/></span>
@@ -31,14 +27,12 @@
         </li>
       </ul>
     </div>
-
     <div class="flex"></div>
     <div class="menu">
       <ul v-if="!userStore.isLoggedIn">
       <li>
         <a href="#" id="show-login-modal" @click="showLoginModal=true" class="button">
-            <span class="menu-icons">
-              <font-awesome-icon icon="user"/> </span>
+          <span class="menu-icons"><font-awesome-icon icon="user"/></span>
           <span class="title">Login</span>
         </a>
       </li>
@@ -56,24 +50,21 @@
         <span class="title">User Settings</span>
       </router-link>
     </div>
-
     <div class="menu" v-if="userStore.isLoggedIn && userStore.isAdmin">
       <router-link class="button" :to="{name: 'Administration'}">
         <span class="menu-icons"><font-awesome-icon icon="cogs"/></span>
         <span class="title">Admin Settings</span>
       </router-link>
     </div>
-
     <div class="menu" v-if="userStore.isLoggedIn">
       <a href="#" class="button" @click="handleLogoutClicked">
         <span class="menu-icons"><font-awesome-icon icon="right-from-bracket"/></span>
         <span class="title">Logout</span>
       </a>
     </div>
-
   </aside>
   <Teleport to="body">
-    <LoginModal :show="showLoginModal" @close="handleModalClose" @loggedIn="loggedIn">
+    <LoginModal :show="showLoginModal" @close="handleModalClose">
     </LoginModal>
   </Teleport>
 </template>
@@ -91,7 +82,6 @@ export default {
   components: {
     LoginModal
   },
-
   data() {
     return {
       is_expanded: localStorage.getItem('is_expanded') === 'true',
@@ -124,27 +114,21 @@ export default {
     handleLogoutClicked(){
       const {refreshToken} = this.userStore.getTokens;
       this.userStore.logout();
-
       axios.delete(this.host + "/auth/logout", {
         headers:{
           Authorization: `Bearer ${refreshToken}`
         }
       }).then((response) => {
-        if(response.data.success){
-
-        }else{
+        if(!response.data.success){
           console.log(response.data)
         }
-      }).catch((error) => {
-        this.errorMessage = error.response.data.message
-      }).finally(()=>{
-        this.$router.push('/')
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        this.$router.push({name: 'Home'})
       });
     },
-    loggedIn(){
-    }
   }
-
 }
 </script>
 

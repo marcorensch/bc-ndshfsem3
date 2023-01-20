@@ -1,31 +1,23 @@
 <template>
   <main v-if="user">
     <h3>Hi {{ user.firstname || user.username }}</h3>
-
     <ul class="nav nav-tabs mt-5" id="adminTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button"
-                role="tab" aria-controls="stats" aria-selected="true">
-          <font-awesome-icon icon="chart-bar"/>
-          Statistics
+        <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="true">
+          <font-awesome-icon icon="chart-bar" />Statistics
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="recent-tab" data-bs-toggle="tab" data-bs-target="#recent" type="button" role="tab"
-                aria-controls="recent" aria-selected="false">
-          <font-awesome-icon icon="history"/>
-          Recent Activities
+        <button class="nav-link" id="recent-tab" data-bs-toggle="tab" data-bs-target="#recent" type="button" role="tab" aria-controls="recent" aria-selected="false">
+          <font-awesome-icon icon="history" />Recent Activities
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button"
-                role="tab" aria-controls="account" aria-selected="false">
-          <font-awesome-icon icon="user"/>
-          Account
+        <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">
+          <font-awesome-icon icon="user" />Account
         </button>
       </li>
     </ul>
-
     <div class="tab-content" id="userTabContent">
       <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
         <h4>Your Statistics</h4>
@@ -55,7 +47,7 @@
               <h5>Questions</h5>
               <ul class="user-activities">
                 <li v-for="question of recent.questions" :key="question.id">
-                  <router-link :to="{name: 'Question View', params:{id: question.id}}" class="">
+                  <router-link :to="{name: 'Question View', params:{id: question.id}}">
                     {{ question.content.replace(/<.+?>/g, '').slice(0, 50) }}
                   </router-link>
                 </li>
@@ -65,7 +57,7 @@
               <h5>Answers</h5>
               <ul class="user-activities">
                 <li v-for="answer of recent.answers" :key="answer.id">
-                  <router-link :to="{name: 'Question View', params:{id: answer.question.id}}" class="">
+                  <router-link :to="{name: 'Question View', params:{id: answer.question.id}}">
                     {{ answer.content.replace(/<.+?>/g, '').slice(0, 50) }}
                   </router-link>
                 </li>
@@ -81,7 +73,7 @@
       </div>
       <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
         <h4>Your Account</h4>
-        <UserAccountEditForm :user="user"/>
+        <UserAccountEditForm :user="user" />
       </div>
     </div>
   </main>
@@ -90,7 +82,6 @@
 <script>
 import {useUserStore} from "@/stores/UserStore";
 import axios from "axios";
-
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
 import {Doughnut} from 'vue-chartjs'
 import UserAccountEditForm from "@/components/UserAccountEditForm.vue";
@@ -132,7 +123,7 @@ export default {
           },
           title: {
             display: true,
-            text: 'Chart.js Doughnut Chart'
+            text: 'Questions vs Answers'
           }
         }
       }
@@ -147,7 +138,6 @@ export default {
         headers: this.userStore.getReqHeaders
       })
           .then(response => {
-            console.log(response)
             if (response.data.payload.token) {
               this.userStore.setToken(response.data.payload.token);
             }
@@ -156,8 +146,8 @@ export default {
             this.recent = response.data.payload.recent;
             this.doughnutChartData.datasets[0].data = [this.statistics.questionsCount, this.statistics.answersCount]
           })
-          .catch(error => {
-            console.log(error);
+          .catch(err => {
+            console.log(err);
           });
     },
   },

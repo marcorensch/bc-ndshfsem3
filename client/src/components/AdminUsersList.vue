@@ -6,30 +6,30 @@
     <div class="mt-3 table-responsive">
       <table class="table table-striped table-hover">
         <thead>
-        <tr>
-          <th class="col-1">ID</th>
-          <th class="col-1">Username</th>
-          <th class="col-1">Firstname</th>
-          <th class="col-1">Lastname</th>
-          <th class="col-1">Role</th>
-          <th class="col-1">Registered</th>
-          <th class="col-1">Actions</th>
-        </tr>
+          <tr>
+            <th class="col-1">ID</th>
+            <th class="col-1">Username</th>
+            <th class="col-1">Firstname</th>
+            <th class="col-1">Lastname</th>
+            <th class="col-1">Role</th>
+            <th class="col-1">Registered</th>
+            <th class="col-1">Actions</th>
+          </tr>
         </thead>
         <tbody>
-        <tr v-for="user in users" :key="user.id" :class="{hidden : !user.visible}">
-          <td data-toggle="tooltip" data-placement="top" title="User ID">{{ user.id }}</td>
-          <td data-toggle="tooltip" data-placement="top" title="Username">{{ user.username }}</td>
-          <td data-toggle="tooltip" data-placement="top" title="Firstname">{{ user.firstname }}</td>
-          <td data-toggle="tooltip" data-placement="top" title="Lastname">{{ user.lastname }}</td>
-          <td data-toggle="tooltip" data-placement="top" title="Role">{{ user.roletitle }}</td>
-          <td data-toggle="tooltip" data-placement="top" title="Registered">{{ user.registeredString }}</td>
-          <td>
-            <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + user.username" :disabled="!user.removable" class="delete-btn-icon" @click="handleDeleteUser(user.id)">
-              <font-awesome-icon icon="trash"/>
-            </button>
-          </td>
-        </tr>
+          <tr v-for="user in users" :key="user.id" :class="{hidden : !user.visible}">
+            <td data-toggle="tooltip" data-placement="top" title="User ID">{{ user.id }}</td>
+            <td data-toggle="tooltip" data-placement="top" title="Username">{{ user.username }}</td>
+            <td data-toggle="tooltip" data-placement="top" title="Firstname">{{ user.firstname }}</td>
+            <td data-toggle="tooltip" data-placement="top" title="Lastname">{{ user.lastname }}</td>
+            <td data-toggle="tooltip" data-placement="top" title="Role">{{ user.roletitle }}</td>
+            <td data-toggle="tooltip" data-placement="top" title="Registered">{{ user.registeredString }}</td>
+            <td>
+              <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + user.username" :disabled="!user.removable" class="delete-btn-icon" @click="handleDeleteUser(user.id)">
+                <font-awesome-icon icon="trash"/>
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -39,6 +39,7 @@
 <script>
 import axios from "axios";
 import { useUserStore } from "@/stores/UserStore";
+import {useToast} from "vue-toastification";
 
 export default {
   name: "AdminUsersList",
@@ -46,15 +47,11 @@ export default {
   data() {
     return {
       users: [],
-      headers: null,
       userStore: useUserStore(),
+      toast: useToast(),
     };
   },
   mounted() {
-    this.headers = {
-      Authorization: `Bearer ${this.userStore.getTokens.token}`,
-      RefreshToken: `${this.userStore.getTokens.refreshToken}`
-    };
     this.getUsers();
   },
   methods:{
@@ -82,13 +79,9 @@ export default {
     },
     getUsers() {
       axios.get(`${this.host}/users`, {
-        headers: {
-          Authorization: `Bearer ${this.userStore.getTokens.token}`,
-          RefreshToken: `${this.userStore.getTokens.refreshToken}`
-        }
+        headers: this.userStore.getReqHeaders
       })
           .then(response => {
-            console.log(response.data);
             this.users = response.data.payload.users;
             this.users.map(user => {
               user.visible = true;
@@ -99,25 +92,26 @@ export default {
               })
             })
             if (response.data.payload.token) {
-              console.log('token refreshed');
               this.userStore.setToken(response.data.payload.token);
             }
           })
-          .catch(error => {
-            console.log(error);
-            // this.$router.push({name: 'Home'});
+          .catch(err => {
+            this.toast.error("Error while fetching users");
+            console.log(err);
           })
     },
     handleDeleteUser(id) {
       let selection = confirm("Are you sure you want to delete this user?");
       if (selection) {
         axios.delete(`${this.host}/users/${id}`, {
-          headers: this.headers
+          headers: this.userStore.getReqHeaders
         })
             .then(() => {
+              this.toast.success("User deleted");
               this.users = this.users.filter(user => user.id !== id)
             })
             .catch(err => {
+              this.toast.error("Error while deleting user");
               console.log(err)
             })
       }

@@ -2,19 +2,15 @@
   <main class="question-page">
     <div class="container">
       <h1>Your Question</h1>
-
       <div id="editor">
-        <editor
-            :init="init"
-            v-model="text"
-        />
+        <editor :init="init" v-model="text" />
       </div>
       <div class="select-section mt-5">
         <div class="container">
           <div class="row">
             <div class="col">
               <label class="selection-title" for="category">Category:</label>
-              <select id="category" v-model="category_id" class="form-select mb-3" aria-label="Default select example">
+              <select id="category" v-model="category_id" class="form-select mb-3" aria-label="Select category">
                 <option selected value="">Please select one</option>
                 <option v-for="cat in categories" v-bind:value="cat.id">
                   {{ cat.title }}
@@ -42,12 +38,9 @@
             </div>
           </div>
         </div>
-
         <button class="btn btn-primary" @click="saveQuestion">Save</button>
-
       </div>
     </div>
-
   </main>
 </template>
 
@@ -60,9 +53,9 @@ import Vue3TagsInput from 'vue3-tags-input';
 import {swearWords} from '../utils/BadWords.mjs'
 import {useUserStore} from "@/stores/UserStore";
 import {useToast} from "vue-toastification";
+import Editor from '@tinymce/tinymce-vue'
+import axios from "axios";
 
-// TinyMCE plugins
-// https://www.tiny.cloud/docs/tinymce/6/plugins/
 import 'tinymce/plugins/lists/plugin'
 import 'tinymce/plugins/link/plugin'
 import 'tinymce/plugins/image/plugin'
@@ -71,16 +64,11 @@ import 'tinymce/plugins/code/plugin'
 import 'tinymce/plugins/help/plugin'
 import 'tinymce/plugins/wordcount/plugin'
 
-import Editor from '@tinymce/tinymce-vue'
-import axios from "axios";
-
 export default {
   name: "QuestionNew",
   inject: ['host', 'editorInit'],
-
   data() {
     return {
-      errorMessage: "",
       category_id: false,
       anonymous: false,
       categories: [],
@@ -102,8 +90,8 @@ export default {
           .then(response => {
             this.categories = response.data
           })
-          .catch(error => {
-            console.log(error)
+          .catch(err => {
+            console.log(err)
           })
     },
     saveQuestion() {
@@ -111,17 +99,14 @@ export default {
         this.toast.error("Please select a category")
         return
       }
-
       if(this.text.length > 100000){
         this.toast.error("Oh, wow! Your Question is too long, please shorten it.")
         return
       }
-
       if(this.text.length < 20){
         this.toast.error("Please be more specific, your question is too short")
         return
       }
-
       axios.post(this.host + "/questions/create", {
         content: this.text,
         category_id: this.category_id,
@@ -137,96 +122,24 @@ export default {
             this.toast.success("Question saved successfully")
             this.$router.push({name: 'Home'})
           })
-          .catch(error => {
-            console.error(error)
+          .catch(err => {
+            console.error(err)
             this.toast.error("Question could not be saved")
           })
     },
     handleChangeTag(tags) {
       this.tags = tags;
     },
-
     customValidateTags(value) {
       return !swearWords().includes(value)
     }
   },
-
-  async mounted() {
+  mounted() {
     this.getCategories();
   }
-
 }
 </script>
 
 <style lang="scss">
-.v3ti .v3ti-tag {
-  background: var(--dark);
-  height: 30px;
-}
-
-.v3ti .v3ti-tag .v3ti-remove-tag {
-  color: var(--light);
-  transition: color .3s;
-
-}
-
-.v3ti .v3ti-tag .v3ti-remove-tag {
-  text-decoration: none;
-}
-
-.v3ti .v3ti-tag .v3ti-remove-tag:hover {
-  color: #ffffff;
-}
-</style>
-
-<style lang="scss" scoped>
-
-.select-section {
-  display: flex;
-  flex-direction: column;
-}
-
-ul {
-  list-style: none;
-}
-
-.btn {
-  font-size: 1.2rem;
-  background-color: var(--dark);
-  border-radius: 2px;
-  color: (var(--light));
-  padding: 14px 20px;
-  margin: 10px 10px;
-  border: none;
-  cursor: pointer;
-  width: 200px;
-  transition: 0.2s ease-out;
-
-  &:hover {
-    background-color: var(--primary);
-  }
-}
-
-.form-check {
-  display: flex;
-  align-items: center;
-}
-
-.form-check-input {
-  height: 30px;
-  width: 30px;
-  margin-right: 10px;
-}
-
-.form-check-input:checked {
-  background-color: var(--dark);
-}
-
-.selection-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
 
 </style>

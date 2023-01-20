@@ -5,25 +5,19 @@
         <div class="modal-container">
           <div class="modal-header">
             <h2>Login Form</h2>
-            <button
-                class="modal-default-button close-button"
-                @click="$emit('close')">
-              <font-awesome-icon icon="xmark"></font-awesome-icon>
+            <button class="modal-default-button close-button" @click="$emit('close')">
+              <font-awesome-icon icon="xmark" />
             </button>
           </div>
-
           <ErrorMessageContainer :string="errorMessage"/>
-
           <form>
             <div class="form-container">
               <label for="username">Username</label>
               <input id="username" type="text" placeholder="Enter Username" name="username" v-model="username" required>
               <label for="password">Password</label>
-              <input id="password" type="password" placeholder="Enter Password" name="password" v-model="password"
-                     required>
+              <input id="password" type="password" placeholder="Enter Password" name="password" v-model="password" required>
               <label>
-                <input type="checkbox" checked="checked" name="remember" v-model="checked">
-                Remember me
+                <input type="checkbox" checked="checked" name="remember" v-model="checked"> Remember me
               </label>
             </div>
             <div class="modal-footer">
@@ -89,7 +83,6 @@ export default {
         }
       }).then((response) => {
         if (response.data.success) {
-          console.log(response.data.payload)
           this.userStore.setUser(response.data.payload.user)
           if (response.data.payload.token) this.userStore.setToken(response.data.payload.token)
           if (response.data.payload.refreshToken) this.userStore.setRefreshToken(response.data.payload.refreshToken)
@@ -97,11 +90,10 @@ export default {
         } else {
           console.log(response.data)
         }
-      }).catch((error) => {
-        this.errorMessage = error.response.data.message;
+      }).catch(err => {
+        this.errorMessage = err.response.data.message;
       })
     }
-
   },
 }
 </script>

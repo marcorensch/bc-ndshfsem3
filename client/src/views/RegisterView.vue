@@ -1,6 +1,6 @@
 <template>
   <main class="register-page">
-    <SignupForm/>
+    <SignupForm />
   </main>
 </template>
 
@@ -8,11 +8,10 @@
 import SignupForm from "@/components/SignupForm.vue";
 
 export default {
-  name: "Register",
+  name: "RegisterView",
   components: {
     SignupForm,
-  },
-
+  }
 }
 </script>
 

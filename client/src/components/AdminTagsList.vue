@@ -6,8 +6,7 @@
         <div class="form-group">
           <div class="row g-0">
             <div class="col">
-              <input type="text" class="form-control" id="new_tag_title" placeholder="Enter a new Tag"
-                     @keyup="handleAddTagByEnter">
+              <input type="text" class="form-control" id="new_tag_title" placeholder="Enter a new Tag" @keyup="handleAddTagByEnter">
             </div>
             <div class="col-auto align-self-center">
               <button class="btn btn-primary btn-large" @click="handleAddTag">Add Tag</button>
@@ -22,22 +21,21 @@
     <div class="mt-3 table-responsive">
       <table class="table table-striped table-hover">
         <thead>
-        <tr>
-          <th class="col-1">ID</th>
-          <th class="col-8">Title</th>
-          <th class="col-2 text-center">Articles</th>
-          <th class="col-2 text-center">Actions</th>
-        </tr>
+          <tr>
+            <th class="col-1">ID</th>
+            <th class="col-8">Title</th>
+            <th class="col-2 text-center">Articles</th>
+            <th class="col-2 text-center">Actions</th>
+          </tr>
         </thead>
         <tbody>
         <template v-if="tags.length > 0">
           <tr v-for="tag in tags" :key="tag.id" :data-tag-id="tag.id" :class="{hidden:!tag.visible}">
             <td data-toggle="tooltip" data-placement="top" title="Tag ID" class="align-middle">{{ tag.id }}</td>
             <td data-toggle="tooltip" data-placement="top" title="Title" class="align-middle">
-              <span class="editable-title" :id="'tag-'+tag.id+'-title'" :data-tag-title="tag.title"
-                    @click="handleEditTag" v-if="!tag.edit">{{
-                  tag.title
-                }}</span>
+              <span class="editable-title" :id="'tag-'+tag.id+'-title'" :data-tag-title="tag.title" @click="handleEditTag" v-if="!tag.edit">
+                {{ tag.title }}
+              </span>
               <div v-else :data-tag-id="tag.id">
                 <div class="row">
                   <div class="col">
@@ -45,12 +43,10 @@
                   </div>
                   <div class="col-auto align-self-center">
                     <div class="btn-group" role="group" aria-label="Tag Title Actions">
-                      <button title="Cancel Changes" type="button" class="btn btn-warning"
-                              @click="handleUnsetEditClicked">
+                      <button title="Cancel Changes" type="button" class="btn btn-warning" @click="handleUnsetEditClicked">
                         <font-awesome-icon icon="times"/>
                       </button>
-                      <button title="Save Changes" type="button" class="btn btn-success"
-                              @click="handleTagTitleUpdate">
+                      <button title="Save Changes" type="button" class="btn btn-success" @click="handleTagTitleUpdate">
                         <font-awesome-icon icon="save"/>
                       </button>
                     </div>
@@ -62,17 +58,12 @@
             <td class="align-middle text-center">
               <div class="row gx-0">
                 <div class="col-6">
-                  <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + tag.title"
-                          class="action-button  delete-btn-icon"
-                          @click="handleDeleteTagClicked">
+                  <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + tag.title" class="action-button  delete-btn-icon" @click="handleDeleteTagClicked">
                     <font-awesome-icon icon="trash"/>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button :title="'Edit ' + tag.title + ' Tag'"
-                          class="action-button  edit-btn-icon"
-                          @click="handleEditTag"
-                  >
+                  <button :title="'Edit ' + tag.title + ' Tag'" class="action-button  edit-btn-icon" @click="handleEditTag">
                     <font-awesome-icon icon="pencil" @click="handleEditTag"/>
                   </button>
                 </div>
@@ -90,6 +81,7 @@
 import {useUserStore} from "@/stores/UserStore";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {useToast} from "vue-toastification";
 
 export default {
   name: "AdminTagsList",
@@ -98,15 +90,11 @@ export default {
   data() {
     return {
       tags: [],
-      headers: null,
       userStore: useUserStore(),
+      toast: useToast(),
     };
   },
   mounted() {
-    this.headers = {
-      Authorization: `Bearer ${this.userStore.getTokens.token}`,
-      RefreshToken: `${this.userStore.getTokens.refreshToken}`
-    }
     this.getTags();
     document.addEventListener("keyup", this.handleKeyUp);
   },
@@ -165,7 +153,6 @@ export default {
         this.handleUnsetEditClicked();
       }
     },
-
     getTags() {
       axios.get(`${this.host}/tags`, {})
           .then(response => {
@@ -173,10 +160,9 @@ export default {
               tag.visible = true;
               return tag;
             });
-            console.log(this.tags);
           })
-          .catch(error => {
-            console.log(error);
+          .catch(err => {
+            console.log(err);
           })
     },
     checkIfTagExists(title, id) {
@@ -197,21 +183,16 @@ export default {
       const tagId = this.getTagIdFromTable(event);
       const newValue = document.getElementById('tag_title_' + tagId).value;
       if (newValue === "") {
-        alert("Tag title cannot be empty!");
+        this.toast.warning("Tag title cannot be empty!");
         return;
       }
       if (this.checkIfTagExists(newValue, tagId)) {
-        alert("Tag already exists!");
+        this.toast.error("Tag already exists!");
         return;
       }
-
-      console.log("update tag with id: " + tagId);
       const tag = this.tags.find(tag => {
         if (tag.id === tagId) return tag;
       });
-
-      console.log(tag);
-
       if (tag.title !== newValue) {
         tag.title = newValue;
         this.handleUpdateTag(tag);
@@ -222,24 +203,21 @@ export default {
       const inputField = document.getElementById('new_tag_title');
       let title = inputField.value;
       inputField.value = '';
-
-      console.log(title);
       if (title === "") {
-        alert("Tag title cannot be empty!");
+        this.toast.warning("Tag title cannot be empty!");
         return;
       }
-
       if (this.checkIfTagExists(title)) {
-        alert("Tag already exists!");
+        this.toast.error("Tag already exists!");
         return;
       }
-
       axios.post(`${this.host}/tags/create`, {
         title: title
       }, {
-        headers: this.headers
+        headers: this.userStore.getReqHeaders
       })
           .then(response => {
+            this.toast.success("Tag added!");
             this.getTags();
           })
           .catch(err => {
@@ -257,12 +235,14 @@ export default {
       let selection = confirm(`Are you sure you want to delete the tag ${tag.title}?`);
       if (selection) {
         axios.delete(`${this.host}/tags/${tag.id}`, {
-          headers: this.headers
+          headers: this.userStore.getReqHeaders
         })
             .then(() => {
+              this.toast.success("Tag deleted!");
               this.tags = this.tags.filter(c => c.id !== tag.id)
             })
             .catch(err => {
+              this.toast.error("Something went wrong!");
               console.log(err)
             })
       }
@@ -272,12 +252,13 @@ export default {
         title: tag.title,
         fav: tag.fav
       }, {
-        headers: this.headers
+        headers: this.userStore.getReqHeaders
       }).then(() => {
+        this.toast.success("Tag updated!");
         this.getTags();
       }).catch((error) => {
+        this.toast.error("Something went wrong!");
         console.log(error);
-      }).finally(() => {
       });
     },
     handleUnsetEditClicked() {

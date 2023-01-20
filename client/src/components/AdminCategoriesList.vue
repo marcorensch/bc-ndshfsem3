@@ -6,8 +6,7 @@
         <div class="form-group">
           <div class="row g-0">
             <div class="col">
-              <input type="text" class="form-control" id="new_cat_title" placeholder="Enter new Category Title"
-                     @keyup="handleAddCategoryByEnter">
+              <input type="text" class="form-control" id="new_cat_title" placeholder="Enter new Category Title" @keyup="handleAddCategoryByEnter">
             </div>
             <div class="col-auto align-self-center">
               <button class="btn btn-primary btn-large" @click="handleAddCategory">Add Category</button>
@@ -38,10 +37,9 @@
               <font-awesome-icon icon="star" class="favorite-icon" :class="{isFav : category.fav}"/>
             </td>
             <td data-toggle="tooltip" data-placement="top" title="Title" class="align-middle">
-              <span class="editable-title" :id="'category-'+category.id+'-title'" :data-cat-id="category.id" :data-cat-title="category.title"
-                    @click="handleEditCategory" v-if="!category.edit">{{
-                  category.title
-                }}</span>
+              <span class="editable-title" :id="'category-'+category.id+'-title'" :data-cat-id="category.id" :data-cat-title="category.title" @click="handleEditCategory" v-if="!category.edit">
+                {{ category.title }}
+              </span>
               <div v-else :data-cat-id="category.id">
                 <div class="row">
                   <div class="col">
@@ -49,12 +47,10 @@
                   </div>
                   <div class="col-auto align-self-center">
                     <div class="btn-group" role="group" aria-label="Category Title Actions">
-                      <button title="Cancel Changes" type="button" class="btn btn-warning"
-                              @click="handleUnsetEditClicked">
+                      <button title="Cancel Changes" type="button" class="btn btn-warning" @click="handleUnsetEditClicked">
                         <font-awesome-icon icon="times"/>
                       </button>
-                      <button title="Save Changes" type="button" class="btn btn-success"
-                              @click="handleCategoryTitleUpdate">
+                      <button title="Save Changes" type="button" class="btn btn-success" @click="handleCategoryTitleUpdate">
                         <font-awesome-icon icon="save"/>
                       </button>
                     </div>
@@ -65,17 +61,12 @@
             <td class="align-middle text-center">
               <div class="row gx-0">
                 <div class="col-6">
-                  <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + category.title"
-                          class="action-button delete-btn-icon"
-                          @click="handleDeleteCategoryClicked">
+                  <button data-toggle="tooltip" data-placement="top" :title="'Delete ' + category.title" class="action-button delete-btn-icon" @click="handleDeleteCategoryClicked">
                     <font-awesome-icon icon="trash"/>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button :title="'Edit ' + category.title + ' Category'"
-                          class="action-button edit-btn-icon"
-                          @click="handleEditCategory"
-                  >
+                  <button :title="'Edit ' + category.title + ' Category'" class="action-button edit-btn-icon" @click="handleEditCategory">
                     <font-awesome-icon icon="pencil" @click="handleEditCategory"/>
                   </button>
                 </div>
@@ -94,6 +85,7 @@ import {useUserStore} from "@/stores/UserStore";
 import {useFavCatsStore} from "@/stores/FavCategoriesStore";
 import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {useToast} from "vue-toastification";
 
 export default {
   name: "AdminCategoriesList",
@@ -102,16 +94,12 @@ export default {
   data() {
     return {
       categories: [],
-      headers: null,
       userStore: useUserStore(),
       favCatsStore: useFavCatsStore(),
+      toast: useToast(),
     };
   },
   mounted() {
-    this.headers = {
-      Authorization: `Bearer ${this.userStore.getTokens.token}`,
-      RefreshToken: `${this.userStore.getTokens.refreshToken}`
-    }
     this.getCategories();
     document.addEventListener("keyup", this.handleKeyUp);
   },
@@ -189,10 +177,9 @@ export default {
               cat.visible = true;
               return cat;
             });
-            console.log(this.categories);
           })
-          .catch(error => {
-            console.log(error);
+          .catch(err => {
+            console.log(err);
           })
     },
     checkIfCategoryExists(title, id) {
@@ -219,22 +206,19 @@ export default {
       this.handleUpdateCategory(category)
     },
     handleCategoryTitleUpdate(event) {
-      console.log("handleCategoryTitleUpdate");
       const catId = this.getCategoryIdFromTable(event);
       const newValue = document.getElementById('cat_title_' + catId).value;
       if (newValue === "") {
-        alert("Category title cannot be empty!");
+        this.toast.warning("Category title cannot be empty!");
         return;
       }
       if (this.checkIfCategoryExists(newValue, catId)) {
-        alert("Category already exists!");
+        this.toast.error("Category already exists!");
         return;
       }
-
       const category = this.categories.find(category => {
         if (category.id === catId) return category;
       });
-
       if (category.title !== newValue) {
         category.title = newValue;
         this.handleUpdateCategory(category);
@@ -245,24 +229,22 @@ export default {
       const inputField = document.getElementById('new_cat_title');
       let title = inputField.value;
       inputField.value = '';
-
-      console.log(title);
       if (title === "") {
-        alert("Category title cannot be empty!");
+        this.toast.warning("Category title cannot be empty!");
         return;
       }
-
       if (this.checkIfCategoryExists(title)) {
-        alert("Category already exists!");
+        this.toast.error("Category already exists!");
         return;
       }
 
       axios.post(`${this.host}/categories/create`, {
         title: title
       }, {
-        headers: this.headers
+        headers: this.userStore.getReqHeaders
       })
           .then(response => {
+            this.toast.success("Category added!");
             this.getCategories();
           })
           .catch(err => {
@@ -280,12 +262,14 @@ export default {
       let selection = confirm(`Are you sure you want to delete the category ${category.title}?`);
       if (selection) {
         axios.delete(`${this.host}/categories/${category.id}`, {
-          headers: this.headers
+          headers: this.userStore.getReqHeaders
         })
             .then(() => {
+              this.toast.success("Category deleted!");
               this.categories = this.categories.filter(c => c.id !== category.id)
             })
             .catch(err => {
+              this.toast.error("Something went wrong!");
               console.log(err)
             })
       }
@@ -295,11 +279,13 @@ export default {
         title: category.title,
         fav: category.fav
       }, {
-        headers: this.headers
+        headers: this.userStore.getReqHeaders
       }).then(() => {
+        this.toast.success("Category updated!");
         this.getCategories();
-      }).catch((error) => {
-        console.log(error);
+      }).catch((err) => {
+        this.toast.error("Something went wrong!");
+        console.log(err);
       }).finally(() => {
       });
     },

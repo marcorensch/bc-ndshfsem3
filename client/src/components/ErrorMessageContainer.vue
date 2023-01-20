@@ -1,5 +1,9 @@
 <template>
-  <div v-if="string" class="error-message-container"><span>{{string}}</span></div>
+  <div v-if="string" class="error-message-container">
+    <span>
+      {{ string }}
+    </span>
+  </div>
 </template>
 
 <script>

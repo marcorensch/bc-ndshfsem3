@@ -6,7 +6,6 @@ module.exports = defineConfig({
     lintOnSave: false,
     devServer: devServerConfig(),
 });
-
 function devServerConfig(){
     console.log("Configuring dev server");
     console.log("Use https: " + process.env.VUE_APP_HTTPS);

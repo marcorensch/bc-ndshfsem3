@@ -11,6 +11,6 @@ export default {
   name: "Home",
   components: {
     ListOfQuestions,
-  },
+  }
 };
 </script>

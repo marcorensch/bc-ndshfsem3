@@ -12,12 +12,6 @@ export const useFavCatsStore = defineStore('favoriteCategories', {
     actions: {
         setFavs(favs) {
             this.favs = favs;
-        },
-        addFav(fav) {
-            this.favs.push(fav);
-        },
-        removeFav(fav) {
-            this.favs = this.favs.filter(f => f.id !== fav.id);
         }
     }
 });

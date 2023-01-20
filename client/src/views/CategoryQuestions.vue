@@ -1,6 +1,6 @@
 <template>
   <div v-if="category" class="p-5 w-100">
-    <h1>Category Questions for {{ category.title }}</h1>
+    <h1>{{ category.title }}</h1>
     <div v-if="questions.length">
       <QuestionCard v-for="question in questions" :item="question"/>
       <Pagination :total="pagination.total" :page="pagination.page" @pageChange="handlePageChange"/>
@@ -8,7 +8,6 @@
     <div v-else class="w-100 text-center">
       <div class="noContent">Oh! it looks like there is no content here.</div>
     </div>
-
   </div>
 </template>
 
@@ -63,7 +62,6 @@ export default {
           page: this.pagination.page
         }
       }).then(response => {
-        console.log(response.data.payload);
         this.pagination.total = Math.ceil(response.data.payload.total / this.pagination.perPage);
         this.questions = response.data.payload.questions;
       })
@@ -73,9 +71,5 @@ export default {
 </script>
 
 <style scoped>
-.noContent{
-  padding: 80px;
-  font-size: 20px;
-  color: #999;
-}
+
 </style>

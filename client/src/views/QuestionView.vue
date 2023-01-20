@@ -4,13 +4,11 @@
       <div class="card-body">
         <div class="question-header">
           <div class="row d-flex align-items-center">
-
             <div class="col-auto">
               <div class="userIcon">
                 <font-awesome-icon icon="question"/>
               </div>
             </div>
-
             <div class="col-9">
               <div class="row align-items-center">
                 <div class="col-1">
@@ -20,8 +18,8 @@
                   <div class="row g-3">
                     <div class="col-auto">{{ question.username ? question.username : "Anonymous" }}</div>
                     <div class="col-auto text-small align-self-center" v-if="editingQuestion">
-                      <input name="ask-anonymous" id="ask-anonymous" type="checkbox" class="form-check-input"
-                             v-model="edited.anonymous"/> <label class="d-inline" for="ask-anonymous">Anonymous</label>
+                      <input name="ask-anonymous" id="ask-anonymous" type="checkbox" class="form-check-input" v-model="edited.anonymous"/>
+                      <label class="d-inline" for="ask-anonymous">Anonymous</label>
                     </div>
                   </div>
                 </div>
@@ -48,8 +46,9 @@
                   <font-awesome-icon icon="tags"/>
                 </div>
                 <div class="col-3">
-                  <span v-if="!editingQuestion" class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon
-                      icon="tag"/> {{ tag.title }}</span>
+                  <span v-if="!editingQuestion" class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon icon="tag"/>
+                    {{ tag.title }}
+                  </span>
                   <vue3-tags-input v-else
                                    :tags="edited.tags"
                                    placeholder="enter some tags"
@@ -61,62 +60,51 @@
                 </div>
               </div>
             </div>
-
             <div class="col-1 text-center">
-              <div class="vote-action vote-up" @click="handleQuestionVoteClicked(1)"
-                   :class="{voted: checkIfUserHasVotedForQuestion(1), disabled : !canVote() }">
+              <div class="vote-action vote-up" @click="handleQuestionVoteClicked(1)" :class="{voted: checkIfUserHasVotedForQuestion(1), disabled : !canVote() }">
                 <font-awesome-icon icon="caret-up"/>
               </div>
               <div class="vote-value-question">{{ question.votes.total }}</div>
-              <div class="vote-action vote-down" @click="handleQuestionVoteClicked(-1)"
-                   :class="{voted: checkIfUserHasVotedForQuestion(-1), disabled : !canVote() }">
+              <div class="vote-action vote-down" @click="handleQuestionVoteClicked(-1)" :class="{voted: checkIfUserHasVotedForQuestion(-1), disabled : !canVote() }">
                 <font-awesome-icon icon="caret-down"/>
               </div>
             </div>
           </div>
         </div>
         <hr>
-
         <div v-if="!editingQuestion" class="question-content p-2" v-html="question.content"></div>
         <div v-else>
-          <Editor v-model="edited.content" :init="init"/>
+          <Editor v-model="edited.content" :init="init" />
         </div>
         <div class="question-actions position-relative pt-3">
           <div class="row justify-content-end">
             <div v-if="!editingQuestion" class="col-auto">
               <div class="btn-group" role="group" aria-label="Question Actions">
-                <button v-if="userStore.getTokens.token" type="button" class="btn btn-secondary"
-                        @click="scrollTo('#question-answer')">
-                  <font-awesome-icon icon="keyboard"/>
-                  Answer
+                <button v-if="userStore.getTokens.token" type="button" class="btn btn-secondary" @click="scrollTo('#question-answer')">
+                  <font-awesome-icon icon="keyboard" />Answer
                 </button>
-                <button v-if="canEditQuestion()" type="button" class="btn btn-secondary"
-                        @click="handleEditQuestionToggle">
-                  <font-awesome-icon icon="pencil"/>
-                  Edit
+                <button v-if="canEditDeleteQuestion()" type="button" class="btn btn-secondary" @click="handleEditQuestionToggle">
+                  <font-awesome-icon icon="pencil" />Edit
                 </button>
-                <button v-if="canDeleteQuestion()" type="button" class="btn btn-secondary" @click="handleDeleteClicked">
-                  <font-awesome-icon icon="trash"/>
-                  Delete
+                <button v-if="canEditDeleteQuestion()" type="button" class="btn btn-secondary" @click="handleDeleteClicked">
+                  <font-awesome-icon icon="trash" />Delete
                 </button>
               </div>
             </div>
             <div v-else class="col-auto">
               <div class="btn-group" role="group" area-label="Question Edit Actions">
                 <button @click="handleUpdateQuestionClicked" type="button" class="btn btn-success">
-                  <font-awesome-icon icon="save"/>
-                  Save
+                  <font-awesome-icon icon="save" />Save
                 </button>
                 <button @click="editingQuestion = false" type="button" class="btn btn-warning">
-                  <font-awesome-icon icon="trash"/>
-                  Cancel
+                  <font-awesome-icon icon="trash" />Cancel
                 </button>
               </div>
             </div>
           </div>
         </div>
         <div v-if="answers" class="question-answers p-2 mt-5">
-          <h4>{{ answers.length }} Answers</h4>
+          <h4>{{ answers.length }}Answers</h4>
           <div class="row pt-3 pb-3">
             <div class="col-3">
               <select name="sortAnswersBy" id="sortAnswersBy" class="form-select" @change="sortAnswerList">
@@ -132,41 +120,36 @@
             </div>
             <div v-if="question.accepted_id" class="col-3 d-flex">
               <button @click="scrollTo('#answer-'+question.accepted_id)" class="btn btn-success">
-                <font-awesome-icon icon="chevron-down"/>
-                Jump to Solution
+                <font-awesome-icon icon="chevron-down" />Jump to Solution
               </button>
             </div>
           </div>
           <div class="answer" v-for="answer in answers" :key="answer.id">
             <div :id="'answer-'+answer.id" class="answer-box" :class="{accepted: answer.id === question.accepted_id}">
-              <div class="actions-container"
-                   v-if="userStore.isAdmin || canMarkSolved() || canDeleteAnswer(answer.created_by) || canEditAnswer(answer.created_by)">
+              <div class="actions-container" v-if="userStore.isAdmin || canMarkSolved() || canEditDeleteAnswer(answer.created_by)">
                 <div v-if="canMarkSolved()" class="action" @click="handleMarkedAnswerClicked(answer.id)">
                   <template v-if="answer.id !== question.accepted_id">
-                    <font-awesome-icon icon="check-square" title="Mark as solution"/>
+                    <font-awesome-icon icon="check-square" title="Mark as solution" />
                   </template>
                   <template v-else>
-                    <font-awesome-icon icon="minus-square" title="Remove solution marker"/>
+                    <font-awesome-icon icon="minus-square" title="Remove solution marker" />
                   </template>
                 </div>
-                <div v-if="canDeleteAnswer(answer.created_by)" class="action"
-                     @click="handleDeleteAnswerClicked(answer.id)">
-                  <font-awesome-icon icon="trash"/>
+                <div v-if="canEditDeleteAnswer(answer.created_by)" class="action" @click="handleDeleteAnswerClicked(answer.id)">
+                  <font-awesome-icon icon="trash" />
                 </div>
-                <div v-if="canEditAnswer(answer.created_by)" class="action" @click="handleEditAnswerClicked(answer.id)">
-                  <font-awesome-icon icon="pencil"/>
+                <div v-if="canEditDeleteAnswer(answer.created_by)" class="action" @click="handleEditAnswerClicked(answer.id)">
+                  <font-awesome-icon icon="pencil" />
                 </div>
               </div>
               <div class="row">
                 <div class="col-1 text-center">
-                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)"
-                       :class="{voted: checkIfUserHasVotedForAnswer(1, answer.id), disabled : !canVote()  }">
-                    <font-awesome-icon icon="caret-up"/>
+                  <div class="vote-action vote-up" @click="handleAnswerVoteClicked(1, answer.id)" :class="{voted: checkIfUserHasVotedForAnswer(1, answer.id), disabled : !canVote()}">
+                    <font-awesome-icon icon="caret-up" />
                   </div>
                   <div class="vote-value">{{ answer.votes.total }}</div>
-                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)"
-                       :class="{voted: checkIfUserHasVotedForAnswer(-1, answer.id), disabled : !canVote()  }">
-                    <font-awesome-icon icon="caret-down"/>
+                  <div class="vote-action vote-down" @click="handleAnswerVoteClicked(-1, answer.id)" :class="{voted: checkIfUserHasVotedForAnswer(-1, answer.id), disabled : !canVote()}">
+                    <font-awesome-icon icon="caret-down" />
                   </div>
                 </div>
                 <div class="col align-middle">
@@ -193,15 +176,12 @@
             <div class="mt-3 d-flex flex-column align-right">
               <div class="btn-group align-self-end" role="group" aria-description="Answer Editing Actions">
                 <button @click="handleUpdateAnswerClicked" class="btn btn-success">
-                  <font-awesome-icon icon="save"/>
-                  Save
+                  <font-awesome-icon icon="save" />Save
                 </button>
                 <button @click="handleCancelAnswerClicked" class="btn btn-warning">
-                  <font-awesome-icon icon="close"/>
-                  Cancel
+                  <font-awesome-icon icon="close" />Cancel
                 </button>
               </div>
-
             </div>
           </div>
           <div v-else class="editor-container">
@@ -210,8 +190,7 @@
             <div class="mt-3 d-flex flex-column align-right">
               <div class="col-auto align-self-end">
                 <button class="btn btn-primary" @click="handleSaveAnswerClicked">
-                  <font-awesome-icon icon="save"/>
-                  Post Answer
+                  <font-awesome-icon icon="save" />Post Answer
                 </button>
               </div>
             </div>
@@ -228,6 +207,14 @@
 </template>
 
 <script>
+import Editor from '@tinymce/tinymce-vue'
+import {useUserStore} from "@/stores/UserStore";
+import axios from "axios";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import Vue3TagsInput from 'vue3-tags-input';
+import {swearWords} from '../utils/BadWords.mjs'
+import {useToast} from "vue-toastification";
+
 import 'tinymce/tinymce'
 import 'tinymce/icons/default/icons'
 import 'tinymce/themes/silver/theme'
@@ -240,18 +227,6 @@ import 'tinymce/plugins/table/plugin'
 import 'tinymce/plugins/code/plugin'
 import 'tinymce/plugins/help/plugin'
 import 'tinymce/plugins/wordcount/plugin'
-
-import Editor from '@tinymce/tinymce-vue'
-
-import {useUserStore} from "@/stores/UserStore";
-import axios from "axios";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-
-import Vue3TagsInput from 'vue3-tags-input';
-import {swearWords} from '../utils/BadWords.mjs'
-
-import {useToast} from "vue-toastification";
-
 
 export default {
   name: "Edit",
@@ -294,7 +269,6 @@ export default {
   mounted() {
     this.getQuestionById(this.$route.params.id);
     this.user = this.userStore.getUser;
-
     if (this.userStore.getAnswerText) {
       this.answer = this.userStore.getAnswerText;
     }
@@ -306,7 +280,6 @@ export default {
     sortAnswerList() {
       const by = document.getElementById("sortAnswersBy").value;
       const direction = document.getElementById("sortAnswersDir").value;
-      console.log(by, direction);
       if (by === "votes") {
         if (direction === "asc") {
           this.answers.sort((a, b) => a.votes.total - b.votes.total);
@@ -341,13 +314,10 @@ export default {
       if (!id) return;
       axios.get(`${this.host}/questions/${id}`)
           .then((response) => {
-            console.log(response)
             this.question = response.data;
             this.answers = response.data.answers;
-            console.log(this.question);
-            console.log(this.answers);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
     },
@@ -374,14 +344,11 @@ export default {
     handleUpdateAnswerClicked() {
       const answerId = this.editingAnswer.id;
       const answer = this.editingAnswer.content;
-
       if(!this.checkAnswerText(answer)) return;
-
       if(!answerId) {
         this.toast.warning("Something went wrong, please try again");
         return;
       }
-
       this.userStore.setAnswerText(answer);
       this.updateAnswer(answerId, answer);
     },
@@ -402,7 +369,7 @@ export default {
             }
             this.getQuestionById(this.$route.params.id);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
     },
@@ -423,7 +390,7 @@ export default {
             }
             this.getQuestionById(this.$route.params.id);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
     },
@@ -436,13 +403,12 @@ export default {
               this.userStore.setToken(response.data.payload.token);
             }
             this.getQuestionById(this.$route.params.id);
-          }).catch((err) => {
+          }).catch(err => {
         console.log(err);
       });
     },
     handleMarkedAnswerClicked(id) {
       if (this.userStore.getUser.id !== this.question.created_by) {
-        console.log("You can't mark an answer on a question you didn't create");
         return;
       }
       axios.put(this.host + "/questions/" + this.question.id + "/answer", {
@@ -458,7 +424,7 @@ export default {
               this.userStore.setToken(response.data.payload.token);
             }
             this.getQuestionById(this.question.id)
-          }).catch((err) => {
+          }).catch(err => {
         console.log(err);
       });
     },
@@ -476,7 +442,7 @@ export default {
             this.getQuestionById(this.question.id)
             this.scrollTo("#answer-" + answerId);
             this.toast.success("Answer updated");
-          }).catch((err) => {
+          }).catch(err => {
         console.log(err);
         this.toast.error("Something went wrong")
       });
@@ -502,12 +468,11 @@ export default {
         this.cleanUpAfterAnswer();
         this.getQuestionById(this.$route.params.id);
         this.toast.success("Answer saved");
-      }).catch(error => {
-        console.log(error);
+      }).catch(err => {
+        console.log(err);
         this.toast.error("Something went wrong");
       })
     },
-
     handleEditQuestionToggle() {
       this.editingQuestion = !this.editingQuestion;
       if (this.editingQuestion) {
@@ -516,34 +481,27 @@ export default {
         this.edited.anonymous = this.question.anonymous;
         this.edited.tags = this.question.tags.map(tag => tag.title);
         this.accepted_id = this.question.accepted_id;
-
         this.getCategories();
       }
-
     },
-
     handleEditAnswerClicked(id) {
       this.editingAnswer.id = id;
       this.editingAnswer.content = this.answers.find(answer => answer.id === id).content;
       this.scrollTo('#question-answer')
     },
-
     handleCancelAnswerClicked() {
       this.editingAnswer.id = null;
       this.editingAnswer.content = "";
     },
-
     getCategories() {
       axios.get(this.host + "/categories")
           .then(response => {
             this.categories = response.data;
-          }).catch(error => {
-        console.log(error);
+          }).catch(err => {
+        console.log(err);
       })
     },
-
     handleUpdateQuestionClicked() {
-      console.log(this.edited);
       axios.put(this.host + "/questions/" + this.question.id, this.edited, {
         headers: this.userStore.getReqHeaders
       }).then(response => {
@@ -553,12 +511,11 @@ export default {
         this.getQuestionById(this.$route.params.id);
         this.handleEditQuestionToggle();
         this.toast.success("Question updated!");
-      }).catch(error => {
-        console.log(error);
+      }).catch(err => {
+        console.log(err);
         this.toast.error("Question could not be updated");
       })
     },
-
     handleDeleteClicked() {
       axios.delete(this.host + "/questions/" + this.question.id, {
         headers: this.userStore.getReqHeaders
@@ -568,34 +525,24 @@ export default {
         }
         this.toast.success("Question deleted");
         this.$router.push({name: "Home"});
-      }).catch(error => {
-        console.log(error);
+      }).catch(err => {
+        console.log(err);
         this.toast.error("Question could not be deleted");
       })
     },
-
     handleChangeTag(tags) {
       this.edited.tags = tags;
     },
-
     customValidateTags(value) {
       return !swearWords().includes(value)
     },
-
-    canDeleteQuestion() {
+    canEditDeleteQuestion() {
       return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by || this.userStore.isAdmin
     },
-    canEditQuestion() {
-      return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by || this.userStore.isAdmin
-    },
-
     canMarkSolved() {
       return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by
     },
-    canDeleteAnswer(createdUserId) {
-      return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId || this.userStore.isAdmin
-    },
-    canEditAnswer(createdUserId) {
+    canEditDeleteAnswer(createdUserId) {
       return this.userStore.getTokens.token && this.userStore.getUser.id === createdUserId || this.userStore.isAdmin
     },
     canVote() {

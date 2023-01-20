@@ -7,7 +7,5 @@ class UserData {
         this._password = password
         this._confirmPassword = confirmPassword
     }
-
 }
-
 export default UserData;

@@ -4,7 +4,6 @@ import RegisterView from '../views/RegisterView.vue'
 import UserCockpitView from "@/views/UserCockpitView.vue";
 import QuestionView from "@/views/QuestionView.vue";
 import QuestionNewView from "@/views/QuestionNewView.vue";
-import UserEditView from "@/views/UserEditView.vue";
 import AdminCockpitView from "@/views/AdminCockpitView.vue";
 import CategoryQuestions from "@/views/CategoryQuestions.vue";
 
@@ -17,7 +16,6 @@ const router = createRouter({
         {name: "User Cockpit", path: '/user', component: UserCockpitView},
         {name: "Question New", path: '/question/new', component: QuestionNewView},
         {name: "Question View", path: '/question/:id', component: QuestionView, props: true},
-        {name: "User Edit", path: '/user/edit', component: UserEditView},
         {name: 'Category Questions', path: '/categories/:id', component: CategoryQuestions, props: true},
     ]
 })

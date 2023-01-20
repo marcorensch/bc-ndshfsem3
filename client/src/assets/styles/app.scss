@@ -2,6 +2,7 @@
 @import "modal";
 @import "forms";
 @import "editor";
+@import "tags";
 
 :root {
   --primary: #0CAFFF;
@@ -424,6 +425,12 @@ ul.user-activities {
 
 .text-small{
     font-size: .75rem;
+}
+
+.noContent{
+  padding: 80px;
+  font-size: 20px;
+  color: #999;
 }
 
 
