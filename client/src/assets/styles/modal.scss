@@ -49,7 +49,7 @@ input[type=text], input[type=password] {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
-  border-radius: 2px;
+  border-radius: var(--border-radius-sm);
 
   &:focus {
     border: 1px solid var(--primary);
@@ -112,7 +112,6 @@ input[type=text], input[type=password] {
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
   transform: scale(1.1);
-
 }
 
 @media (max-width: 768px) {
@@ -126,5 +125,4 @@ input[type=text], input[type=password] {
     font-size: 1rem;
     transition: 0.2s ease-out;
   }
-
 }

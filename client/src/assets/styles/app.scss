@@ -53,33 +53,21 @@ aside {
   min-height: 90vh;
   overflow: hidden;
   padding: 1rem;
-
   background-color: var(--dark);
   color: var(--light);
-
   transition: 0.2s ease-out;
 
   .flex {
     flex: 1 1 0;
   }
 
-  .logo {
-    margin-bottom: 1rem;
-
-    img {
-      width: 2rem;
-    }
-  }
-
   .menu-toggle-wrap {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 1rem;
-
     position: relative;
     top: 0;
     transition: 0.2s ease-out;
-
 
     button.menu-toggle {
       margin-right: -1.5rem;
@@ -94,8 +82,6 @@ aside {
       &:hover {
         .icon-angles {
           color: var(--primary);
-          /* transform funktion niert nicht*/
-          transform: translateX(0.5rem);
         }
       }
     }
@@ -119,7 +105,6 @@ aside {
       display: flex;
       align-items: center;
       text-decoration: none;
-
       padding: 0.5rem 1rem;
       transition: 0.2s ease-out;
 
@@ -128,8 +113,6 @@ aside {
         color: var(--light);
         transition: 0.2s ease-out;
         width: 2.5rem;
-
-
       }
 
       .title {
@@ -144,9 +127,7 @@ aside {
         .menu-icons, .title {
           color: var(--primary);
         }
-
       }
-
     }
   }
 
@@ -190,7 +171,6 @@ aside {
   img{
     width: 50px;
   }
-
 }
 
 .app-content {
@@ -224,7 +204,6 @@ aside {
   gap: 1rem;
 }
 
-/* Cards */
 .card {
   margin: 1rem 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -291,7 +270,9 @@ aside {
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   }
-
+}
+.answer{
+    margin-top: 1rem;
 }
 
 .answer-box {
@@ -299,17 +280,13 @@ aside {
   overflow: hidden;
   background: rgba(0,0,0, .02);
   border-radius: var(--border-radius);
-    padding: 1rem;
-  &:not(:first-of-type){
-    margin-top: 1rem;
-  }
+  padding: 1rem;
 
   .answer-content{
     min-height: 4rem;
   }
 
   .actions-container{
-
     position: absolute;
     top: 0;
     right: 0;
@@ -348,12 +325,6 @@ aside {
       }
     }
   }
-
-  &:hover{
-    .actions-container{
-
-    }
-  }
 }
 
 .answer-box.accepted {
@@ -371,7 +342,6 @@ aside {
   }
 }
 
-/* Tags */
 .tags{
   display: flex;
   flex-wrap: wrap;
@@ -403,12 +373,15 @@ ul.user-activities {
     list-style: none;
     padding: 0;
     margin: 0;
+
   li{
     border-bottom: 1px solid var(--light);
     padding: .5rem 0;
+
     a{
         color: var(--dark);
         text-decoration: none;
+
         &:hover{
             color: var(--primary);
         }
@@ -416,7 +389,6 @@ ul.user-activities {
   }
 }
 
-/* Editor */
 .tox-tinymce{
   border-radius: var(--border-radius);
 }
