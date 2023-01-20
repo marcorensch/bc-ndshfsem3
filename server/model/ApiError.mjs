@@ -34,6 +34,14 @@ class ApiError {
         return this;
     }
 
+    setMessage(message){
+        this.message = message;
+        return this;
+    }
+    setRelatedColumn(column){
+        this.relatedColumn = column;
+        return this;
+    }
     setData(data){
         this.data = data;
         return this;
