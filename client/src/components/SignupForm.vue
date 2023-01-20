@@ -153,6 +153,7 @@ export default {
       }
     },
     checkIfUsernameExist() {
+      if(!this.username.length) return;
       axios.post(this.host + '/users/check', {
         username: this.username
       })
@@ -169,6 +170,7 @@ export default {
 
     },
     checkIfEmailExist() {
+      if(!this.email.length) return;
       axios.post(this.host + '/users/check', {
         email: this.email
       })
