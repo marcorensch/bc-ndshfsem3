@@ -59,11 +59,6 @@
       </div>
     </form>
   </div>
-  <Teleport to="body">
-    <NotificationModal :show="showNotificationModal" :message=confirmMessage
-                       @confirm="handleConfirm"></NotificationModal>
-  </Teleport>
-
 </template>
 
 <script>
@@ -74,6 +69,7 @@ import NotificationModal from "@/components/NotificationModal";
 import {useUserStore} from "@/stores/UserStore";
 
 import axios from "axios";
+import {useToast} from "vue-toastification";
 
 export default {
   inject: ['host'],
@@ -101,6 +97,7 @@ export default {
       },
       submitConfirmText: "Thank you for signing up!",
       userStore: useUserStore(),
+      toast: useToast()
     }
   },
   validations() {
@@ -138,36 +135,24 @@ export default {
     }
   },
   mounted() {
-    if(this.isLoggedIn) {
+    if (this.isLoggedIn) {
       this.$router.push({name: 'Home'})
     }
   },
   methods: {
-    handleConfirm() {
-      this.showNotificationModal = false;
-      this.$router.push('/');
-    },
     async handleSubmit() {
-      try {
-        const valid = await this.v$.$validate();
-        console.log("result=" + valid);
-        if (valid) {
-          console.log("Form is valid => Submitted");
-          // Submit form
+      const valid = await this.v$.$validate();
+      if (valid) {
+        try {
           this.submitForm();
-
           this.$refs.form.reset();
-          //todo show message if success
-
-        } else {
-          console.log('Form is invalid')
+        } catch (e) {
+          this.toast.error("Error submitting form")
+          console.log(e)
         }
-        console.log(this.firstname, this.lastname, this.email, this.password.newPassword, this.password.confirmPassword)
-
-      } catch (error) {
-        console.log(error)
+      } else {
+        this.toast.error("Please fill in all fields correctly")
       }
-
     },
     checkIfUsernameExist() {
       axios.post(this.host + '/users/check', {
@@ -175,11 +160,10 @@ export default {
       })
           .then(response => {
             if (response.data.payload.exists) {
-              console.log("Username already exist")
+              this.toast.warning("Username already exists")
               this.v$.username.$error = true;
               this.v$.username.required.$message = "Username already exist";
             }
-            console.log("Username is available")
           })
           .catch(error => {
             console.log(error)
@@ -192,11 +176,10 @@ export default {
       })
           .then(response => {
             if (response.data.payload.exists) {
-              console.log("Email already exist")
+              this.toast.warning("Email already exist")
               this.v$.email.$error = true;
               this.v$.email.email.$message = "Email already exist";
             }
-            console.log("Email is available")
           })
           .catch(error => {
             console.log(error)
@@ -212,18 +195,13 @@ export default {
         password: this.password.newPassword,
       })
           .then((response) => {
-
             if (response.status === 201) {
-              this.showNotificationModal = true;
-              this.confirmMessage = response.data.message;
+              this.toast.success("Account registered successfully, you can now login")
+              this.$router.push({name: 'Home'})
             }
-
           })
           .catch((error) => {
-            console.log(error.response.data);
-            console.log(error.response.data.relatedColumn);
-            console.log(error.response.data.message);
-            this.errorMessage = error.response.data.relatedColumn + " " + error.response.data.message;
+            throw error
           });
     }
   },
