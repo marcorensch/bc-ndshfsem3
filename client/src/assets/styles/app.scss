@@ -151,7 +151,7 @@ aside {
   }
 
   &.is-expand {
-    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
 
     .menu-toggle-wrap {
       top: 0;
