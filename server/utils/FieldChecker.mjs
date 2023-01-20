@@ -18,7 +18,7 @@ export default class FieldChecker {
         };
         this.question = {
             min: 20,
-            max: 1000
+            max: 100000
         };
         this.username = {
             regex : /^([a-z]+[.\-_]*[a-z]+)$/i,

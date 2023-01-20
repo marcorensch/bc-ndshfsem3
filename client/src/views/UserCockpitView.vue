@@ -15,7 +15,7 @@
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">
-        <font-awesome-icon icon="user" /> Your Account
+        <font-awesome-icon icon="user" /> Account
       </button>
     </li>
   </ul>
@@ -24,8 +24,8 @@
     <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab">
       <h4>Your Statistics</h4>
       <div class="container" v-if="statistics">
-        <div class="row">
-          <div class="col-6">
+        <div class="row justify-content-md-center">
+          <div class="col-md-6" v-if="statistics.questionsCount || statistics.answersCount">
             <div>
               <Doughnut :data="doughnutChartData" :options="options" />
             </div>
@@ -35,13 +35,16 @@
               <div><b>Answered:</b> {{ statistics.answersCount }}</div>
             </div>
           </div>
+          <div class="col-md-6 pt-5 text-center" v-else>
+            <span>Yeah... ahm, nothing to see here so far. Ask your first Question or try to answer a Question to see something here.</span>
+          </div>
         </div>
       </div>
     </div>
     <div class="tab-pane fade" id="recent" role="tabpanel" aria-labelledby="recent-tab">
       <h4>Your Recent Activities</h4>
       <div class="container">
-        <div class="row">
+        <div v-if="statistics.questionsCount || statistics.answersCount" class="row">
           <div class="col-md-6">
             <h5>Questions</h5>
             <ul>
@@ -59,10 +62,16 @@
             </ul>
           </div>
         </div>
+        <div v-else class="row justify-content-md-center">
+          <div class="col-md-6 pt-5 text-center">
+            <span>Yeah... ahm, nothing to see here so far. Ask your first Question or try to answer a Question to see something here.</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
-      <h4>Account</h4>
+      <h4>Your Account</h4>
+      <UserAccountEditForm :user="user" />
     </div>
   </div>
 </main>
@@ -74,6 +83,7 @@ import axios from "axios";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
+import UserAccountEditForm from "@/components/UserAccountEditForm.vue";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -81,6 +91,7 @@ export default {
   name: "UserCockpitView",
   inject: ["host"],
   components: {
+    UserAccountEditForm,
     Doughnut
   },
   data() {

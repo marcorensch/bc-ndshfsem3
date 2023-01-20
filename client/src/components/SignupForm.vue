@@ -1,22 +1,22 @@
 <template>
   <div class="container">
     <h3>Signup form</h3>
-    <ErrorMessageContainer :string="errorMessage"/>
     <form ref="form" @submit.prevent="handleSubmit">
-      <div class="form-group ">
+      <!-- Trick the browser into NOT auto-filling the form -->
+      <input type="text" style="display:none">
+      <input type="password" style="display:none">
 
+      <div class="form-group">
         <div class="row p-4">
           <div class="col-sm-6">
             <label for="firstname">Firstname:</label>
             <input type="text" class="form-control" id="firstname" v-model="firstname">
-            <span v-if="v$.firstname.$error"
-                  :class="`${v$.firstname.$error ? 'error-message' : ''}`">{{ v$.firstname.required.$message }}</span>
+            <span v-if="v$.firstname.$error" :class="`${v$.firstname.$error ? 'error-message' : ''}`">{{ v$.firstname.required.$message }}</span>
           </div>
           <div class="col-sm-6">
             <label for="lastname">Lastname:</label>
             <input type="text" class="form-control" id="lastname" v-model="lastname">
-            <span v-if="v$.lastname.$error"
-                  :class="`${v$.lastname.$error ? 'error-message' : ''}`">{{ v$.lastname.required.$message }}</span>
+            <span v-if="v$.lastname.$error" :class="`${v$.lastname.$error ? 'error-message' : ''}`">{{ v$.lastname.required.$message }}</span>
           </div>
         </div>
 
@@ -119,8 +119,6 @@ export default {
         newPassword: {
           required: required,
           minLength: minLength(8),
-
-
         },
         confirmPassword: {
           required: required,

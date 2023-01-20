@@ -3,8 +3,6 @@
     <div class="container">
       <h1>Your Question</h1>
 
-      <ErrorMessageContainer :string="errorMessage" />
-
       <div id="editor">
         <editor
             :init="init"
@@ -25,12 +23,12 @@
             </div>
             <div class="col">
               <label class="selection-title">Tags: </label>
-              <vue3-tags-input  :tags="tags"
-                                placeholder="enter some tags"
-                                @on-tags-changed="handleChangeTag"
-                                :validate="customValidateTags"
-                                :allow-duplicates="false"
-                                :add-tag-on-keys="[13]">
+              <vue3-tags-input :tags="tags"
+                               placeholder="enter some tags"
+                               @on-tags-changed="handleChangeTag"
+                               :validate="customValidateTags"
+                               :allow-duplicates="false"
+                               :add-tag-on-keys="[13]">
               </vue3-tags-input>
             </div>
             <div class="col">
@@ -60,6 +58,8 @@ import 'tinymce/themes/silver/theme'
 import 'tinymce/skins/ui/oxide/skin.css'
 import Vue3TagsInput from 'vue3-tags-input';
 import {swearWords} from '../utils/BadWords.mjs'
+import {useUserStore} from "@/stores/UserStore";
+import {useToast} from "vue-toastification";
 
 // TinyMCE plugins
 // https://www.tiny.cloud/docs/tinymce/6/plugins/
@@ -74,59 +74,73 @@ import 'tinymce/plugins/wordcount/plugin'
 import Editor from '@tinymce/tinymce-vue'
 import axios from "axios";
 
-import ErrorMessageContainer from "@/components/ErrorMessageContainer.vue";
-import { useUserStore } from "@/stores/UserStore";
-
 export default {
   name: "QuestionNew",
   inject: ['host', 'editorInit'],
 
-  data(){
+  data() {
     return {
       errorMessage: "",
       category_id: false,
       anonymous: false,
       categories: [],
-      text:"",
+      text: "",
       editor: null,
-      tags:[],
+      tags: [],
       userStore: useUserStore(),
-      init: this.editorInit
+      init: this.editorInit,
+      toast: useToast()
     }
   },
   components: {
     'editor': Editor,
-    ErrorMessageContainer,
     Vue3TagsInput
   },
-  methods:{
-    getCategories(){
+  methods: {
+    getCategories() {
       axios.get(this.host + '/categories')
-        .then(response => {
-          this.categories = response.data
-        })
-        .catch(error => {
-          console.log(error)
-        })
+          .then(response => {
+            this.categories = response.data
+          })
+          .catch(error => {
+            console.log(error)
+          })
     },
-    saveQuestion(){
+    saveQuestion() {
+      if (this.category_id === false) {
+        this.toast.error("Please select a category")
+        return
+      }
+
+      if(this.text.length > 100000){
+        this.toast.error("Oh, wow! Your Question is too long, please shorten it.")
+        return
+      }
+
+      if(this.text.length < 20){
+        this.toast.error("Please be more specific, your question is too short")
+        return
+      }
+
       axios.post(this.host + "/questions/create", {
         content: this.text,
         category_id: this.category_id,
         tags: this.tags,
         anonymous: this.anonymous,
-      },{
-        headers : this.userStore.getReqHeaders
+      }, {
+        headers: this.userStore.getReqHeaders
       })
-        .then(response => {
-          if(response.data.payload.token){
-            this.userStore.setToken(response.data.payload.token)
-          }
-          this.$router.push({ name: 'Home' })
-        })
-        .catch(error => {
-          this.errorMessage = error.response.data.message
-        })
+          .then(response => {
+            if (response.data.payload.token) {
+              this.userStore.setToken(response.data.payload.token)
+            }
+            this.toast.success("Question saved successfully")
+            this.$router.push({name: 'Home'})
+          })
+          .catch(error => {
+            console.error(error)
+            this.toast.error("Question could not be saved")
+          })
     },
     handleChangeTag(tags) {
       this.tags = tags;
@@ -147,7 +161,7 @@ export default {
 <style lang="scss">
 .v3ti .v3ti-tag {
   background: var(--dark);
-  height:30px;
+  height: 30px;
 }
 
 .v3ti .v3ti-tag .v3ti-remove-tag {
@@ -167,16 +181,16 @@ export default {
 
 <style lang="scss" scoped>
 
-.select-section{
+.select-section {
   display: flex;
   flex-direction: column;
 }
 
-ul{
+ul {
   list-style: none;
 }
 
-.btn{
+.btn {
   font-size: 1.2rem;
   background-color: var(--dark);
   border-radius: 2px;
@@ -193,27 +207,26 @@ ul{
   }
 }
 
-.form-check{
+.form-check {
   display: flex;
   align-items: center;
 }
 
-.form-check-input{
+.form-check-input {
   height: 30px;
   width: 30px;
   margin-right: 10px;
 }
 
-.form-check-input:checked{
+.form-check-input:checked {
   background-color: var(--dark);
 }
 
-.selection-title{
+.selection-title {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 10px;
 }
-
 
 
 </style>

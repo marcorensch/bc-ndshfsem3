@@ -2,23 +2,6 @@
   margin: 0 auto;
 }
 
-//.btn {
-//  font-size: 1.5rem;
-//  background-color: var(--dark);
-//  border-radius: 2px;
-//  color: (var(--light));
-//  padding: 14px 20px;
-//  border: none;
-//  cursor: pointer;
-//  width: 50%;
-//  transition: 0.2s ease-out;
-//
-//
-//  &:hover {
-//    background-color: var(--primary);
-//  }
-//}
-
 label {
   font-weight: bold;
 }
@@ -28,9 +11,9 @@ input[type=text], input[type=password], input[type=email] {
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
-  border: 1px solid #ccc;
+  border: 1px solid var(--light);
   box-sizing: border-box;
-  border-radius: 2px;
+  border-radius: var(--border-radius);
 
   &:focus {
     border: 1px solid var(--primary);
@@ -42,10 +25,4 @@ input[type=text], input[type=password], input[type=email] {
   color: red;
   font-size: 0.8rem;
   font-weight: bold;
-}
-
-@media (max-width: 768px) {
-  .btn {
-    font-size: 1rem
-  }
 }

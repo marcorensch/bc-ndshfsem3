@@ -354,6 +354,15 @@ export default {
     handleSaveAnswerClicked() {
       // Store answertext in store (backup)
       this.userStore.setAnswerText(this.answer);
+
+      if(this.answer.length < 10) {
+        this.toast.error("Answer is too short");
+        return;
+      }
+      if(this.answer.length > 10000) {
+        this.toast.error("Answer is too long");
+        return;
+      }
       // Send answertext to server
       this.saveAnswer();
     },

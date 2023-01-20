@@ -40,6 +40,24 @@ class UserHelper {
         }
     }
 
+    async updateUserData(user) {
+        const data = [user.firstname, user.lastname, user.email, user.username, user.usergroup];
+        let sql = "UPDATE users SET firstname=?, lastname=?, email=?, username=?, usergroup=?"
+        if(user.password) {
+            sql += ", password=?";
+            data.push(user.password);
+        }
+        sql += " WHERE id=?";
+        data.push(user.id);
+        try{
+            const res = await this.databaseConnector.query(sql, data);
+            return res.data.affectedRows > 0;
+        }catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
     async getUsersGroupByUserId(userId) {
         const sql = "SELECT usergroup FROM users WHERE id=?";
         const result = await this.databaseConnector.query(sql, [userId]);
