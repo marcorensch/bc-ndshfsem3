@@ -8,9 +8,10 @@ import AnswerHelper from "../helper/AnswerHelper.mjs";
 import TransportObject from "../model/TransportObject.mjs";
 import isAuthorized from "../middleware/authorizationChecker.mjs";
 import {answerSanitizer} from "../middleware/sanitizers.mjs";
+import answerChecker from "../middleware/answerChecker.mjs";
 
 
-router.post('/create', authenticateToken, answerSanitizer, async (req, res) => {
+router.post('/create', authenticateToken, answerChecker, answerSanitizer, async (req, res) => {
     const {question_id, content} = req.body;
     const user = req.user;
     const answerHelper = new AnswerHelper();
@@ -57,14 +58,14 @@ router.post('/:id/vote', authenticateToken, async (req, res) => {
     }
     const transportObject = new TransportObject()
         .setSuccess(true)
-        .setMessage("Voting done")
+        .setMessage("Voting done for Answer")
         .setPayload({
             answer_id: Number(req.params.id), user_id: req.user.id, is_admin: req.user.isadministrator, token: req.token
         })
     return res.status(200).json(transportObject);
 });
 
-router.put('/:id', authenticateToken, isAuthorized("answer"), answerSanitizer,  async (req, res) => {
+router.put('/:id', authenticateToken, isAuthorized("answer"), answerChecker, answerSanitizer,  async (req, res) => {
     const answerHelper = new AnswerHelper();
 
     const response = await answerHelper.updateItem(req.params.id, req.body.content);

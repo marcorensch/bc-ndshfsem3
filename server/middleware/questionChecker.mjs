@@ -11,7 +11,7 @@ function questionChecker(req, res, next) {
     if (!category_id) return res.status(422).json(new ApiError('q-318'));
 
     const result = fieldChecker.hasValidLength(content, fieldChecker.question.min, fieldChecker.question.max);
-    if (!result) return res.status(422).json(new ApiError('q-317'));
+    if (!result) return res.status(422).json(new ApiError('q-316'));
 
     req.body.content = content;
     req.body.category_id = category_id;

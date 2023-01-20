@@ -352,27 +352,31 @@ export default {
           });
     },
     handleSaveAnswerClicked() {
-      // Store answertext in store (backup)
       this.userStore.setAnswerText(this.answer);
-
-      if(this.answer.length < 10) {
+      if(!this.checkAnswerText(this.answer)) return;
+      this.saveAnswer();
+    },
+    checkAnswerText(text){
+      if(!text || text.length < 1) {
+        this.toast.warning("Answer can't be empty");
+        return false;
+      }
+      if(this.answer.length < 20) {
         this.toast.error("Answer is too short");
-        return;
+        return false;
       }
       if(this.answer.length > 10000) {
         this.toast.error("Answer is too long");
-        return;
+        return false;
       }
-      // Send answertext to server
-      this.saveAnswer();
+      return true
     },
     handleUpdateAnswerClicked() {
       const answerId = this.editingAnswer.id;
       const answer = this.editingAnswer.content;
-      if(!answer || answer.length < 1) {
-        this.toast.warning("Answer can't be empty");
-        return;
-      }
+
+      if(!this.checkAnswerText(answer)) return;
+
       if(!answerId) {
         this.toast.warning("Something went wrong, please try again");
         return;

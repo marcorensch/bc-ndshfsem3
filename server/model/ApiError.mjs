@@ -14,9 +14,12 @@ const errorCodes = {
     "u-342": "Refresh token is invalid",
     "c-331": "Category not found",
     "c-322": "Category already exists",
+    "q-316": "Question text length not valid",
     "q-317": "Question text empty or too short",
     "q-318": "Category id is required",
     "q-331": "Question not found",
+    "a-316": "Answer text length not valid",
+    "a-317": "Answer text empty or too short",
 }
 class ApiError {
     errorCode;

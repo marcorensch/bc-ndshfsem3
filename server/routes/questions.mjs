@@ -40,7 +40,6 @@ router.get('/', identifyCurrentUser, async (req, res) => {
 router.post('/create', authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
     let {content, category_id, anonymous, tags} = req.body;
 
-
     // Add a new Question to db
     const question = new Question(content, req.user.id).setAnonymous(anonymous).setCategoryId(category_id);
     let transportObject = new TransportObject();
@@ -104,7 +103,7 @@ router.post('/:id/vote', authenticateToken, async (req, res) => {
     }
     const transportObject = new TransportObject()
         .setSuccess(true)
-        .setMessage("Voting done")
+        .setMessage("Voting stored for Question")
         .setPayload({
             answer_id: Number(req.params.id), user_id: req.user.id, is_admin: req.user.isadministrator, token: req.token
         })

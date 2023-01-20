@@ -1,5 +1,5 @@
 import express from "express";
-import {authenticateToken, authenticateUser} from "../middleware/authenticate.mjs";
+import {authenticateToken} from "../middleware/authenticate.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
 import TransportObject from "../model/TransportObject.mjs";
 import ApiError from "../model/ApiError.mjs";
@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Do work here
 
-router.get('/', authenticateToken, authenticateUser, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
     if (!req.user.isadministrator) return res.status(403).json(new ApiError("e-100"));
     const userHelper = new UserHelper();
     try {

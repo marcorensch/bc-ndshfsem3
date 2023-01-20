@@ -32,9 +32,4 @@ async function authenticateToken (req, res, next) {
     next();
 }
 
-async function authenticateUser(req, res, next) {
-
-    next();
-}
-
-export {authenticateToken, authenticateUser};
+export {authenticateToken};

@@ -10,6 +10,8 @@ export default class FieldChecker {
     lastname;
     password;
     connectionData;
+    question;
+    answer;
 
     constructor(connectionData) {
         this.connectionData = connectionData;
@@ -19,6 +21,10 @@ export default class FieldChecker {
         this.question = {
             min: 20,
             max: 100000
+        };
+        this.answer = {
+            min: 20,
+            max: 10000
         };
         this.username = {
             regex : /^([a-z]+[.\-_]*[a-z]+)$/i,
