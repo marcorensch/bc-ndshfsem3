@@ -54,7 +54,7 @@ router.get('/me', authenticateToken, async (req, res) => {
 
 router.post('/check', async (req, res) => {
     const {username, email} = req.body;
-    if (!username && !email) return res.status(422).json(new ApiError("u-317").relatedColumn("username and email").setMessage("No username or email provided!"));
+    if (!username && !email) return res.status(422).json(new ApiError("u-317").setRelatedColumn("username and email").setMessage("No username or email provided!"));
     const userHelper = new UserHelper();
     let exists = false;
     if (username) {
