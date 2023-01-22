@@ -74,6 +74,7 @@ export default {
   name: "UserAccountEditForm",
   components: {FontAwesomeIcon},
   inject: ['host'],
+  emits: ['updateUser'],
   props: {
     user: {
       type: Object,
@@ -89,11 +90,8 @@ export default {
       passwordConfirmation: '',
       toast: useToast(),
       userStore: useUserStore(),
-      origUserData: {...this.user}
+      givenUserData: {...this.user}
     }
-  },
-  mounted() {
-    console.log(this.user)
   },
   validations() {
     return {
@@ -122,13 +120,16 @@ export default {
     }
   },
   methods: {
+    updateGivenUserData() {
+      this.givenUserData = {...this.user}
+    },
     async handleEditSubmit() {
       const valid = await this.v$.$validate();
       if(!valid){
         this.toast.error('Not saved! Please fill out all fields correctly');
         return;
       }
-      if(this.checkIfEqualValues(this.user, this.origUserData) && this.password.length === 0){
+      if(this.checkIfEqualValues(this.user, this.givenUserData) && this.password.length === 0){
         this.toast.warning('No changes made');
         return;
       }
@@ -152,6 +153,8 @@ export default {
           if(response.data.payload.token){
             this.userStore.setToken(response.data.payload.token);
           }
+          this.updateGivenUserData();
+          this.$emit('updateUser');
         })
         .catch(error => {
           this.toast.error('Error updating your account');

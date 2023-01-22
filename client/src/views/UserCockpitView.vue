@@ -75,7 +75,7 @@
       </div>
       <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
         <h4>Your Account</h4>
-        <UserAccountEditForm :user="user" />
+        <UserAccountEditForm :user="user" @update-user="getUserData" />
       </div>
     </div>
   </main>
