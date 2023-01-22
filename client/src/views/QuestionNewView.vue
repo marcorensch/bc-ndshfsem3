@@ -100,7 +100,7 @@ export default {
           })
     },
     saveQuestion() {
-      if (this.category_id === false) {
+      if (this.category_id === false || this.category_id === "") {
         this.toast.error("Please select a category")
         return
       }
