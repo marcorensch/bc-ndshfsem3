@@ -92,6 +92,9 @@ export default {
       origUserData: {...this.user}
     }
   },
+  mounted() {
+    console.log(this.user)
+  },
   validations() {
     return {
       user: {

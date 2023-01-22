@@ -55,12 +55,14 @@
             </div>
             <div class="col-md-6">
               <h5>Answers</h5>
-              <ul class="user-activities">
-                <li v-for="answer of recent.answers" :key="answer.id">
-                  <router-link :to="{name: 'Question View', params:{id: answer.question.id}}">
-                    {{ answer.content.replace(/<.+?>/g, '').slice(0, 50) }}
-                  </router-link>
-                </li>
+              <ul class="user-activities" v-if="recent.answers">
+                <template v-for="answer of recent.answers" :key="answer.id">
+                  <li v-if="answer.question?.id">
+                    <router-link :to="{name: 'Question View', params:{id: answer.question.id}}">
+                      {{ answer.content.replace(/<.+?>/g, '').slice(0, 50) }}
+                    </router-link>
+                  </li>
+                </template>
               </ul>
             </div>
           </div>
