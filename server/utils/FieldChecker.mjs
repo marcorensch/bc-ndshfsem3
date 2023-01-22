@@ -47,19 +47,16 @@ export default class FieldChecker {
             returnValue: false
         };
     }
-
     async isValid(string, context){
         if(!string) return new ApiError('u-317', context);
         return context === "email" ? await this.isValidEmail(string) : this.isValidString(string, context);
     }
-
     async isValidEmail(email){
         if(!isEmail(email)) return new ApiError('u-318', "email").setData({value: email});
         if(!await this.emailIsNew(email)) return new ApiError('u-322', "email").setData({value: email});
 
         return true;
     }
-
     isValidString(string, context) {
         const lengthTest = this.hasValidLength(string, this[context].min, this[context].max);
         const regexTest = this[context].regex.test(string);
@@ -71,7 +68,6 @@ export default class FieldChecker {
 
         return true;
     }
-
     async isValidUsername(username){
         const isValidStringTest = this.isValidString(username, "username");
         const isAvailableTest = await this.usernameIsAvailable(username);
@@ -79,13 +75,11 @@ export default class FieldChecker {
 
         return isValidStringTest;
     }
-
     async usernameIsAvailable(username){
         const userHelper = new UserHelper(this.connectionData);
         const result = await userHelper.getUserIdByUsername(username);
         return result.data.length === 0;
     }
-
     stringContainsForbiddenWord(string){
         let testedWord = "";
         const forbidden = this.username.forbidden.some((word) => {
@@ -96,23 +90,19 @@ export default class FieldChecker {
         });
         return forbidden ? {status: false, word: testedWord} : {status: true};
     }
-
     async emailIsNew(email){
         const userHelper = new UserHelper(this.connectionData);
         const result = await userHelper.getUserIdByEmail(email);
         return !!!result.data[0]?.id
     }
-
     hasValidLength(string, min, max){
         return isLength(string, {min, max});
     }
-
     setBoolean(value) {
         if(typeof value == "string") return value === "1" || value === "true";
         if(typeof value == "boolean") return value;
         return value === 1;
     }
-
     checkTags(tags){
         let checkedTags = [];
         for (const tag of tags) {

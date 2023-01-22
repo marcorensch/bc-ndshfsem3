@@ -1,9 +1,6 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-if(process.env.NODE_ENV === 'test') {
-    process.env.DB_NAME = process.env.TEST_DB_NAME;
-}
-console.log(chalk.bold.blue("Using database: " + process.env.DB_NAME));
+process.env.DB_NAME = process.env.NODE_ENV === 'test' ? process.env.TEST_DB_NAME : process.env.DB_NAME;
 
 import * as https from "https";
 import express from 'express';
@@ -19,16 +16,19 @@ import * as fs from "fs";
 import QuestionHelper from "./helper/QuestionHelper.mjs";
 import chalk from "chalk";
 
+console.log(chalk.bold.blue("Using database: " + process.env.DB_NAME));
+
 const app = express();
 const port = process.env.SERVER_PORT || 3000;
 
 let corsOptions = {
     origin: "*",
     credentials: true,
-    optionsSuccessStatus: 200,// some legacy browsers (IE11, various SmartTVs) choke on 204
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
 }
+
 if (process.env.HTTPS === "true") {
     https.createServer({
         key: fs.readFileSync('certs/example.com+5-key.pem'),
@@ -48,12 +48,11 @@ app.use(express.urlencoded({extended: true}));
 
 try{
     await new QuestionHelper().getItems({count: 2});
-}catch(e){
-    console.error(chalk.red.bold(`Database Error ${e.errno} ${e.code}`))
+}catch(error){
+    console.error(chalk.red.bold(`Database Error ${error.errno} ${error.code}`))
     process.exit(1)
 }
 
-// Routes
 app.get('/', (req, res) => {
     res.send('Hello there! This isn\'t the page you\'re looking for. ⭐🧔⚔️');
 });

@@ -7,18 +7,16 @@ import chalk from "chalk";
 let databaseConnector;
 
 async function addAdminUser(connectionData, adminUser) {
-
     const userController = new UserHelper(connectionData);
     adminUser.usergroup = await userController._getUserGroupIdByAlias("administrator");
 
     try {
         await userController.registerUser(adminUser);
         return true;
-    } catch (err) {
-        console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
+    } catch (error) {
+        console.log(chalk.bold.redBright(`SQL Error: ${error.errno} ${error.code} ${error.text}`));
         return false;
     }
-
 }
 
 async function dropDatabase(connectionData, dbTypeInMsg) {
@@ -27,11 +25,11 @@ async function dropDatabase(connectionData, dbTypeInMsg) {
         await databaseConnector.dropDatabase(connectionData.database);
         console.log(chalk.bold.green(`${dbTypeInMsg} Database removed successfully`));
         return true;
-    } catch (err) {
-        if(err.code === 'ER_BAD_DB_ERROR') {
-            console.log(chalk.bold.yellow(`Database '${err.text.split("'")[1]}' does not exist`));
+    } catch (error) {
+        if(error.code === 'ER_BAD_DB_ERROR') {
+            console.log(chalk.bold.yellow(`Database '${error.text.split("'")[1]}' does not exist`));
         }else{
-            _showError(err);
+            _showError(error);
         }
         return false
     }
@@ -49,9 +47,9 @@ async function create(connectionData, dbTypeInMsg) {
 async function createDatabase(dbName) {
     try {
         return await databaseConnector.createDatabase(dbName);
-    } catch (err) {
-        console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
-        _showError(err);
+    } catch (error) {
+        console.log(chalk.bold.redBright(`SQL Error: ${error.errno} ${error.code} ${error.text}`));
+        _showError(error);
     }
 }
 
@@ -65,33 +63,33 @@ async function createTables(pathToScripts) {
         try {
             const result = await databaseConnector.query(sql, null);
             results.push({'script': script, 'status': result});
-        } catch (err) {
-            _showError(err);
+        } catch (error) {
+            _showError(error);
         }
     }
 
     return results;
 }
 
-function _showError(err) {
-    switch (err.code) {
+function _showError(error) {
+    switch (error.code) {
         case 'ER_ACCESS_DENIED_ERROR':
         case 'ER_DBACCESS_DENIED_ERROR':
-            console.log(chalk.bold.redBright(`Access denied for user '${err.sqlMessage.split("'")[1]}'@'${err.sqlMessage.split("'")[3]}'`));
+            console.log(chalk.bold.redBright(`Access denied for user '${error.sqlMessage.split("'")[1]}'@'${error.sqlMessage.split("'")[3]}'`));
             process.exit(1);
             break;
         case 'ER_BAD_DB_ERROR':
-            console.log(chalk.bold.redBright(`Database '${err.text.split("'")[1]}' doesn't exist`));
+            console.log(chalk.bold.redBright(`Database '${error.text.split("'")[1]}' doesn't exist`));
             process.exit(1);
             break;
         case 'ER_DB_CREATE_EXISTS':
-            console.log(chalk.bold.yellow(`Database '${err.text.split("'")[1]}' already exists`));
+            console.log(chalk.bold.yellow(`Database '${error.text.split("'")[1]}' already exists`));
             break;
         case 'ER_DB_DROP_EXISTS':
-            console.log(chalk.bold.yellow(`Database '${err.text.split("'")[1]}' doesn't exist`));
+            console.log(chalk.bold.yellow(`Database '${error.text.split("'")[1]}' doesn't exist`));
             break;
         default:
-            console.log(chalk.bold.redBright(`SQL Error: ${err.errno} ${err.code} ${err.text}`));
+            console.log(chalk.bold.redBright(`SQL Error: ${error.errno} ${error.code} ${error.text}`));
             process.exit(1);
     }
 }
@@ -101,10 +99,10 @@ async function getSqlFiles(pathToScripts) {
         const dirents = await fs.promises.readdir(pathToScripts, {withFileTypes: true});
         const files = dirents.filter(file => path.extname(file.name) === '.sql');
         return files.map(file => path.join(pathToScripts, file.name));
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.log(error);
         return [];
     }
 }
 
-export {create, dropDatabase, addAdminUser};
+export { create, dropDatabase, addAdminUser };

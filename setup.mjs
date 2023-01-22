@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-
 dotenv.config();
 process.env.NODE_ENV = 'setup';
 
@@ -82,7 +81,6 @@ async function createDotEnvFlow() {
     if (doBackup.toLowerCase() === 'y') {
         let backupName = await rl.question('Please enter a name for the backup file: ');
         if (!backupName.endsWith('.env')) backupName += '.env';
-
         try {
             await fs.copyFile(pathToEnv, backupName);
             console.log(chalk.bold.green('Backup created successfully!'));
@@ -118,10 +116,10 @@ async function createDotEnvFlow() {
         }
     }
 
-
     const configString = Object.keys(configuration).map(key => `${configuration[key].key}=${configuration[key].value}`).join('\n');
     console.log(configString);
     const frontendConfigString = Object.keys(configuration).filter(key => configuration[key].frontend).map(key => `VUE_APP_${configuration[key].key}=${configuration[key].value}`).join('\n');
+
     try {
         await fs.writeFile(pathToEnv, configString, {encoding: 'utf8'});
         await fs.writeFile(pathToFrontendEnv, frontendConfigString, {encoding: 'utf8'});
@@ -143,12 +141,10 @@ async function createDotEnvFlow() {
 
 async function skipDotEnvFlow() {
     console.log(chalk.bold.yellow('Skipping Configuration...'));
-
     const fileExists = async pathToEnv => !!(await fs.stat(pathToEnv).catch(e => false)); // https://sabe.io/blog/node-check-file-exists-async-await
 
     if (await fileExists(pathToEnv)) {
         console.log(chalk.bold.yellow('Found existing .env file...'));
-        // Loading config from evn file
         const envConfig = dotenv.parse(await fs.readFile(pathToEnv));
         for (const [index, config] of Object.entries(configuration)) {
             if (envConfig[config.key] != null) {
@@ -225,7 +221,6 @@ installDb.toLowerCase() === 'y' ? await installDatabase() : console.log(chalk.bo
 const addAdmin = await rl.question('Do you want to create an admin user? (' + chalk.italic.cyan('press "y" to create or any key to skip') + ') ');
 addAdmin.toLowerCase() === 'y' ? await createAdminUser() : console.log(chalk.bold.yellow('Skipping Admin User Creation...'));
 
-
 const installTestDb = await rl.question('Do you want to install the test database? (' + chalk.italic.cyan('press "y" to install or any key to skip') + ') ');
 installTestDb.toLowerCase() === 'y' ? await installDatabase('test') : console.log(chalk.bold.yellow('Skipping Test Database Installation...'));
 
@@ -236,6 +231,5 @@ console.log("###############################################");
 console.log(chalk.bold("Thank you, Have a nice day!"));
 console.log("###############################################");
 console.log("\n\n")
-
 
 process.exit(0);
