@@ -9,7 +9,7 @@ class AnswerHelper {
         let data = [];
         const answers_sql = "SELECT qa.question_id, qa.answer_id, a.*, u.username, u.firstname, u.lastname FROM question_answers qa"+
             " JOIN answers a ON qa.answer_id = a.id"+
-            " JOIN users u ON a.created_by = u.id"+
+            " LEFT OUTER JOIN users u ON a.created_by = u.id"+
             " WHERE question_id=?"
         try {
             const answers = await this.databaseConnector.query(answers_sql, [question_id]);

@@ -89,7 +89,7 @@ class QuestionHelper {
             return {};
         }
     }
-    async getItemById(id) {
+    async getItemById(questionId) {
         let question;
         const answerHelper = new AnswerHelper(this.databaseConnector.connectionData);
         const question_sql = "SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username FROM questions q" +
@@ -97,14 +97,14 @@ class QuestionHelper {
             " LEFT OUTER JOIN users u ON q.created_by = u.id" +
             " WHERE q.id=?";
         try {
-            const questionData = await this.databaseConnector.query(question_sql, [id]);
+            const questionData = await this.databaseConnector.query(question_sql, [questionId]);
             question = questionData.data[0];
-            question.tags = await this.getTagsByQuestionId(id);
+            question.tags = await this.getTagsByQuestionId(questionId);
 
-            let votes = await this.getItemVotes(id);
+            let votes = await this.getItemVotes(questionId);
             votes.total = votes.reduce((total, vote) => total + vote.vote, 0);
             question.votes = {data: votes, total: votes.total};
-            question.answers = await answerHelper.getItems(id);
+            question.answers = await answerHelper.getItems(questionId);
         } catch (error) {
             console.log(error);
             return {};

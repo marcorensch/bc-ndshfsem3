@@ -36,6 +36,19 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    if (!id) return res.status(400).json({message: "Question id is missing"});
+
+    const questionHelper = new QuestionHelper();
+    const response = await questionHelper.getItemById(id);
+    response.userId = req.userId;
+    response.isAdmin = req.isAdmin;
+    if (!response) return res.status(404).json(new ApiError('q-331').setData({id, response}));
+
+    res.status(200).json(response);
+});
+
 router.post('/create', authenticateToken, questionSanitizer, questionChecker, async (req, res) => {
     let {content, category_id, anonymous, tags} = req.body;
 
@@ -101,19 +114,6 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
     if(!deleted) return res.status(500).json(new ApiError('e-999'));
     return res.status(200).json(new TransportObject().setSuccess(true).setMessage("Question deleted successfully"));
-});
-
-router.get('/:id', async (req, res) => {
-    const id = req.params.id;
-    if (!id) return res.status(400).json({message: "Question id is missing"});
-
-    const questionHelper = new QuestionHelper();
-    const response = await questionHelper.getItemById(id);
-    response.userId = req.userId;
-    response.isAdmin = req.isAdmin;
-    if (!response) return res.status(404).json(new ApiError('q-331').setData({id, response}));
-
-    res.status(200).json(response);
 });
 
 router.post('/:id/vote', authenticateToken, async (req, res) => {
