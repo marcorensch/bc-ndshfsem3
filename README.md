@@ -108,7 +108,7 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :warning:          | PUT    | `/:id`        | Aktualisiert eine Frage              | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
 | :x:                | DELETE | `/:id`        | Löscht eine Frage                    | ja                                                                                    |                                                                               |
 | :white_check_mark: | POST   | `/:id/vote`   | Setzt ein Voting für eine Frage ab   | header.token, body.type (INT (1 / 0 / -1))                                            |                                                                               |
-| :white_check_mark: | POST   | `/:id/answer` | Definiert korrekte Antwort auf Frage | header.token, body.accepted_id                                                        |                                                                               |
+| :white_check_mark: | PUT    | `/:id/answer` | Definiert korrekte Antwort auf Frage | header.token, body.accepted_id                                                        |                                                                               |
 
 *: Nur wenn Token vorhanden & valide ist sonst NULL
 
