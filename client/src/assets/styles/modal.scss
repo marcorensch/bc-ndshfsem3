@@ -61,11 +61,13 @@ input[type=text], input[type=password] {
   background-color: var(--dark);
   color: var(--light);
   font-size: 1rem;
-  padding: .2rem .8rem;
+  padding: 10px 16px;
 
   .modal-default-button.close-button {
     font-size: 1.5rem;
     transition: 0.2s ease-out;
+    padding: 0;
+    min-width: 20px;
     color: var(--light);
   }
   .modal-default-button.close-button:hover {

@@ -11,6 +11,10 @@
   &:hover {
     background-color: var(--primary);
   }
+
+  svg {
+    margin-right: 8px;
+  }
 }
 button {
   appearance: none;
