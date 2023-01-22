@@ -13,11 +13,10 @@
   --dark: #292e40;
   --dark-alt: #334155;
   --light: #f1f5f9;
-  --sidebar-width: 300px;
   --error-back-color: #f44336;
   --error-text-color: rgb(246, 221, 221);
   --error-border-color: #d93427;
-
+  --sidebar-width: 300px;
   --border-radius: .375rem;
   --border-radius-lg: .5rem;
   --border-radius-sm: .25rem;
@@ -225,6 +224,9 @@ aside {
       margin-bottom: .5rem;
     }
   }
+  &.solved .card-header{
+    background: var(--success);
+  }
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     transition: 0.3s ease-out;
@@ -341,33 +343,6 @@ aside {
       border-color: transparent #0d7307 transparent transparent;
     }
   }
-}
-
-.tags{
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  justify-content: end;
-  margin-bottom: .5rem;
-  .tag{
-    font-size: .8rem;
-    background-color: var(--dark);
-    color: var(--light);
-    padding: 0.2rem .4rem;
-    margin: 0.2rem;
-    border-radius: var(--border-radius-sm);
-  }
-}
-
-.tag {
-  background-color: var(--dark);
-  color: var(--light);
-  padding: 0.2rem .4rem;
-  border-radius: var(--border-radius-sm);
-  margin: 0.25rem;
-  font-size: .8rem;
-  font-weight: 100;
-  display: inline-block;
 }
 
 ul.user-activities {

@@ -45,7 +45,7 @@
                 <div class="col-1">
                   <font-awesome-icon icon="tags"/>
                 </div>
-                <div class="col-3">
+                <div class="col-auto tags">
                   <span v-if="!editingQuestion" class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon icon="tag"/>
                     {{ tag.title }}
                   </span>

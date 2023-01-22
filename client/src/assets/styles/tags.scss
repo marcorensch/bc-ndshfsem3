@@ -26,23 +26,23 @@ ul {
   list-style: none;
 }
 
-.form-check {
+.tags{
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: end;
+  margin-bottom: .5rem;
+  .tag:not(:first-of-type){
+    margin-left: 0.25rem;
+  }
 }
 
-.form-check-input {
-  height: 30px;
-  width: 30px;
-  margin-right: 10px;
-}
-
-.form-check-input:checked {
-  background-color: var(--dark);
-}
-
-.selection-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
+.tag {
+  font-size: .8rem;
+  background-color: var(--grey);
+  color: var(--light);
+  padding: 0.2rem .4rem;
+  border-radius: var(--border-radius-sm);
+  font-weight: 100;
+  display:inline-block;
 }

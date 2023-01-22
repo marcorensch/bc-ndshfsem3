@@ -1,5 +1,5 @@
-<template>
-  <div class="card w-100">
+<template v-if="item">
+  <div class="question-card card w-100" :class="{solved : item.accepted_id}">
     <span class="card-header">
       {{ item.categoryTitle }}
     </span>
@@ -10,7 +10,8 @@
       </div>
       <div class="btn-section">
         <router-link :to="{name: 'Question View', params:{id: item.id}}" class="btn btn-primary float-start col">
-          I can answer this!
+          <span v-if="item.accepted_id">See answers</span>
+          <span v-else>I can answer this!</span>
         </router-link>
         <router-link to="/" v-if="item.answersCount">
           <button class="btn btn-primary float-end col">Show {{ item.answersCount }} Answers </button>
