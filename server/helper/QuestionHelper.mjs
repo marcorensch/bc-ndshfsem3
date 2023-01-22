@@ -6,6 +6,10 @@ class QuestionHelper {
     constructor(connectionData) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
+    setAcceptedAnswer(questionId, answerId) {
+        const sql = "UPDATE questions SET accepted_id=? WHERE id=?";
+        return this.databaseConnector.query(sql, [answerId, questionId]);
+    }
     async getItems(queryParams) {
         let sql = `SELECT q.*, c.title AS categoryTitle, u.firstname, u.lastname, u.username
                    FROM questions q`

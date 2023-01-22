@@ -100,14 +100,15 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
 #### Fragen (/questions/...)
 
-| Status             | Type   | Route       | Beschreibung                        | Request                                                                               | Response                                                                      |
-|--------------------|--------|-------------|-------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| :white_check_mark: | GET    | `/`         | Gibt eine Liste aller Fragen zurück | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
-| :white_check_mark: | GET    | `/:id`      | Gibt eine Frage & Antworten zurück  | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
-| :white_check_mark: | POST   | `/create`   | Erstellt eine neue Frage            | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
-| :warning:          | PUT    | `/:id`      | Aktualisiert eine Frage             | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
-| :x:                | DELETE | `/:id`      | Löscht eine Frage                   | ja                                                                                    |                                                                               |
-| :white_check_mark: | POST   | `/:id/vote` | Setzt ein Voting für eine Frage ab  | header.token, body.type (INT (1 / 0 / -1))                                            |                                                                               |
+| Status             | Type   | Route         | Beschreibung                         | Request                                                                               | Response                                                                      |
+|--------------------|--------|---------------|--------------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| :white_check_mark: | GET    | `/`           | Gibt eine Liste aller Fragen zurück  | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
+| :white_check_mark: | GET    | `/:id`        | Gibt eine Frage & Antworten zurück   | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
+| :white_check_mark: | POST   | `/create`     | Erstellt eine neue Frage             | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
+| :warning:          | PUT    | `/:id`        | Aktualisiert eine Frage              | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
+| :x:                | DELETE | `/:id`        | Löscht eine Frage                    | ja                                                                                    |                                                                               |
+| :white_check_mark: | POST   | `/:id/vote`   | Setzt ein Voting für eine Frage ab   | header.token, body.type (INT (1 / 0 / -1))                                            |                                                                               |
+| :white_check_mark: | POST   | `/:id/answer` | Definiert korrekte Antwort auf Frage | header.token, body.accepted_id                                                        |                                                                               |
 
 *: Nur wenn Token vorhanden & valide ist sonst NULL
 

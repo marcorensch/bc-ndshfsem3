@@ -412,9 +412,6 @@ export default {
         return;
       }
       axios.put(this.host + "/questions/" + this.question.id + "/answer", {
-        content: this.question.content,
-        category: this.question.category,
-        anonymous: this.question.anonymous,
         accepted_id: id
       }, {
         headers: this.userStore.getReqHeaders
