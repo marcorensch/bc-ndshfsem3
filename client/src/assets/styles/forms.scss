@@ -13,6 +13,11 @@
   margin-right: 5px;
 }
 
+.form-check .form-check-input {
+  height: 30px;
+  width: 30px;
+}
+
 .form-check-input:checked {
   background-color: var(--dark);
 }
