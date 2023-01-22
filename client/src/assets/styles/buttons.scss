@@ -11,10 +11,6 @@
   &:hover {
     background-color: var(--primary);
   }
-
-  svg {
-    margin-right: 8px;
-  }
 }
 button {
   appearance: none;
@@ -27,6 +23,10 @@ button {
   transition: all 0.2s ease-out;
   min-width: 80px;
   padding: 7px 12px;
+
+  svg {
+    margin-right: 8px;
+  }
 
   &.default {
     background-color: var(--dark);
