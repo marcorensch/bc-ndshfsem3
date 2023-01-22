@@ -5,9 +5,7 @@ function questionChecker(req, res, next) {
     const { content, category_id, anonymous, tags } = req.body;
     const fieldChecker = new FieldChecker();
 
-    if (!content) {
-        return res.status(422).json(new ApiError('q-317'));
-    }
+    if (!content) return res.status(422).json(new ApiError('q-317'));
     if (!category_id) return res.status(422).json(new ApiError('q-318'));
 
     const result = fieldChecker.hasValidLength(content, fieldChecker.question.min, fieldChecker.question.max);

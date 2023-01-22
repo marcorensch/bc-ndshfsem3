@@ -12,7 +12,6 @@ async function identifyCurrentUser (req, res, next) {
         const tokenHelper = new TokenHelper();
         try {
             const tokenContent = await tokenHelper.checkToken(tokenString);
-            console.log(tokenContent);
             req.userId = tokenContent.id;
             req.isAdmin = tokenContent.isAdmin;
         }catch(err) {
@@ -20,8 +19,6 @@ async function identifyCurrentUser (req, res, next) {
             return res.status(401).json(new ApiError('e-101'));
         }
     }
-
-    console.log(req.headers)
 
     next();
 }

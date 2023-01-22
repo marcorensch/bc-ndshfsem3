@@ -7,11 +7,10 @@ import {questionSanitizer} from "../middleware/sanitizers.mjs";
 import QuestionHelper from "../helper/QuestionHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
 import questionChecker from "../middleware/questionChecker.mjs";
-import identifyCurrentUser from "../middleware/identifyCurrentUser.mjs";
 import TransportObject from "../model/TransportObject.mjs";
 import isAuthorized from "../middleware/authorizationChecker.mjs";
 
-router.get('/', identifyCurrentUser, async (req, res) => {
+router.get('/', async (req, res) => {
     const {count, page, user_id, category_id, direction} = req.query;
     const queryParams = {
         count: count || 25,
@@ -82,7 +81,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     return res.status(200).json(new TransportObject().setSuccess(true).setMessage("Question deleted successfully"));
 });
 
-router.get('/:id', identifyCurrentUser, async (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = req.params.id;
     if (!id) return res.status(400).json({message: "Question id is missing"});
 

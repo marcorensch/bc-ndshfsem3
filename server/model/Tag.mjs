@@ -5,14 +5,11 @@ class Tag {
     id;
     title;
     alias;
-    /**
-     * @private
-     */
+
     constructor(title) {
         this.title = title;
         this.alias = null;
     }
-
     static async create(title, connectionData) {
         const instance = new Tag(title);
         instance.connectionData = connectionData;
@@ -20,7 +17,6 @@ class Tag {
         instance.alias = await instance.standardizeAlias();
         return instance;
     }
-
     async standardizeAlias(){
         const tagHelper = new TagHelper(this.connectionData);
         let alias = this.alias.replace(/[^a-z0-9\-]+/, "");
@@ -31,7 +27,6 @@ class Tag {
         }
         return alias;
     }
-
     setId(id) {
         this.id = id;
         return this;

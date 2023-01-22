@@ -5,15 +5,10 @@ class Category {
     title;
     alias;
     isFavorite;
-    #createdExternalCheck = false;
-    /**
-     * @private
-     */
     constructor(title) {
         this.title = title;
         this.alias = null;
     }
-
     static async create(title, connectionData) {
         const instance = new Category(title);
         instance.connectionData = connectionData;
@@ -21,7 +16,6 @@ class Category {
         instance.alias = await instance.standardizeAlias();
         return instance;
     }
-
     async standardizeAlias(){
         const categoryHelper = new CategoryHelper(this.connectionData);
         let alias = this.alias.replace(/[^a-z0-9\-]+/, "");
@@ -32,7 +26,6 @@ class Category {
         }
         return alias;
     }
-
     setId(id) {
         this.id = id;
         return this;

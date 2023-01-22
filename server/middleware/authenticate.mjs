@@ -1,17 +1,14 @@
 import jwt from "jsonwebtoken";
-
 import TokenHelper from "../helper/TokenHelper.mjs";
 import ApiError from "../model/ApiError.mjs";
 import UserHelper from "../helper/UserHelper.mjs";
-
-
 
 async function authenticateToken (req, res, next) {
     const tokenHelper = new TokenHelper();
     const userHelper = new UserHelper();
 
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-    const refreshToken = req.headers['RefreshToken'] || req.headers['refreshtoken'] || req.headers['refreshToken'] || req.body['refreshToken'] || req.body['RefreshToken'] || req.body['refreshtoken'];
+    const refreshToken = req.headers['RefreshToken'] || req.headers['refreshtoken'] || req.headers['refreshToken'];
     const token = authHeader && authHeader.split(' ')[1];
 
     if (token == null) return res.sendStatus(401);
@@ -32,4 +29,4 @@ async function authenticateToken (req, res, next) {
     next();
 }
 
-export {authenticateToken};
+export { authenticateToken };

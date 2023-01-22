@@ -17,19 +17,13 @@ class User {
         this.username = username;
         this.email = email;
     }
-
     setPassword(password, isHashed = false) {
-        if (isHashed) {
-            this.password = password;
-        } else {
-            this.password = this.hashPassword(password);
-        }
+        this.password = isHashed ? password : this.hashPassword(password);
+        return this;
     }
-
     hashPassword(password) {
         return bcrypt.hashSync(password, 10);
     }
-
     checkPassword(password) {
         return bcrypt.compareSync(password, this.password);
     }

@@ -13,6 +13,7 @@ const errorCodes = {
     "u-341": "Refresh token is missing",
     "u-342": "Refresh token is invalid",
     "c-331": "Category not found",
+    "c-318": "Category id is required",
     "c-322": "Category already exists",
     "q-316": "Question text length not valid",
     "q-317": "Question text empty or too short",
@@ -20,6 +21,11 @@ const errorCodes = {
     "q-331": "Question not found",
     "a-316": "Answer text length not valid",
     "a-317": "Answer text empty or too short",
+    "t-317": "Tag title is required",
+    "t-318": "Tag id is required",
+    "t-322": "Tag already exists",
+    "t-331": "Tag not found",
+
 }
 class ApiError {
     errorCode;
@@ -33,7 +39,6 @@ class ApiError {
         this.relatedColumn = column;
         return this;
     }
-
     setMessage(message){
         this.message = message;
         return this;

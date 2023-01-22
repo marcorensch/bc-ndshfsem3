@@ -13,22 +13,18 @@ class Question {
         this.content = content;
         this.created_by = created_by;
     }
-
     setCategoryId(category_id){
         this.category_id = parseInt(category_id);
         return this;
     }
-
     setAnonymous(anonymous){
         this.anonymous = anonymous ? 1 : 0;
         return this;
     }
-
     setTags(tags){
         this.tags = tags;
         return this;
     }
-
     setId(id){
         this.id = parseInt(id);
         return this;

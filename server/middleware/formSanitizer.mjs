@@ -15,11 +15,10 @@ function formSanitizer(req, res, next) {
 }
 
 function loginSanitizer(req, res, next) {
-    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-    const credentials = atob(authHeader.split(' ')[1]).split(':');
-
     const allowedTags = [];
     const allowedAttributes = {};
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    const credentials = atob(authHeader.split(' ')[1]).split(':');
 
     req.body.username = sanitizeHtml(credentials[0], { allowedTags, allowedAttributes });
     req.body.password = sanitizeHtml(credentials[1], { allowedTags, allowedAttributes });

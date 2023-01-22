@@ -11,7 +11,6 @@ function isAdmin(usergroup, usergroups) {
 function isOwner(userId, item, target) {
     if(item.created_by && item.created_by === userId) return true;
     return target === "user" && item.id && item.id === userId;
-
 }
 
 function getHelper(target) {
@@ -26,21 +25,19 @@ function getHelper(target) {
 
 const isAuthorized = (target) => {
     const Helper = getHelper(target);
+    const userHelper = new UserHelper();
+    const usergroupsHelper = new UsergroupsHelper();
+
     return async (req, res, next) => {
-        console.log("authorizationChecker called");
         req.isAuthorized = false;
         const user = req.user;
         const helper = new Helper();
         const item = await helper.getItemById(req.params.id);
-        console.log("User: ", user);
         if (user.id) {
-            const userHelper = new UserHelper();
-            const usergroupsHelper = new UsergroupsHelper();
             const userData = await userHelper.getUserById(user.id);
             const usergroups = await usergroupsHelper.getAllUsergroups();
             const isAdminUser = isAdmin(userData.usergroup, usergroups);
             const isOwnerOf = isOwner(user.id, item, target);
-            console.log(item)
             if ( isAdminUser || isOwnerOf) {
                 req.isAuthorized = true;
                 req.isAdmin = isAdminUser;

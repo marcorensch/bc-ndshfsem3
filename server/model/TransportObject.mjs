@@ -5,14 +5,12 @@ class TransportObject {
     constructor(){
         this.success = true;
     }
-
     setMessage(message){
         this.message = message;
         return this;
     }
-
-    setSuccess(success){
-        this.success = success;
+    setSuccess(successState){
+        this.success = successState;
         return this;
     }
     setPayload(payload){

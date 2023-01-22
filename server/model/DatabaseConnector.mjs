@@ -17,7 +17,6 @@ class DatabaseConnector {
             this.setConfiguration(connectionData);
         }
     }
-
     async createConnection(config = this.configureConnection(true)) {
         try {
             config.bigIntAsNumber= true;
@@ -28,7 +27,6 @@ class DatabaseConnector {
             throw err;
         }
     }
-
     configureConnection(withDb = false) {
         let config = {
             host: this.host,
@@ -42,7 +40,6 @@ class DatabaseConnector {
         }
         return config;
     }
-
     async query(sql, values) {
         let conn = await this.createConnection();
         try {
@@ -55,7 +52,6 @@ class DatabaseConnector {
             if (conn) await conn.end();
         }
     }
-
     async createDatabase(dbName) {
         let conn = await this.createConnection(this.configureConnection(false));
         try {
@@ -67,7 +63,6 @@ class DatabaseConnector {
             if (conn) await conn.end();
         }
     }
-
     async dropDatabase(dbName) {
         try {
             await this.createConnection(this.configureConnection(false));
@@ -81,7 +76,6 @@ class DatabaseConnector {
             throw err;
         }
     }
-
     setConfiguration(connectionData) {
         this.host = connectionData.host;
         this.port = connectionData.port;

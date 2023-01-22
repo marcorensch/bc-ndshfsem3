@@ -2,11 +2,9 @@ import DatabaseConnector from "../model/DatabaseConnector.mjs";
 
 class AnswerHelper {
     databaseConnector = null;
-
     constructor(connectionData = false) {
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
-
     async getItems(question_id) {
         let data = [];
         const answers_sql = "SELECT qa.question_id, qa.answer_id, a.*, u.username, u.firstname, u.lastname FROM question_answers qa"+
@@ -30,7 +28,7 @@ class AnswerHelper {
         const sql = "INSERT INTO answers (content, created_by) VALUES (?,?)";
         try {
             const response = await this.databaseConnector.query(sql, [answer.content, answer.user_id]);
-            const answer_id = await this.getLastItemIdCreatedByUserId(answer.user_id);
+            const answer_id = await this._getLastItemIdCreatedByUserId(answer.user_id);
             await this._linkAnswerToQuestion(answer_id, answer.question_id);
             return response;
         } catch (error) {
@@ -41,9 +39,7 @@ class AnswerHelper {
         await this._deleteAnswerVotes(id);
         await this._deleteFromQuestionAnswers(id);
         await this._deleteAnswer(id);
-
         return true;
-
     }
     async updateItem(id, data) {
         const sql = `UPDATE answers SET content=?, modified_at=NOW() WHERE id=?`;
@@ -82,7 +78,6 @@ class AnswerHelper {
             console.log(error);
         }
     }
-
     async getItemById(id) {
         const sql = "SELECT * FROM answers WHERE id=?";
         try {
@@ -90,17 +85,6 @@ class AnswerHelper {
             return response.data[0];
         } catch (error) {
             throw error;
-        }
-    }
-    async _canDelete(id, user) {
-        if(user.isadministrator || user.isQuestionOwner) return true;
-        const sql = `SELECT created_by FROM answers WHERE id=? LIMIT 1`;
-        try {
-            const res = await this.databaseConnector.query(sql, [id]);
-            return res.data[0].created_by === user.id;
-        }catch (error) {
-            console.log("Error while getting id of vote");
-            console.log(error);
         }
     }
     async getItemVotes(answer_id) {
@@ -112,9 +96,8 @@ class AnswerHelper {
             console.log("Error while getting votes");
             console.log(error);
         }
-
     }
-    async getLastItemIdCreatedByUserId(userId) {
+    async _getLastItemIdCreatedByUserId(userId) {
         const sql = "SELECT id FROM answers WHERE created_by=? ORDER BY id DESC LIMIT 1";
         try {
             const response = await this.databaseConnector.query(sql, [userId]);
@@ -131,12 +114,12 @@ class AnswerHelper {
             throw error;
         }
     }
-    async vote(id, userId, voting) {
-        const vote = await this._getVote(id, userId);
-        if(vote?.voting === voting) {
-            return await this._removeVote(id, userId);
+    async vote(answerId, userId, newVotingValue) {
+        const vote = await this._getVote(answerId, userId);
+        if(vote?.voting === newVotingValue) {
+            return await this._removeVote(answerId, userId);
         }
-        return vote ? await this._updateVote(vote.id, voting) : await this._createVote(id, userId, voting);
+        return vote ? await this._updateVote(vote.id, newVotingValue) : await this._createVote(answerId, userId, newVotingValue);
     }
     async _updateVote(id, voting) {
         const sql = `UPDATE answer_votes SET voting=? WHERE id=?`;
@@ -169,7 +152,6 @@ class AnswerHelper {
         const sql = `SELECT id, voting FROM answer_votes WHERE user_id=? AND answer_id=? LIMIT 1`;
         try {
             const res = await this.databaseConnector.query(sql, [userId, answerId]);
-            console.log(res);
             return res.data[0];
         }catch (error) {
             console.log("Error while getting id of vote");
