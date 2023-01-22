@@ -38,7 +38,10 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" @click="saveQuestion">Save</button>
+        <button id="save-new-question-btn" class="btn btn-primary" @click="saveQuestion">
+          <font-awesome-icon icon="save" />
+          Save
+        </button>
       </div>
     </div>
   </main>
@@ -63,6 +66,7 @@ import 'tinymce/plugins/table/plugin'
 import 'tinymce/plugins/code/plugin'
 import 'tinymce/plugins/help/plugin'
 import 'tinymce/plugins/wordcount/plugin'
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
   name: "QuestionNew",
@@ -81,6 +85,7 @@ export default {
     }
   },
   components: {
+    FontAwesomeIcon,
     'editor': Editor,
     Vue3TagsInput
   },
