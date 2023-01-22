@@ -55,7 +55,7 @@ class DatabaseConnector {
     async createDatabase(dbName) {
         let conn = await this.createConnection(this.configureConnection(false));
         try {
-            const sql = `CREATE DATABASE IF NOT EXISTS ${dbName}`;
+            const sql = `CREATE DATABASE IF NOT EXISTS ${dbName} DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci`;
             return await conn.query(sql, null);
         } catch (err) {
             throw err;
