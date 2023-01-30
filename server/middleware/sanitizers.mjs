@@ -4,7 +4,8 @@ function sanitizeContent(content){
     const allowedTags = [ 'p','span','br','b', 'i', 'em', 'strong', 'a', 'img', 'pre', 'code' ];
     const allowedAttributes = {
         a: [ 'href', 'title' ],
-        img: [ 'src', 'alt', 'title', 'width', 'height']
+        img: [ 'src', 'alt', 'title', 'width', 'height'],
+        span: ['style']
     };
 
     return sanitizeHtml(content, { allowedTags, allowedAttributes });
