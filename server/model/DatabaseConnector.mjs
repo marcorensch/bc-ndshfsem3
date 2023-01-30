@@ -6,7 +6,7 @@ class DatabaseConnector {
     password;
     database;
 
-    constructor(connectionData) {
+    constructor(connectionData = false) {
         if (!connectionData) {
             this.host = process.env.DB_HOST;
             this.port = process.env.DB_PORT;
@@ -17,14 +17,14 @@ class DatabaseConnector {
             this.setConfiguration(connectionData);
         }
     }
-    async createConnection(config = this.configureConnection(true)) {
+    async createConnection(connectionWithDb = true) {
+        let config = this.configureConnection(connectionWithDb)
         try {
-            config.bigIntAsNumber= true;
-            config.decimalAsNumber= true;
-            config.metaAsArray= false;
             return mariadb.createConnection(config);
         } catch (err) {
-            throw err;
+            console.log("Could not establish database connection")
+            console.log(this)
+            console.log(err)
         }
     }
     configureConnection(withDb = false) {
@@ -32,8 +32,10 @@ class DatabaseConnector {
             host: this.host,
             port: this.port,
             user: this.user,
-            metaAsArray: false,
             password: this.password,
+            metaAsArray: false,
+            bigIntAsNumber: true,
+            decimalAsNumber: true,
         };
         if (withDb) {
             config.database = this.database;
@@ -53,7 +55,7 @@ class DatabaseConnector {
         }
     }
     async createDatabase(dbName) {
-        let conn = await this.createConnection(this.configureConnection(false));
+        let conn = await this.createConnection(false);
         try {
             const sql = `CREATE DATABASE IF NOT EXISTS ${dbName} DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci`;
             return await conn.query(sql, null);
@@ -65,7 +67,7 @@ class DatabaseConnector {
     }
     async dropDatabase(dbName) {
         try {
-            await this.createConnection(this.configureConnection(false));
+            await this.createConnection(false);
         } catch (err) {
             throw err;
         }

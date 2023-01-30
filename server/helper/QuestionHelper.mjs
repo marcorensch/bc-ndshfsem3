@@ -1,5 +1,6 @@
 import DatabaseConnector from "../model/DatabaseConnector.mjs";
 import AnswerHelper from "./AnswerHelper.mjs";
+import {re} from "@babel/core/lib/vendor/import-meta-resolve.js";
 
 class QuestionHelper {
     databaseConnector = null;
@@ -235,7 +236,7 @@ class QuestionHelper {
     async _updateQuestionTags(questionId, tags) {
         try {
             await this._deleteQuestionTags(questionId);
-            await this.storeTags(questionId, tags);
+            if(tags.length) await this.storeTags(questionId, tags);
             return true
         } catch (error) {
             throw error;

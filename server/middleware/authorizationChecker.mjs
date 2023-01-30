@@ -3,6 +3,7 @@ import UsergroupsHelper from "../helper/UsergroupsHelper.mjs";
 import CategoryHelper from "../helper/CategoryHelper.mjs";
 import QuestionHelper from "../helper/QuestionHelper.mjs";
 import AnswerHelper from "../helper/AnswerHelper.mjs";
+import TagHelper from "../helper/TagHelper.mjs";
 
 function isAdmin(usergroup, usergroups) {
     return usergroup === usergroups.filter((usergroup) => usergroup.alias === "administrator")[0].id;
@@ -17,6 +18,7 @@ function getHelper(target) {
     switch(target) {
         case "user": return UserHelper;
         case "category": return CategoryHelper;
+        case "tag": return TagHelper;
         case "question": return QuestionHelper;
         case "answer": return AnswerHelper;
         default: return false;
@@ -25,10 +27,11 @@ function getHelper(target) {
 
 const isAuthorized = (target) => {
     const Helper = getHelper(target);
-    const userHelper = new UserHelper();
-    const usergroupsHelper = new UsergroupsHelper();
 
     return async (req, res, next) => {
+        const userHelper = new UserHelper();
+        const usergroupsHelper = new UsergroupsHelper();
+
         req.isAuthorized = false;
         const user = req.user;
         const helper = new Helper();

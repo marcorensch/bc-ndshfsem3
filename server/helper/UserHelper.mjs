@@ -3,10 +3,9 @@ import UsergroupsHelper from "./UsergroupsHelper.mjs";
 import User from "../model/User.mjs";
 import QuestionHelper from "./QuestionHelper.mjs";
 
-
 class UserHelper {
     databaseConnector = null;
-    constructor(connectionData) {
+    constructor(connectionData = false) {
         this.connectionData = connectionData;
         this.databaseConnector = new DatabaseConnector(connectionData);
     }
