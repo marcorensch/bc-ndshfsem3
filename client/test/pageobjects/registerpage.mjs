@@ -27,9 +27,6 @@ class Registerpage  {
     async goToUrl(url) {
        await this.driver.get(url);
     }
-    async getMainErrorMessage(){
-        return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/div/span')).getText();
-    }
     async getErrorMessageConfirmPassword() {
         return await this.driver.findElement(By.xpath('/html/body/div/div/div[2]/main/div/form/div[1]/div[3]/div[2]/span')).getText();
     }

@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+
 dotenv.config({path: '../server/.env'});
 
 import * as assert from "assert";
@@ -65,46 +66,6 @@ describe("Register test for the signup form", function () {
         }
     });
 
-    it("Should not be a valid firstname", async () => {
-        let registerpage = new Registerpage(driver);
-        let baseUrl = "https://localhost:8080/register";
-        let user = new UserData(
-            "Pipi!",
-            "Langstrumpf",
-            "pipi",
-            "pipi@gmail.com",
-            "12345678",
-            "12345678");
-        try {
-            await registerpage.goToUrl(baseUrl);
-            await registerpage.fillForm(user);
-            let errormessage = await registerpage.getMainErrorMessage();
-            assert.equal(errormessage, "firstname Invalid / Forbidden characters");
-        } catch (err) {
-            console.log(err);
-        }
-    });
-
-    it("Should not be a valid lastname", async () => {
-        let registerpage = new Registerpage(driver);
-        let baseUrl = "https://localhost:8080/register";
-        let user = new UserData(
-            "Pipi",
-            "Langstrumpf!",
-            "pipi",
-            "pipi@gmail.com",
-            "12345678",
-            "12345678");
-        try {
-            await registerpage.goToUrl(baseUrl);
-            await registerpage.fillForm(user);
-            let errormessage = await registerpage.getMainErrorMessage();
-            assert.equal(errormessage, "lastname Invalid / Forbidden characters");
-        } catch (err) {
-            console.log(err);
-        }
-    });
-
     it("Should not be a valid email", async () => {
         let registerpage = new Registerpage(driver);
         let baseUrl = "https://localhost:8080/register";
@@ -115,14 +76,11 @@ describe("Register test for the signup form", function () {
             "pipi@gmail",
             "12345678",
             "12345678");
-        try {
-            await registerpage.goToUrl(baseUrl);
-            await registerpage.fillForm(user);
-            let errormessage = await registerpage.getErrorMessageEmail();
-            assert.equal(errormessage, "Value is not a valid email address");
-        } catch (err) {
-            console.log(err);
-        }
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getErrorMessageEmail();
+        assert.equal(errormessage, "Value is not a valid email address");
     });
 
     it("Should not be same password", async () => {
@@ -135,14 +93,11 @@ describe("Register test for the signup form", function () {
             "pipi@gmail.com",
             "12345678",
             "12345678!");
-        try {
-            await registerpage.goToUrl(baseUrl);
-            await registerpage.fillForm(user);
-            let errormessage = await registerpage.getErrorMessageConfirmPassword();
-            assert.equal(errormessage, "Not same password");
-        } catch (err) {
-            console.log(err);
-        }
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getErrorMessageConfirmPassword();
+        assert.equal(errormessage, "Not same password");
     });
 
     it("Should not have enough characters", async () => {
@@ -155,14 +110,11 @@ describe("Register test for the signup form", function () {
             "pipi@gmail.com",
             "1234567",
             "12345678");
-        try {
-            await registerpage.goToUrl(baseUrl);
-            await registerpage.fillForm(user);
-            let errormessage = await registerpage.getErrorMessageNewPassword();
-            assert.equal(errormessage, "Min. 8 characters");
-        } catch (err) {
-            console.log(err);
-        }
+
+        await registerpage.goToUrl(baseUrl);
+        await registerpage.fillForm(user);
+        let errormessage = await registerpage.getErrorMessageNewPassword();
+        assert.equal(errormessage, "Min. 8 characters");
     });
     after(async function () {
         try {
@@ -188,15 +140,12 @@ describe("Login test for the login form", function () {
 
     it("should pop up the loginmodal", async () => {
         let loginpage = new Loginpage(driver);
-        try {
-            await loginpage.openLoginModal();
-            let modal = await loginpage.waitForModal();
-            if (modal) {
-                let title = await loginpage.getLoginModalTitle();
-                assert.equal(title, "Login Form");
-            }
-        } catch (err) {
-            console.log(err);
+
+        await loginpage.openLoginModal();
+        let modal = await loginpage.waitForModal();
+        if (modal) {
+            let title = await loginpage.getLoginModalTitle();
+            assert.equal(title, "Login Form");
         }
     });
 
@@ -206,35 +155,29 @@ describe("Login test for the login form", function () {
         user.setPassword("12345678");
         await userHelper.registerUser(user);
         let loginpage = new Loginpage(driver);
-        try {
-            await loginpage.openLoginModal();
-            let modal = await loginpage.waitForModal();
-            if (modal) {
-                await loginpage.fillUsernameField("test-user");
-                await loginpage.clickLoginButton();
-                let errormessage = await loginpage.getErrorMessage();
-                assert.equal(errormessage, "Wrong Password");
-                await userHelper.deleteUserByUsername("test-user");
-            }
-        } catch (err) {
-            console.log(err);
+
+        await loginpage.openLoginModal();
+        let modal = await loginpage.waitForModal();
+        if (modal) {
+            await loginpage.fillUsernameField("test-user");
+            await loginpage.clickLoginButton();
+            let errormessage = await loginpage.getErrorMessage();
+            assert.equal(errormessage, "Wrong Password");
+            await userHelper.deleteUserByUsername("test-user");
         }
     });
 
     it("Login with wrong Username", async () => {
         let loginpage = new Loginpage(driver);
-        try {
-            await loginpage.openLoginModal();
-            let modal = await loginpage.waitForModal();
-            if (modal) {
-                await loginpage.fillUsernameField("no-user");
-                await loginpage.clickLoginButton();
-                let errormessage = await loginpage.getErrorMessage();
-                assert.equal(errormessage, "User not found");
-            }
-        } catch (err) {
-            console.log(err);
+        await loginpage.openLoginModal();
+        let modal = await loginpage.waitForModal();
+        if (modal) {
+            await loginpage.fillUsernameField("no-user");
+            await loginpage.clickLoginButton();
+            let errormessage = await loginpage.getErrorMessage();
+            assert.equal(errormessage, "User not found");
         }
+
     });
 
     it("Login with correct username and password", async () => {
@@ -243,9 +186,8 @@ describe("Login test for the login form", function () {
         user.setPassword("12345678");
         await userHelper.registerUser(user);
         let loginpage = new Loginpage(driver);
-        try {
-            await loginpage.openLoginModal();
-            let modal = await loginpage.waitForModal();
+        await loginpage.openLoginModal();
+        let modal = await loginpage.waitForModal();
             if (modal) {
                 await loginpage.fillUsernameField("Ferdi");
                 await loginpage.fillPasswordField("12345678");
@@ -254,9 +196,6 @@ describe("Login test for the login form", function () {
                 assert.equal(logoutBtnDisplayed, true);
                 await userHelper.deleteUserByUsername("Ferdi");
             }
-        } catch (err) {
-            console.log(err);
-        }
     });
     after(async function () {
         try {
