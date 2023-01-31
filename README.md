@@ -53,13 +53,11 @@ brew services stop mariadb
 - Datenbanksystem starten
 - `npm install` im Projektverzeichnis ausführen
     - Installiert alle benötigten Abhängigkeiten in Server & Client Verzeichnis
-    - Startet Konfigurationsskript (überschreibt ggf. existierende Konfiguration!)
-    - Startet Optional Konfigurationsskript für Datenbank
 
 ## Konfiguration
 
-Der Konfigurationsprozess wird nach dem Ausführen von `npm install` im Projektverzeichnis automatisch gestartet.
-Alternativ kann das Konfigurationsskript auch manuell vom Projektverzeichnis aus gestartet werden.
+Der Konfigurationsprozess kann nach dem Ausführen von `npm install` im Projektverzeichnis gestartet werden.
+Die Konfiguration unterstützt dich dabei die benötigten Datenbanktabellen und einen Administrator-Account einzurichten.
 
 ```
 npm run setup
@@ -72,6 +70,9 @@ npm run setup
     - Startet den Server
     - Startet den Client
 
+Hinweis: Wird SSL verwendet muss im Browser die URL des API-Servers aufgerufen werden und das Zertifikat muss akzeptiert
+werden. Mit den Basiseinstellungen ist dies über die URL "https://localhost:3000" möglich.
+
 ## E2E Test Ausführung
 
 - Applikation mit Testdatenbank starten
@@ -80,7 +81,11 @@ npm run setup
     - cd client
     - `npm run test` im Clientverzeichnis ausführen
 
-## Backend API Routen
+-------------------------------------------------------
+
+# API Dokumentation
+
+## API Routen
 
 :white_check_mark: = fertig implementiert & getestet<br>
 :warning: = in Arbeit / kann funktionieren - kann aber Fehler werfen<br>
@@ -91,10 +96,10 @@ npm run setup
 | Status             | Type   | Route    | Beschreibung                              | Request                           | Response        |
 |--------------------|--------|----------|-------------------------------------------|-----------------------------------|-----------------|
 | :white_check_mark: | GET    | `/`      | Gibt alle User zurück                     | header.token, header.refreshToken |                 |
-| :warning:          | GET    | `/:id`   | Gibt einen User zurück                    | Ja                                |                 |
-| :x:                | PUT    | `/:id`   | Aktualisiert einen User                   | Ja                                |                 |
+| :white_check_mark: | GET    | `/me`    | Gibt einen User zurück                    | Ja                                |                 |
+| :white_check_mark: | PUT    | `/me`    | Aktualisiert einen User                   | Ja                                |                 |
 | :white_check_mark: | DELETE | `/:id`   | Löscht einen User                         | header.token, body.user_id        |                 |
-| :x:                | POST   | `/check` | Gibt zurück ob user by username existiert | body.username oder body.email     | true oder false |
+| :white_check_mark: | POST   | `/check` | Gibt zurück ob username / email existiert | body.username oder body.email     | true oder false |
 
 Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 
@@ -105,8 +110,8 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :white_check_mark: | GET    | `/`           | Gibt eine Liste aller Fragen zurück  | header.token, body.count, body.offset, body.user_id, body.category_id, body.direction | success:bool, data: [{...},...], userId: int / null*, isAdmin:bool/null*      |
 | :white_check_mark: | GET    | `/:id`        | Gibt eine Frage & Antworten zurück   | header.token, params.id                                                               | question:{...}, answers: [{...},...], userId: int / null*, isAdmin:bool/null* |
 | :white_check_mark: | POST   | `/create`     | Erstellt eine neue Frage             | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       |                                                                               |
-| :warning:          | PUT    | `/:id`        | Aktualisiert eine Frage              | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
-| :x:                | DELETE | `/:id`        | Löscht eine Frage                    | ja                                                                                    |                                                                               |
+| :white_check_mark: | PUT    | `/:id`        | Aktualisiert eine Frage              | header.token, body.refreshToken, body.content, body.category_id, body.anonymous       | success:bool, message: ... , userId: int / null*, isAdmin:bool/null*          |
+| :white_check_mark: | DELETE | `/:id`        | Löscht eine Frage                    | ja                                                                                    |                                                                               |
 | :white_check_mark: | POST   | `/:id/vote`   | Setzt ein Voting für eine Frage ab   | header.token, body.type (INT (1 / 0 / -1))                                            |                                                                               |
 | :white_check_mark: | PUT    | `/:id/answer` | Definiert korrekte Antwort auf Frage | header.token, body.accepted_id                                                        |                                                                               |
 
@@ -151,8 +156,6 @@ Hinweis: Benutzerregistration & Login siehe Authentifizierungs-Routen.
 | :white_check_mark: | POST   | `/register` | Registriert einen neuen User                                 | body.firstname, body.lastname, body.username, body.password, body.email | {message} oder ApiError           |
 | :white_check_mark: | POST   | `/token`    | Erstellung neuer Tokens unter Zuhilfenahme des Refresh Token | auth.token (>> RefreshToken)                                            | {token:"..."}                     |
 
-# API Dokumentation
-
 ## Richtlinien für Benutzerdaten
 
 ### Benutzername
@@ -186,14 +189,12 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 {
     "errorCode": "Fehlercode",                    // z.B. "u-318" oder "u-321"
     "message":"Fehlermeldung",                    // z.B. "User already exists" oder "User not found"
-    "relatedColumn":"Betroffene Spalte (DB)"      // z.B. "email" oder "username"
+    "relatedColumn":"Betroffene Spalte (DB)"      // z.B. "email" oder "username" (sofern nötig)
     "data":"Weiterführende Informationen"         // z.B. "Fehlermeldung der Datenbank"
 }
 ```
 
-## Übersicht der Fehlercodes
-
-- Error Code e-999: Allgemeiner Fehler
+## Übersicht der API Fehlercodes
 
 ### User related
 
@@ -208,10 +209,34 @@ Im Falle eines Fehlers wird eine Fehlermeldung im JSON Format zurückgegeben (Ap
 - Error Code u-341: Tokenfehler - Refresh Token nicht gefunden
 - Error Code u-342: Tokenfehler - Refresh Token ist nicht valide
 
-### Category related
+### Kategorien
 
 - Error Code c-331: Kategoriefehler - Kategorie mit dieser ID existiert nicht
+- Error Code c-318: Kategoriefehler - Kategorie ID fehlt
+- Error Code c-322: Kategoriefehler - Kategorie existiert bereits
+- Error Code c-331: Kategoriefehler - Kategorie mit dieser ID existiert nicht
 
-### Question related
+### Fragen
 
+- Error Code q-316: Fragenfehler - Fragetext Länge ungültig
 - Error Code q-317: Fragenfehler - Fragetext darf nicht leer / zu kurz sein
+- Error Code q-318: Fragenfehler - Kategorie ID fehlt
+- Error Code q-331: Fragenfehler - Frage nicht gefunden
+
+### Antworten
+
+- Error Code a-316: Antwortfehler - Länge des Antworttexts ungültig
+- Error Code a-316: Antwortfehler - Antworttext zu kurz oder leer
+
+### Tags
+
+- Error Code t-317: Tagfehler - Tag Titel fehlt
+- Error Code t-318: Tagfehler - Tag ID fehlt
+- Error Code t-322: Tagfehler - Tag existiert bereits
+- Error Code t-331: Tagfehler - Tag nicht gefunden
+
+### Generisch
+
+- Error Code e-999: Allgemein - Ein Fehler ist aufgetreten, weitere Details im Serverlog
+- Error Code e-100: Forbidden - Der User verfügt nicht über die entsprechende Berechtigung diese Aktion durchzuführen
+- Error Code e-101: Authentication - Token invalid

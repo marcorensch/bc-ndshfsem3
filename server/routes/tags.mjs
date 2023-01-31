@@ -56,7 +56,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 });
 
-router.delete('/:id', authenticateToken, isAuthorized("category"), async (req, res) => {
+router.delete('/:id', authenticateToken, isAuthorized("tag"), async (req, res) => {
     const tagHelper = new TagHelper();
     const id = req.params.id;
 
