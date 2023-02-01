@@ -531,7 +531,7 @@ export default {
       this.edited.tags = tags;
     },
     customValidateTags(value) {
-      return !swearWords().includes(value)
+      return !swearWords().includes(value) && value.trim().length > 0
     },
     canEditDeleteQuestion() {
       return this.userStore.getTokens.token && this.userStore.getUser.id === this.question.created_by || this.userStore.isAdmin

@@ -137,7 +137,7 @@ export default {
       this.tags = tags;
     },
     customValidateTags(value) {
-      return !swearWords().includes(value)
+      return !swearWords().includes(value) && value.trim().length > 0
     }
   },
   mounted() {
