@@ -108,12 +108,13 @@ export default {
         this.toast.error("Oh, wow! Your Question is too long, please shorten it.")
         return
       }
-      if(this.text.length < 20){
+      if(this.text.replace(/&nbsp;/g," ").trim().length < 20){
         this.toast.error("Please be more specific, your question is too short")
         return
       }
+      console.log("all done")
       axios.post(this.host + "/questions/create", {
-        content: this.text,
+        content: this.text.trim(),
         category_id: this.category_id,
         tags: this.tags,
         anonymous: this.anonymous,
@@ -136,7 +137,7 @@ export default {
       this.tags = tags;
     },
     customValidateTags(value) {
-      return !swearWords().includes(value)
+      return !swearWords().includes(value) && value.trim().length > 0
     }
   },
   mounted() {

@@ -253,7 +253,7 @@ export default {
     handleTagTitleUpdate(event) {
       const tagId = this.getTagIdFromTable(event);
       const newValue = document.getElementById("tag_title_" + tagId).value;
-      if (newValue === "") {
+      if (newValue.trim() === "") {
         this.toast.warning("Tag title cannot be empty!");
         return;
       }
@@ -274,7 +274,7 @@ export default {
       const inputField = document.getElementById("new_tag_title");
       let title = inputField.value;
       inputField.value = "";
-      if (title === "") {
+      if (title.trim() === "") {
         this.toast.warning("Tag title cannot be empty!");
         return;
       }

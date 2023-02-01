@@ -229,7 +229,7 @@ export default {
       const inputField = document.getElementById('new_cat_title');
       let title = inputField.value;
       inputField.value = '';
-      if (title === "") {
+      if (title.trim() === "") {
         this.toast.warning("Category title cannot be empty!");
         return;
       }
