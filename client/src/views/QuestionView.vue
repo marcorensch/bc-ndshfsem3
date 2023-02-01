@@ -327,11 +327,11 @@ export default {
       this.saveAnswer();
     },
     checkAnswerText(text){
-      if(!text || text.length < 1) {
+      if(!text || text.replace(/&nbsp;/g," ").trim().length < 1) {
         this.toast.warning("Answer can't be empty");
         return false;
       }
-      if(text.length < 20) {
+      if(text.replace(/&nbsp;/g," ").trim().length < 20) {
         this.toast.error("Answer is too short");
         return false;
       }
@@ -454,7 +454,7 @@ export default {
     },
     saveAnswer() {
       axios.post(this.host + "/answers/create", {
-        content: this.answer,
+        content: this.answer.trim(),
         question_id: this.question.id,
       }, {
         headers: this.userStore.getReqHeaders

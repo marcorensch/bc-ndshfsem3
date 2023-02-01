@@ -66,6 +66,9 @@ const editorInit = {
     plugins: 'lists link image codesample help wordcount',
     content_css: false,
     content_style: "body { font-family: Arial; }",
+    force_br_newlines : false,
+    force_p_newlines : false,
+    forced_root_block : '',
 };
 
 const toastOptions = {};
