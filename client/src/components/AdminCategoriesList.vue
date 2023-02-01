@@ -100,6 +100,7 @@ export default {
     };
   },
   mounted() {
+    if(!this.userStore.user.isadministrator) return;
     this.getCategories();
     document.addEventListener("keyup", this.handleKeyUp);
   },

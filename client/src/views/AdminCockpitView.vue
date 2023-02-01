@@ -37,10 +37,49 @@ import AdminUsersList from "@/components/AdminUsersList.vue";
 import AdminCategoriesList from "@/components/AdminCategoriesList.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import AdminTagsList from "@/components/AdminTagsList.vue";
+import {useUserStore} from "@/stores/UserStore";
 
 export default {
   name: "AdminCockpitOverview",
   components: {AdminTagsList, FontAwesomeIcon, AdminUsersList, AdminCategoriesList},
+  data(){
+    return {
+      userStore: useUserStore()
+    }
+  },
+  mounted() {
+    if(!this.userStore.user.isadministrator){
+      console.log(`
+      mmmmm,
+            mmMMMMMMMMMMM,
+       .mmMMMMMMMMMMMMMMM|                             .MMMMMm,
+     mMMMMMMMMMMMMMMMMMMM|                           mMMMMMMMMMMm
+    /MMMMMMMMMMMMMMMMMMMM|      ...::::::::::\\..     \\MMMMMMMMMMM\\
+    \\MMMMMMM/'        \\MM/::::::::::::::::::::::::.   \`MMMMMMMMMMM\\
+     """"""         .:::::::::::::::::::::::::::::::,  \`MMMMMMMMMMM)
+                .:::::::::::::::::::::::::::::::::::::,  mMMMMMMMMMM)
+             .:::::::::::::::::::::::::::::::::::::::::\\,, \\MMMMMMMM/
+           /:::::::::::::::::::::::::::::::::::::::::::::::)MMMMMMM'
+        ,/:::::::::::::::::::::::::::::::::::::::::::::::::)MMMMM/
+       /::::::::::::::::::::::::::::::::::::::::::::::(MmmMMMMM,'
+      /:::::::::::::""""""""""""""",::::::::::::::::(MMMMMM'::::
+     (::::::::::mmmmmmmmMMMMMMMMMmmmmmm":::::::::::::\\MMMM)::::::
+     :::::::""'MMMMMM"""          Mmmmm'          "\`\\:::::::::::::
+     :::""mMMMMMMM,'               m'                 \\Mmm::::::::
+     "(:  MMMMMMM/                                     \\MMMMm:::::
+       "(,mMMMMM/                                       )MMMMMm\\:::
+         (MMMMMM(                                       |MMMMMM^^^\\::
+         mMMMMMM\\                                      /MMMMMMM|^^^^\\
+         MMMMMMM|                                     /mMMMMMMMM^^^^^^\\.
+         (MMMMMM(             .oo,   .o,             ,'MMMMMMMM^^^^^^^^^\\.
+         \`MMMMMMM\\           oOOO'   OOOo           ,'MMM"""""M^^^^^^^^^^^^\\.
+          \\MMMMMMMm.        oOOO'    OOOO         ,/"""        \`.^^^^^^^^^^^^,
+           \\MMMMMMMMm,      \`OO'......OO'        '     __       )^^^^^^^^^^^^)
+      `)
+      console.log("Helloooooo Nurse!")
+      this.$router.push({name: 'Home'})
+    }
+  }
 }
 </script>
 

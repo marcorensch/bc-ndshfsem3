@@ -87,6 +87,7 @@ import axios from "axios";
 import {Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js'
 import {Doughnut} from 'vue-chartjs'
 import UserAccountEditForm from "@/components/UserAccountEditForm.vue";
+import {useToast} from "vue-toastification";
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -99,6 +100,7 @@ export default {
   },
   data() {
     return {
+      toast: useToast(),
       user: null,
       statistics: null,
       recent: null,
@@ -149,7 +151,14 @@ export default {
             this.doughnutChartData.datasets[0].data = [this.statistics.questionsCount, this.statistics.answersCount]
           })
           .catch(err => {
-            console.log(err)
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+              this.$router.push({name: 'Home'})
+            }else{
+              console.log(err);
+              this.toast.error("Something went wrong")
+            }
           });
     },
   },
