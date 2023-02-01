@@ -149,7 +149,7 @@ export default {
             this.doughnutChartData.datasets[0].data = [this.statistics.questionsCount, this.statistics.answersCount]
           })
           .catch(err => {
-            console.log(err);
+            console.log(err)
           });
     },
   },

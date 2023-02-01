@@ -156,9 +156,10 @@ export default {
           this.updateGivenUserData();
           this.$emit('updateUser');
         })
-        .catch(error => {
-          this.toast.error('Error updating your account');
-          console.error(error);
+        .catch(err => {
+          if(err.response.status === 400){
+            this.toast.error("Error updating your account\n"+err.response.data.message+" " + err.response.data.relatedColumn)
+          }
         });
     }
   }
