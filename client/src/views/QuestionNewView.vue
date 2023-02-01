@@ -112,7 +112,6 @@ export default {
         this.toast.error("Please be more specific, your question is too short")
         return
       }
-      console.log("all done")
       axios.post(this.host + "/questions/create", {
         content: this.text.trim(),
         category_id: this.category_id,
