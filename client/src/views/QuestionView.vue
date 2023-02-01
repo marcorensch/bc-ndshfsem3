@@ -331,11 +331,11 @@ export default {
         this.toast.warning("Answer can't be empty");
         return false;
       }
-      if(text < 20) {
+      if(text.length < 20) {
         this.toast.error("Answer is too short");
         return false;
       }
-      if(text > 10000) {
+      if(text.length > 10000) {
         this.toast.error("Answer is too long");
         return false;
       }
