@@ -49,7 +49,34 @@ export default {
   },
   mounted() {
     if(!this.userStore.user.isadministrator){
-      this.userStore.logout()
+      console.log(`
+      mmmmm,
+            mmMMMMMMMMMMM,
+       .mmMMMMMMMMMMMMMMM|                             .MMMMMm,
+     mMMMMMMMMMMMMMMMMMMM|                           mMMMMMMMMMMm
+    /MMMMMMMMMMMMMMMMMMMM|      ...::::::::::\\..     \\MMMMMMMMMMM\\
+    \\MMMMMMM/'        \\MM/::::::::::::::::::::::::.   \`MMMMMMMMMMM\\
+     """"""         .:::::::::::::::::::::::::::::::,  \`MMMMMMMMMMM)
+                .:::::::::::::::::::::::::::::::::::::,  mMMMMMMMMMM)
+             .:::::::::::::::::::::::::::::::::::::::::\\,, \\MMMMMMMM/
+           /:::::::::::::::::::::::::::::::::::::::::::::::)MMMMMMM'
+        ,/:::::::::::::::::::::::::::::::::::::::::::::::::)MMMMM/
+       /::::::::::::::::::::::::::::::::::::::::::::::(MmmMMMMM,'
+      /:::::::::::::""""""""""""""",::::::::::::::::(MMMMMM'::::
+     (::::::::::mmmmmmmmMMMMMMMMMmmmmmm":::::::::::::\\MMMM)::::::
+     :::::::""'MMMMMM"""          Mmmmm'          "\`\\:::::::::::::
+     :::""mMMMMMMM,'               m'                 \\Mmm::::::::
+     "(:  MMMMMMM/                                     \\MMMMm:::::
+       "(,mMMMMM/                                       )MMMMMm\\:::
+         (MMMMMM(                                       |MMMMMM^^^\\::
+         mMMMMMM\\                                      /MMMMMMM|^^^^\\
+         MMMMMMM|                                     /mMMMMMMMM^^^^^^\\.
+         (MMMMMM(             .oo,   .o,             ,'MMMMMMMM^^^^^^^^^\\.
+         \`MMMMMMM\\           oOOO'   OOOo           ,'MMM"""""M^^^^^^^^^^^^\\.
+          \\MMMMMMMm.        oOOO'    OOOO         ,/"""        \`.^^^^^^^^^^^^,
+           \\MMMMMMMMm,      \`OO'......OO'        '     __       )^^^^^^^^^^^^)
+      `)
+      console.log("Helloooooo Nurse!")
       this.$router.push({name: 'Home'})
     }
   }
