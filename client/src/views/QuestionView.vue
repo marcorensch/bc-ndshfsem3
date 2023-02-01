@@ -370,7 +370,13 @@ export default {
             this.getQuestionById(this.$route.params.id);
           })
           .catch(err => {
-            console.log(err);
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+            }else{
+              console.log(err);
+              this.toast.error("Something went wrong");
+            }
           });
     },
     handleAnswerVoteClicked(vote, id) {
@@ -391,7 +397,13 @@ export default {
             this.getQuestionById(this.$route.params.id);
           })
           .catch(err => {
-            console.log(err);
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+            }else{
+              console.log(err);
+              this.toast.error("Something went wrong");
+            }
           });
     },
     handleDeleteAnswerClicked(id) {
@@ -404,7 +416,13 @@ export default {
             }
             this.getQuestionById(this.$route.params.id);
           }).catch(err => {
-        console.log(err);
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+            }else{
+              console.log(err);
+              this.toast.error("Something went wrong");
+            }
       });
     },
     handleMarkedAnswerClicked(id) {
@@ -422,7 +440,13 @@ export default {
             }
             this.getQuestionById(this.question.id)
           }).catch(err => {
-        console.log(err);
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+            }else{
+              console.log(err);
+              this.toast.error("Something went wrong");
+            }
       });
     },
     updateAnswer(answerId, answerContent) {
@@ -440,8 +464,13 @@ export default {
             this.scrollTo("#answer-" + answerId);
             this.toast.success("Answer updated");
           }).catch(err => {
-        console.log(err);
-        this.toast.error("Something went wrong")
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+            }else{
+              console.log(err);
+              this.toast.error("Something went wrong");
+            }
       });
     },
     cleanUpAfterAnswer() {
@@ -514,8 +543,13 @@ export default {
         this.handleEditQuestionToggle();
         this.toast.success("Question updated!");
       }).catch(err => {
-        console.log(err);
-        this.toast.error("Question could not be updated");
+        if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+          this.toast.error("Your Session has expired\nPlease Login again");
+          this.userStore.logout()
+        }else{
+          console.log(err);
+          this.toast.error("Question could not be updated");
+        }
       })
     },
     handleDeleteClicked() {
@@ -528,8 +562,13 @@ export default {
         this.toast.success("Question deleted");
         this.$router.push({name: "Home"});
       }).catch(err => {
-        console.log(err);
-        this.toast.error("Question could not be deleted");
+        if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+          this.toast.error("Your Session has expired\nPlease Login again");
+          this.userStore.logout()
+        }else{
+          console.log(err);
+          this.toast.error("Question could not be deleted");
+        }
       })
     },
     handleChangeTag(tags) {
