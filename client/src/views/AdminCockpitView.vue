@@ -37,10 +37,22 @@ import AdminUsersList from "@/components/AdminUsersList.vue";
 import AdminCategoriesList from "@/components/AdminCategoriesList.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import AdminTagsList from "@/components/AdminTagsList.vue";
+import {useUserStore} from "@/stores/UserStore";
 
 export default {
   name: "AdminCockpitOverview",
   components: {AdminTagsList, FontAwesomeIcon, AdminUsersList, AdminCategoriesList},
+  data(){
+    return {
+      userStore: useUserStore()
+    }
+  },
+  mounted() {
+    if(!this.userStore.user.isadministrator){
+      this.userStore.logout()
+      this.$router.push({name: 'Home'})
+    }
+  }
 }
 </script>
 

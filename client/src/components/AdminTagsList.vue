@@ -161,6 +161,7 @@ export default {
     };
   },
   mounted() {
+    if(!this.userStore.user.isadministrator) return;
     this.getTags();
     document.addEventListener("keyup", this.handleKeyUp);
   },
