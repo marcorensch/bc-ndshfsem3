@@ -128,8 +128,13 @@ export default {
             this.$router.push({name: 'Home'})
           })
           .catch(err => {
-            console.error(err)
-            this.toast.error("Question could not be saved")
+            if(err.response.status === 403 && err.response.data.errorCode === "u-342"){
+              this.toast.error("Your Session has expired\nPlease Login again");
+              this.userStore.logout()
+            }else{
+              console.log(err);
+              this.toast.error("Question could not be saved")
+            }
           })
     },
     handleChangeTag(tags) {
