@@ -4,6 +4,8 @@ import UserHelper from "../helper/UserHelper.mjs";
 import TransportObject from "../model/TransportObject.mjs";
 import ApiError from "../model/ApiError.mjs";
 import User from "../model/User.mjs";
+import {formSanitizer} from "../middleware/formSanitizer.mjs";
+import {registrationValidator, userUpdateValidator} from "../middleware/formValidator.mjs";
 
 const router = express.Router();
 
@@ -71,7 +73,7 @@ router.post('/check', async (req, res) => {
     return res.status(200).json(new TransportObject().setPayload({exists}))
 });
 
-router.put('/me', authenticateToken, async (req, res) => {
+router.put('/me', authenticateToken, formSanitizer, userUpdateValidator, async (req, res) => {
     const userHelper = new UserHelper();
     const {username, firstname, lastname, email, password, usergroup} = req.body;
 
