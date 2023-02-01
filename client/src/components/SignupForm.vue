@@ -134,7 +134,7 @@ export default {
       if (valid) {
         try {
           this.submitForm();
-          this.$refs.form.reset();
+
         } catch (err) {
           this.toast.error("Error submitting form")
           console.log(err)
@@ -190,7 +190,10 @@ export default {
             }
           })
           .catch(err => {
-            throw err
+            if (err.response.status === 400) {
+              this.toast.error("Error submitting form")
+              this.toast.error(err.response.data.message + " in field " + err.response.data.relatedColumn)
+            }
           });
     }
   },
