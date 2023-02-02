@@ -509,7 +509,7 @@ export default {
       if (this.editingQuestion) {
         this.edited.content = this.question.content;
         this.edited.category_id = this.question.category_id;
-        this.edited.anonymous = this.question.anonymous;
+        this.edited.anonymous = !!this.question.anonymous;
         this.edited.tags = this.question.tags.map(tag => tag.title);
         this.accepted_id = this.question.accepted_id;
         this.getCategories();
