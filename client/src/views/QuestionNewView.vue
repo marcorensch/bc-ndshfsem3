@@ -24,8 +24,10 @@
                                @on-tags-changed="handleChangeTag"
                                :validate="customValidateTags"
                                :allow-duplicates="false"
+                               :limit="3"
                                :add-tag-on-keys="[13]">
               </vue3-tags-input>
+              <span class="text-meta text-small">You can set up to three tags</span>
             </div>
             <div class="col">
               <label class="selection-title">Ask anonymously:</label>

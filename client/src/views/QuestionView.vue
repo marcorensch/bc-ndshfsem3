@@ -55,6 +55,7 @@
                                    @on-tags-changed="handleChangeTag"
                                    :validate="customValidateTags"
                                    :allow-duplicates="false"
+                                   :limit="3"
                                    :add-tag-on-keys="[13]">
                   </vue3-tags-input>
                 </div>

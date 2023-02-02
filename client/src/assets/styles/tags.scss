@@ -29,8 +29,8 @@ ul {
 .tags{
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
-  justify-content: end;
+  align-items: flex-end;
+  justify-content: flex-end;
   margin-bottom: .5rem;
   .tag:not(:first-of-type){
     margin-left: 0.25rem;
