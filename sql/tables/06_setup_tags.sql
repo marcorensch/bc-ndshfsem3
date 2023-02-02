@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS `tags`
     `title`      varchar(100) NOT NULL,
     `alias`      varchar(100) NOT NULL,
     `created_at` timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `title` (`title`)
 ) ENGINE = InnoDB;

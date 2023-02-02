@@ -49,15 +49,19 @@
                   <span v-if="!editingQuestion" class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon icon="tag"/>
                     {{ tag.title }}
                   </span>
-                  <vue3-tags-input v-else
-                                   :tags="edited.tags"
-                                   placeholder="enter some tags"
-                                   @on-tags-changed="handleChangeTag"
-                                   :validate="customValidateTags"
-                                   :allow-duplicates="false"
-                                   :limit="3"
-                                   :add-tag-on-keys="[13]">
-                  </vue3-tags-input>
+                  <div v-else>
+                    <vue3-tags-input
+                        :tags="edited.tags"
+                        placeholder="enter some tags"
+                        @on-tags-changed="handleChangeTag"
+                        :validate="customValidateTags"
+                        :allow-duplicates="false"
+                        :limit="3"
+                        :add-tag-on-keys="[13]">
+                    </vue3-tags-input>
+                    <span class="text-meta text-small">You can set up to three tags</span>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -534,6 +538,7 @@ export default {
       })
     },
     handleUpdateQuestionClicked() {
+      console.log(this.edited)
       axios.put(this.host + "/questions/" + this.question.id, this.edited, {
         headers: this.userStore.getReqHeaders
       }).then(response => {
