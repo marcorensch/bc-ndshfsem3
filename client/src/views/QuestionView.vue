@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-4">
                   <div class="row g-3">
-                    <div class="col-auto">{{ question.username ? question.username : "Anonymous" }}</div>
+                    <div class="col-auto">{{ question.anonymous || !question.username ? "Anonym" : question.username }}</div>
                     <div class="col-auto text-small align-self-center" v-if="editingQuestion">
                       <input name="ask-anonymous" id="ask-anonymous" type="checkbox" class="form-check-input" v-model="edited.anonymous"/>
                       <label class="d-inline" for="ask-anonymous">Anonymous</label>
