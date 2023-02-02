@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-4">
                   <div class="row g-3">
-                    <div class="col-auto">{{ question.username ? question.username : "Anonymous" }}</div>
+                    <div class="col-auto">{{ question.anonymous || !question.username ? "Anonym" : question.username }}</div>
                     <div class="col-auto text-small align-self-center" v-if="editingQuestion">
                       <input name="ask-anonymous" id="ask-anonymous" type="checkbox" class="form-check-input" v-model="edited.anonymous"/>
                       <label class="d-inline" for="ask-anonymous">Anonymous</label>
@@ -49,14 +49,19 @@
                   <span v-if="!editingQuestion" class="tag" v-for="tag in question.tags" :key="tag.id"> <font-awesome-icon icon="tag"/>
                     {{ tag.title }}
                   </span>
-                  <vue3-tags-input v-else
-                                   :tags="edited.tags"
-                                   placeholder="enter some tags"
-                                   @on-tags-changed="handleChangeTag"
-                                   :validate="customValidateTags"
-                                   :allow-duplicates="false"
-                                   :add-tag-on-keys="[13]">
-                  </vue3-tags-input>
+                  <div v-else>
+                    <vue3-tags-input
+                        :tags="edited.tags"
+                        placeholder="enter some tags"
+                        @on-tags-changed="handleChangeTag"
+                        :validate="customValidateTags"
+                        :allow-duplicates="false"
+                        :limit="3"
+                        :add-tag-on-keys="[13]">
+                    </vue3-tags-input>
+                    <span class="text-meta text-small">You can set up to three tags</span>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -509,7 +514,7 @@ export default {
       if (this.editingQuestion) {
         this.edited.content = this.question.content;
         this.edited.category_id = this.question.category_id;
-        this.edited.anonymous = this.question.anonymous;
+        this.edited.anonymous = !!this.question.anonymous;
         this.edited.tags = this.question.tags.map(tag => tag.title);
         this.accepted_id = this.question.accepted_id;
         this.getCategories();
@@ -533,6 +538,7 @@ export default {
       })
     },
     handleUpdateQuestionClicked() {
+      console.log(this.edited)
       axios.put(this.host + "/questions/" + this.question.id, this.edited, {
         headers: this.userStore.getReqHeaders
       }).then(response => {
