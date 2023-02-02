@@ -38,7 +38,7 @@
           <tr>
             <th class="col-1">ID</th>
             <th class="col-8">Title</th>
-            <th class="col-2 text-center">Articles</th>
+            <th class="col-2 text-center">Used</th>
             <th class="col-2 text-center">Actions</th>
           </tr>
         </thead>
@@ -110,7 +110,7 @@
                   </div>
                 </div>
               </td>
-              <td class="text-center align-middle">{{ tag.articlesCount }}</td>
+              <td class="text-center align-middle">{{ tag.articlesCount }}x</td>
               <td class="align-middle text-center">
                 <div class="row gx-0">
                   <div class="col-6">
